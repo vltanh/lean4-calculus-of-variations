@@ -120,15 +120,14 @@ theorem cubeInf_eq_cubeInfReal {f : Matrix (Fin d) (Fin m) ℝ → ℝ} {A : Mat
   (EReal.coe_toReal (ne_top_of_le_ne_top (EReal.coe_ne_top _) (cubeInf_le A)) h).symm
 
 /-- The key inequality of convexity along a line `A₀ + t E_{ij}`, in the finite case: the
-two-point inequality at `A₀ + (a x + b y) E_{ij}` with `λ = b` and `s = y − x`. -/
+two-point inequality at `A₀ + (a x + b y) E_{ij}` with `λ = b` and `s = y − x` (of either
+sign). -/
 theorem cubeInfReal_convex_ineq {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : Continuous f)
     (hfin : ∀ A, cubeInf f A ≠ ⊥) (A₀ : Matrix (Fin d) (Fin m) ℝ) (i : Fin d) (j : Fin m)
-    {x y a b : ℝ} (hxy : x < y) (ha : 0 < a) (hb : 0 < b) (hab : a + b = 1) :
+    {x y a b : ℝ} (ha : 0 < a) (hb : 0 < b) (hab : a + b = 1) :
     cubeInfReal f (A₀ + (a * x + b * y) • Matrix.single i j 1) ≤
       a * cubeInfReal f (A₀ + x • Matrix.single i j 1) + b * cubeInfReal f
           (A₀ + y • Matrix.single i j 1) := by
-  -- the order `x < y` is not needed: the two-point inequality holds for every `s = y - x`
-  have _ := hxy
   have hX : ∀ X, cubeInf f X = (cubeInfReal f X : EReal) := fun X =>
     cubeInf_eq_cubeInfReal (hfin X)
   have h := env_two_point_single hf (A₀ + (a * x + b * y) • Matrix.single i j 1) i j (y - x) hb
@@ -149,12 +148,7 @@ theorem cubeInfReal_convexOn {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : Cont
   simp only [smul_eq_mul]
   rcases ha.lt_or_eq with ha' | ha'
   · rcases hb.lt_or_eq with hb' | hb'
-    · rcases lt_trichotomy x y with hxy | rfl | hxy
-      · exact cubeInfReal_convex_ineq hf hfin A₀ i j hxy ha' hb' hab
-      · rw [← add_mul, hab, one_mul, ← add_mul, hab, one_mul]
-      · have := cubeInfReal_convex_ineq hf hfin A₀ i j hxy hb' ha' (by linarith)
-        rw [add_comm (a * x), add_comm (a * cubeInfReal f _)]
-        exact this
+    · exact cubeInfReal_convex_ineq hf hfin A₀ i j ha' hb' hab
     · subst hb'
       have : a = 1 := by linarith
       subst this

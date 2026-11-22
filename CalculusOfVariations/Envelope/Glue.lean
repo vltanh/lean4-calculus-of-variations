@@ -690,7 +690,7 @@ private theorem glue_two_point_real {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf
     have hlip := cubeLaminate_lipschitz a j hl0.le hl1.le k
     obtain ⟨n, P, L, hPo, hPd, hPQ, hcov, hL⟩ := cubeLaminate_piecewiseAffineOn a j hl0 hl1 hk
     refine (cubeInf_le_sum_of_piecewiseAffine hf F P L hPo hPd hPQ hcov ⟨_, hlip⟩
-      (cubeLaminate_eq_zero a j hl0.le hl1.le k) hL).trans ?_
+      (cubeLaminate_eq_zero a j k) hL).trans ?_
     have hterm : ∀ i, ((volume (P i)).toReal : EReal) *
         cubeInf f (F + LinearMap.toMatrix' (L i).linear) ≤
         (((volume (P i)).toReal * g (LinearMap.toMatrix' (L i).linear) : ℝ) : EReal) := by

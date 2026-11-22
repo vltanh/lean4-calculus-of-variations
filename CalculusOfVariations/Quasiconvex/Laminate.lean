@@ -194,11 +194,8 @@ theorem cubeLaminate_lipschitz (a : Fin d → ℝ) (j : Fin m) {l : ℝ} (hl0 : 
   exact this
 
 /-- `v_k` vanishes off the unit cube: there the distance is `0` and the sawtooth is `≥ 0`. -/
-theorem cubeLaminate_eq_zero (a : Fin d → ℝ) (j : Fin m) {l : ℝ} (hl0 : 0 ≤ l) (hl1 : l ≤ 1)
-    (k : ℕ) : ∀ x ∉ unitCube m, cubeLaminate a j l k x = 0 := by
-  -- the bounds on `λ` are not needed: the sawtooth is nonnegative for every `λ`
-  have _ := hl0
-  have _ := hl1
+theorem cubeLaminate_eq_zero (a : Fin d → ℝ) (j : Fin m) {l : ℝ} (k : ℕ) :
+    ∀ x ∉ unitCube m, cubeLaminate a j l k x = 0 := by
   intro x hx
   simp only [cubeLaminate]
   rw [infDist_zero_of_mem (mem_compl hx),
@@ -634,7 +631,7 @@ theorem le_of_quasiconvexAtOn_unitCube {f : Matrix (Fin d) (Fin m) ℝ → ℝ}
       filter_upwards [ae_grad_cubeLaminate_mem a j hl0 hl1 hk] with x hx hxQ
       exact (Set.indicator_of_mem (mem_image_of_mem _ (hx hxQ)) f).symm
     have := hf _ ‖a‖₊ (cubeLaminate_lipschitz a j hl0.le hl1.le k)
-      (cubeLaminate_eq_zero a j hl0.le hl1.le k)
+      (cubeLaminate_eq_zero a j k)
       ((hint (cubeLaminate a j l k)).congr (hae.mono fun x hx => hx.symm))
     rwa [rd_volume_unitCube, ENNReal.toReal_one, one_mul, integral_congr_ae hae] at this
   -- the energy of `u_k`
