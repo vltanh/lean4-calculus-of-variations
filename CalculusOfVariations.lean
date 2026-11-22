@@ -23,6 +23,8 @@ public import CalculusOfVariations.Lipschitz.Periodic
 public import CalculusOfVariations.Lipschitz.PiecewiseAffine
 public import CalculusOfVariations.Lipschitz.Rescale
 public import CalculusOfVariations.Lipschitz.ZeroSet
+public import CalculusOfVariations.Minors.AllOrders
+public import CalculusOfVariations.Minors.Characterization
 public import CalculusOfVariations.Minors.NullLagrangian
 public import CalculusOfVariations.Minors.Quasiaffine
 public import CalculusOfVariations.Minors.RankOneAffine
