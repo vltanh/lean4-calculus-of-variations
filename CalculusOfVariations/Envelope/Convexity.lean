@@ -6,35 +6,43 @@ Authors: The-Anh Vu-Le
 module
 
 public import CalculusOfVariations.Envelope.Glue
-public import CalculusOfVariations.Convex.SeparatelyConvex
+public import CalculusOfVariations.Envelope.RankOneConvex
 public import CalculusOfVariations.Lipschitz.Mollify
+public import CalculusOfVariations.Lipschitz.PiecewiseAffine
+public import CalculusOfVariations.Quasiconvex.RankOneConvex
+public import CalculusOfVariations.RankOneConvex.LocallyLipschitz
 
 /-!
-# Convexity, continuity and quasiconvexity of the infimum formula
+# Continuity and quasiconvexity of the infimum formula
 
-For a continuous `f` and the infimum formula `cubeInf f` on the unit cube `Q` (the function `Qf`
-of S. Müller, *Variational models for microstructure and phase transitions*, lecture notes, MPI
-MiS Leipzig, 1998, §4.8, proof of Theorem 4.5 (iii)), the steps of Müller's proof that `Qf` is
-quasiconvex:
+For a continuous `f` and the infimum formula `cubeInf f` on the unit cube `Q`, (iii) and (iv) of
+Proposition 8.1 of D. Kinderlehrer and P. Pedregal, *Characterizations of Young measures generated
+by gradients*, Arch. Rational Mech. Anal. 115 (1991), 329–365 ([KP], p. 361–362), where it is `φ^#`:
 
-* the dichotomy (`cubeInf_bot_line`, `cubeInf_bot_all`): by the two-point inequality
-  `cubeInf_le_two_point` along `(s e_i) ⊗ e_j = s E_{ij}` (`env_two_point_single`), the value `−∞`
-  at one end of a segment forces `−∞` at its midpoint, hence along every line `B + t E_{ij}`, and
-  then, one entry at a time, everywhere ("the rank-1 directions span the space of all matrices");
-* in the finite case, `cubeInfReal f`, the real-valued `cubeInf f`, is convex along every line
-  `A + t E_{ij}` (`cubeInfReal_convexOn`, from `cubeInf_le_two_point`), hence locally Lipschitz
-  (Müller's Remark 3 after Definition 4.2, `Matrix.locallyLipschitz_of_convexOn_single`) and
-  continuous (`cubeInfReal_continuous`);
-* `cubeInfReal_quasiconvex`: "(4.28) and density arguments", the density argument being that of
-  Müller's proof of Theorem 4.4 (i). A test map `φ` on `Q` is first shrunk to a test map `φ'`
-  supported in `(¼, ¾)^m`, which changes `∫_Q Qf (A + ∇φ) − Qf (A)` by the factor `2^{−m}`
-  (scaling, `env_integral_rescale_sub`); `φ'` is approximated by its mollifications `ψ_n`
-  (smooth, vanishing off `Q`), and `ψ_n` by its Kuhn–Freudenthal interpolant `v_n` on a grid fine
-  enough that `|∇v_n − ∇ψ_n| ≤ 1/(n+1)` (`kuhnInterpolation_grad_uniform`, a diagonal choice of
-  the triangulation). The `v_n` are piecewise affine test maps with `|∇v_n| ≤ m K` and
-  `∇v_n → ∇φ'` almost everywhere, hence in measure; (4.28) (`cubeInf_le_sum_of_piecewiseAffine`)
-  reads `Qf (A) ≤ ∑ i |P i| Qf (A + ∇ (L i)) = ∫_Q Qf (A + ∇v_n)`
-  (`env_integral_piecewiseAffine`), and dominated convergence gives `Qf (A) ≤ ∫_Q Qf (A + ∇φ')`;
+* (iii), "if `φ^# (A₀) > −∞` for some `A₀`, then `φ^#` is finite and continuous". By the two-point
+  inequality (ii), the value `−∞` at one end of a segment in a rank-one direction forces `−∞` at its
+  midpoint, hence along the whole rank-one line ([KP]: a convex function on a line that is finite at
+  some point is finite), and any two matrices are connected by a path of rank-one segments, here
+  along the matrix units (`env_two_point_single`, `cubeInf_bot_line`, `cubeInf_bot_all`). In the
+  finite case `cubeInfReal f`, the real-valued `cubeInf f`, is rank-one convex
+  (`cubeInfReal_rankOneConvex`), hence locally Lipschitz (`RankOneConvex.locallyLipschitz`) and
+  continuous (`cubeInfReal_continuous`). [KP] leave this to the reader ("it is easy to check that
+  `φ^#` is finite everywhere and continuous").
+* (iv), "if `φ^#` is continuous, then it is quasiconvex" (`cubeInfReal_quasiconvex`): [KP] refer to
+  B. Dacorogna's book (1989 edition) or to the technique of Step 6 of the proof of their Proposition
+  7.2. The latter is followed here: a test map is approximated by piecewise affine ones, `ζ_ε`, with
+  `∫ |φ^# (A + ∇ζ) − φ^# (A + ∇ζ_ε)| < ε` ((7.14)), and for piecewise affine maps the inequality is
+  the gluing inequality `cubeInf_le_sum_of_piecewiseAffine`. [KP] do not prove the approximation;
+  here: a test map `φ` on `Q` is first shrunk to a test map `φ'` supported in `(¼, ¾)^m`, which
+  changes `∫_Q Qf (A + ∇φ) − Qf (A)` by the factor `2^{−m}` (scaling, `env_integral_rescale_sub`);
+  `φ'` is approximated by its mollifications `ψ_n` (smooth, vanishing off `Q`), and `ψ_n` by its
+  Kuhn–Freudenthal interpolant `v_n` on a grid fine enough that `|∇v_n − ∇ψ_n| ≤ 1/(n+1)`
+  (`kuhnInterpolation_grad_uniform`, a diagonal choice of the triangulation). The `v_n` are
+  piecewise affine test maps with `|∇v_n| ≤ m K` and `∇v_n → ∇φ'` almost everywhere; the gluing
+  inequality reads `Qf (A) ≤ ∑ i |P i| Qf (A + ∇ (L i)) = ∫_Q Qf (A + ∇v_n)` (`Qf = cubeInf f`,
+  `env_integral_piecewiseAffine`), and dominated convergence gives `Qf (A) ≤ ∫_Q Qf (A + ∇φ')`.
+  (This is the density argument of the proof of Theorem 4.4 (i) in S. Müller, *Variational models
+  for microstructure and phase transitions*, lecture notes, MPI MiS Leipzig, 1998.)
 * `cubeInf_le_qcEnvelope`: `cubeInf f ≤ qcEnvelope f`, since `cubeInf f` is either `≡ −∞` or a
   continuous quasiconvex minorant of `f`.
 -/
@@ -113,7 +121,7 @@ theorem cubeInf_bot_all {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : Continuou
   have := key Finset.univ
   rwa [e] at this
 
-/-! ### Convexity along the matrix units and continuity in the finite case -/
+/-! ### Rank-one convexity and continuity in the finite case -/
 
 /-- The real-valued infimum formula, when it is finite. -/
 noncomputable def cubeInfReal (f : Matrix (Fin d) (Fin m) ℝ → ℝ)
@@ -124,51 +132,42 @@ theorem cubeInf_eq_cubeInfReal {f : Matrix (Fin d) (Fin m) ℝ → ℝ} {A : Mat
     (h : cubeInf f A ≠ ⊥) : cubeInf f A = (cubeInfReal f A : EReal) :=
   (EReal.coe_toReal (ne_top_of_le_ne_top (EReal.coe_ne_top _) (cubeInf_le A)) h).symm
 
-/-- The key inequality of convexity along a line `A₀ + t E_{ij}`, in the finite case: the
-two-point inequality at `A₀ + (a x + b y) E_{ij}` with `λ = b` and `s = y − x` (of either
-sign). -/
-theorem cubeInfReal_convex_ineq {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : Continuous f)
-    (hfin : ∀ A, cubeInf f A ≠ ⊥) (A₀ : Matrix (Fin d) (Fin m) ℝ) (i : Fin d) (j : Fin m)
-    {x y a b : ℝ} (ha : 0 < a) (hb : 0 < b) (hab : a + b = 1) :
-    cubeInfReal f (A₀ + (a * x + b * y) • Matrix.single i j 1) ≤
-      a * cubeInfReal f (A₀ + x • Matrix.single i j 1) + b * cubeInfReal f
-          (A₀ + y • Matrix.single i j 1) := by
+/-- The two-point inequality as convexity along a line `A₀ + t B`, `B = a ⊗ n`, in the finite case:
+the two-point inequality at `A₀ + (α x + β y) B` with `λ = β` and the direction `(y − x) a ⊗ n`. -/
+theorem cubeInfReal_rankOneConvex {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : Continuous f)
+    (hfin : ∀ A, cubeInf f A ≠ ⊥) : RankOneConvex (cubeInfReal f) := by
   have hX : ∀ X, cubeInf f X = (cubeInfReal f X : EReal) := fun X =>
     cubeInf_eq_cubeInfReal (hfin X)
-  have h := env_two_point_single hf (A₀ + (a * x + b * y) • Matrix.single i j 1) i j (y - x) hb
-    (by linarith)
-  rw [cv_smul_single, cv_single_shift _ _ _
-      (show a * x + b * y + (1 - b) * (y - x) = y by linear_combination x * hab),
-    cv_single_shift _ _ _ (show a * x + b * y + -b * (y - x) = x by linear_combination x * hab),
-    ← cv_smul_single i j y, ← cv_smul_single i j x, ← cv_smul_single i j (a * x + b * y)] at h
-  simp only [hX] at h
-  rw [← EReal.coe_mul, ← EReal.coe_mul, ← EReal.coe_add, EReal.coe_le_coe_iff,
-    show 1 - b = a by linarith] at h
-  linarith
-
-theorem cubeInfReal_convexOn {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : Continuous f)
-    (hfin : ∀ A, cubeInf f A ≠ ⊥) (A₀ : Matrix (Fin d) (Fin m) ℝ) (i : Fin d) (j : Fin m) :
-    ConvexOn ℝ univ fun t : ℝ => cubeInfReal f (A₀ + t • Matrix.single i j 1) := by
-  refine ⟨convex_univ, fun x _ y _ a b ha hb hab => ?_⟩
+  intro A₀ B hB
+  obtain ⟨a, n, rfl⟩ := exists_eq_vecMulVec_of_rank_eq_one hB
+  refine ⟨convex_univ, fun x _ y _ α β hα hβ hαβ => ?_⟩
   simp only [smul_eq_mul]
-  rcases ha.lt_or_eq with ha' | ha'
-  · rcases hb.lt_or_eq with hb' | hb'
-    · exact cubeInfReal_convex_ineq hf hfin A₀ i j ha' hb' hab
-    · subst hb'
-      have : a = 1 := by linarith
+  rcases hα.lt_or_eq with hα' | hα'
+  · rcases hβ.lt_or_eq with hβ' | hβ'
+    · have h := cubeInf_le_two_point_vecMulVec hf (A₀ + (α * x + β * y) • Matrix.vecMulVec a n)
+        ((y - x) • a) n hβ' (by linarith)
+      obtain rfl : α = 1 - β := by linarith
+      rw [Matrix.smul_vecMulVec, show A₀ + ((1 - β) * x + β * y) • Matrix.vecMulVec a n +
+          (1 - β) • ((y - x) • Matrix.vecMulVec a n) = A₀ + y • Matrix.vecMulVec a n by module,
+        show A₀ + ((1 - β) * x + β * y) • Matrix.vecMulVec a n -
+          β • ((y - x) • Matrix.vecMulVec a n) = A₀ + x • Matrix.vecMulVec a n by module] at h
+      simp only [hX] at h
+      rw [← EReal.coe_mul, ← EReal.coe_mul, ← EReal.coe_add, EReal.coe_le_coe_iff] at h
+      linarith
+    · subst hβ'
+      have : α = 1 := by linarith
       subst this
       simp
-  · subst ha'
-    have : b = 1 := by linarith
+  · subst hα'
+    have : β = 1 := by linarith
     subst this
     simp
 
-/-- In the finite case, `cubeInf f` is continuous: a function convex in each coordinate direction
-is locally Lipschitz (Müller 1998, Remark 3 after Definition 4.2). -/
+/-- In the finite case, `cubeInf f` is continuous ([KP], Proposition 8.1 (iii), "it is easy to
+check"): a rank-one convex function is locally Lipschitz (`RankOneConvex.locallyLipschitz`). -/
 theorem cubeInfReal_continuous {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : Continuous f)
-    (hfin : ∀ A, cubeInf f A ≠ ⊥) : Continuous (cubeInfReal f) := by
-  exact (Matrix.locallyLipschitz_of_convexOn_single fun A i j =>
-    cubeInfReal_convexOn hf hfin A i j).continuous
+    (hfin : ∀ A, cubeInf f A ≠ ⊥) : Continuous (cubeInfReal f) :=
+  (cubeInfReal_rankOneConvex hf hfin).locallyLipschitz.continuous
 
 /-! ### Quasiconvexity in the finite case -/
 
@@ -250,10 +249,9 @@ theorem env_integral_rescale_sub {g : Matrix (Fin d) (Fin m) ℝ → ℝ} (hg : 
   exact (integral_congr_ae (ae_of_all _ e)).trans (cv_integral_comp_affine
     (fun y => g (A + grad φ y) - g A) (fun _ => 1 / 4) (by norm_num : (0 : ℝ) < 1 / 2))
 
-/-- In the finite case, `cubeInf f` is quasiconvex: Müller's "(4.28) and density arguments", the
-density argument being the one of his proof of Theorem 4.4 (i) (piecewise affine maps `v_n` with
-`|∇v_n| ≤ C` and `∇v_n → ∇u` in measure, obtained by approximating `u` first by a smooth map and
-then by piecewise linear maps on a fine regular triangulation). For a test map `φ` on `Q`:
+/-- In the finite case, `cubeInf f` is quasiconvex ([KP], Proposition 8.1 (iv), by the technique of
+Step 6 of the proof of Proposition 7.2: piecewise affine approximation (7.14), and gluing). For a
+test map `φ` on `Q`:
 
 * (scaling) `φ' = rescaleMap φ (¼ 𝟙) ½` is supported in `(¼, ¾)^m`, and
   `∫_Q Qf (A + ∇φ') − Qf (A) = 2^{−m} (∫_Q Qf (A + ∇φ) − Qf (A))` (`env_integral_rescale_sub`),
@@ -265,7 +263,7 @@ then by piecewise linear maps on a fine regular triangulation). For a test map `
   `kuhnInterpolation_grad_uniform`, there is `k_n ≥ 1` with `|∇ I_{k_n} ψ_n − ∇ψ_n| ≤ 1/(n+1)`
   almost everywhere; `v_n = I_{k_n} ψ_n` is a piecewise affine test map on `Q` with
   `|∇v_n| ≤ m K`, and `∇v_n → ∇φ'` almost everywhere, hence in measure;
-* ((4.28) and the limit) `Qf (A) ≤ ∑ i |P i| Qf (A + ∇ (L i)) = ∫_Q Qf (A + ∇v_n)`
+* (the gluing inequality and the limit) `Qf (A) ≤ ∑ i |P i| Qf (A + ∇ (L i)) = ∫_Q Qf (A + ∇v_n)`
   (`cubeInf_le_sum_of_piecewiseAffine`, `env_integral_piecewiseAffine`), and dominated convergence
   (`Qf` continuous, the gradients bounded) gives `Qf (A) ≤ ∫_Q Qf (A + ∇φ')`. -/
 theorem cubeInfReal_quasiconvex {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : Continuous f)
@@ -322,7 +320,7 @@ theorem cubeInfReal_quasiconvex {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : C
       squeeze_zero_norm (fun n => by rw [Real.norm_eq_abs]; exact hx n i j)
         tendsto_one_div_add_atTop_nhds_zero_nat
     simpa using e2.add e1
-  -- (4.28) for the `v n`
+  -- the gluing inequality for the `v n`
   have hstep : ∀ n, cubeInfReal f A ≤ ∫ x in unitCube m, cubeInfReal f (A + grad (v n) x) := by
     intro n
     obtain ⟨N, P, L, hPo, hPd, hPQ, hcov, hPL⟩ :=

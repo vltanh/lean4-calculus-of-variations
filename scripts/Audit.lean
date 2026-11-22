@@ -11,9 +11,10 @@ import all CalculusOfVariations.Distribution.Convex
 import all CalculusOfVariations.Distribution.SecondDerivative
 import all CalculusOfVariations.Envelope.Convexity
 import all CalculusOfVariations.Envelope.Cube
+import all CalculusOfVariations.Envelope.Domain
 import all CalculusOfVariations.Envelope.Formula
 import all CalculusOfVariations.Envelope.Glue
-import all CalculusOfVariations.Envelope.Tangent
+import all CalculusOfVariations.Envelope.RankOneConvex
 import all CalculusOfVariations.Lipschitz.Cutoff
 import all CalculusOfVariations.Lipschitz.Gradient
 import all CalculusOfVariations.Lipschitz.Mollify
@@ -90,8 +91,16 @@ meta def mainResults : List Name :=
    ``CalculusOfVariations.kuhnInterpolation_lipschitz,
    ``CalculusOfVariations.kuhnInterpolation_piecewiseAffineOn,
    ``CalculusOfVariations.kuhnInterpolation_grad_uniform,
+   ``CalculusOfVariations.exists_testMap_setIntegral_eq,
+   ``CalculusOfVariations.domainInf_le_domainInf,
+   ``CalculusOfVariations.domainInf_eq,
    ``CalculusOfVariations.cubeInf_le_sum_of_piecewiseAffine,
    ``CalculusOfVariations.cubeInf_le_two_point,
+   ``CalculusOfVariations.cubeInf_comp_orthogonal,
+   ``CalculusOfVariations.cubeInf_le_two_point_vecMulVec,
+   ``CalculusOfVariations.cubeInfReal_rankOneConvex,
+   ``CalculusOfVariations.cubeInfReal_quasiconvex,
+   ``CalculusOfVariations.cubeInf_le_qcEnvelope,
    ``CalculusOfVariations.qcEnvelope_eq_iInf]
 
 /-- Lean's standard axioms. -/

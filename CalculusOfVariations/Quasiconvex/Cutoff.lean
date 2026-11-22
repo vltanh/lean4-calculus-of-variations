@@ -41,11 +41,11 @@ namespace CalculusOfVariations
 
 variable {d m : ℕ}
 
-/-- The cut-off `ρ u` of a `K`-Lipschitz map `u` with `|u| ≤ δ`, `ρ = rd_eta δ`, is
-`(K + m)`-Lipschitz: `|∇ρ| ≤ m / δ`. -/
-lemma rd_eta_smul_lipschitz {u : (Fin m → ℝ) → Fin d → ℝ} {K : NNReal} (hu : LipschitzWith K u)
-    {δ : ℝ} (hδ : 0 < δ) (hb : ∀ x, ‖u x‖ ≤ δ) :
-    LipschitzWith (K + m) fun x => rd_eta δ x • u x := by
+/-- The cut-off `ρ u` of a `K`-Lipschitz map `u` with `|u| ≤ M δ`, `ρ = rd_eta δ`, is
+`(K + m M)`-Lipschitz: `|∇ρ| ≤ m / δ`. -/
+lemma rd_eta_smul_lipschitz {u : (Fin m → ℝ) → Fin d → ℝ} {K M : NNReal} (hu : LipschitzWith K u)
+    {δ : ℝ} (hδ : 0 < δ) (hb : ∀ x, ‖u x‖ ≤ M * δ) :
+    LipschitzWith (K + m * M) fun x => rd_eta δ x • u x := by
   refine LipschitzWith.of_dist_le_mul fun x y => ?_
   rw [dist_eq_norm]
   have e : rd_eta δ x • u x - rd_eta δ y • u y =
@@ -60,11 +60,11 @@ lemma rd_eta_smul_lipschitz {u : (Fin m → ℝ) → Fin d → ℝ} {K : NNReal}
       ≤ |rd_eta δ x| * ‖u x - u y‖ + |rd_eta δ x - rd_eta δ y| * ‖u y‖ := by
         refine (norm_add_le _ _).trans ?_
         rw [norm_smul, norm_smul, Real.norm_eq_abs, Real.norm_eq_abs]
-    _ ≤ 1 * (K * dist x y) + m * dist x y / δ * δ := by
+    _ ≤ 1 * (K * dist x y) + m * dist x y / δ * (M * δ) := by
         gcongr
         · rw [abs_of_nonneg h3.1]; exact h3.2
         · exact hb y
-    _ = (K + m : NNReal) * dist x y := by
+    _ = (K + m * M : NNReal) * dist x y := by
         push_cast
         field_simp
 
@@ -118,7 +118,8 @@ theorem le_of_quasiconvexAtOn_of_tendsto {f : Matrix (Fin d) (Fin m) ℝ → ℝ
     have hδ : 0 < δ := by positivity
     have hδ2 : 2 * δ ≤ 1 := by rw [hδdef, mul_one_div, div_le_one (by linarith)]; exact hj'
     set v : (Fin m → ℝ) → Fin d → ℝ := fun x => rd_eta δ x • u (k j) x with hvdef
-    have hv : LipschitzWith (K + m) v := rd_eta_smul_lipschitz (hu _) hδ (hkb j (by omega))
+    have hv : LipschitzWith (K + m * 1) v := rd_eta_smul_lipschitz (hu _) hδ
+      fun x => by rw [NNReal.coe_one, one_mul]; exact hkb j (by omega) x
     have hv0 : ∀ x ∉ unitCube m, v x = 0 := fun x hx => by
       simp only [hvdef, rd_eta_zero hδ hx, zero_smul]
     have hq' := hq v _ hv hv0 (rd_integrableOn hlsc hbdd F hv hQfin)

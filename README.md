@@ -14,8 +14,9 @@ Lean 4 with Mathlib `v4.36.0-rc2`, for integrands `f : ℝ^{d×m} → ℝ` and L
   affine function is an affine combination of minors; the minors of order `2` and `3` are null
   Lagrangians, and the `3 × 3` minors are quasiaffine.
 - **The quasiconvex envelope.** Dacorogna's formula `f^{qc} (A) = inf_φ ⨍_Ω f (A + ∇φ)` on every
-  nonempty bounded open `Ω`, for continuous `f`, with values in `EReal`; the inequality
-  `⨍ Qf (F + ∇ψ) ≥ Qf (F)` for piecewise affine test maps `ψ` behind it.
+  nonempty bounded open `Ω`, for continuous `f`, with values in `EReal`; behind it, the independence
+  of the domain and the rank-one convexity of the infimum formula `Qf`, and the inequality
+  `⨍ Qf (F + ∇ψ) ≥ Qf (F)` for piecewise affine test maps `ψ`.
 - **Smoothing.** A smooth rank-one convex integrand that is not quasiconvex at `0` gives a smooth
   one with the same properties, uniformly Legendre–Hadamard and of quadratic growth.
 - **Distributions on `ℝ`.** Second distributional derivatives, the Leibniz rule, and convexity: a
@@ -54,8 +55,10 @@ semicontinuous, locally bounded minorants, in `EReal`).
 | rank-one affine ⇒ affine combination of minors (continuity not assumed) | `RankOneAffine.exists_eq_sum_minor`; for continuous functions, `RankOneAffine.exists_eq_sum_minor_of_continuous` | [Da08, Thm 5.20, (ii) ⇒ (iii′)] |
 | `∫ minor (∇φ) = 0` for `2 × 2`, `3 × 3` minors, `φ` Lipschitz with compact support | `nl_null2`, `nl_null3` | [Mo, Lemma 5.1] |
 | `∫_Q minor (A + ∇φ) = minor A` for `3 × 3` minors, `φ` a test map on `Q` | `nl_minor3_quasiaffine` | |
-| `f^{qc} (A) = inf_φ ⨍_Ω f (A + ∇φ)`, `Ω` nonempty, bounded, open, `f` continuous; `Ω` the unit ball | `qcEnvelope_eq_iInf`, `qcEnvelope_eq_iInf_unitBall` | [KP, Prop. 8.1], [Da82]; proof of [M, Thm 4.5 (iii)] |
-| `⨍_Q Qf (F + ∇ψ) ≥ Qf (F)` for piecewise affine test maps `ψ`; the two-point inequality of `Qf` | `cubeInf_le_sum_of_piecewiseAffine`, `cubeInf_le_two_point` | [M, (4.28)] |
+| `f^{qc} (A) = inf_φ ⨍_Ω f (A + ∇φ)`, `Ω` nonempty, bounded, open, `f` continuous; `Ω` the unit ball | `qcEnvelope_eq_iInf`, `qcEnvelope_eq_iInf_unitBall` | [KP, Prop. 8.1], [Da82, Thm 5] |
+| the infimum formula does not depend on the domain (null boundaries): copies of a test map by Vitali's theorem | `domainInf_eq`, `domainInf_le_domainInf`, `exists_testMap_setIntegral_eq` | [KP, Prop. 8.1 (i)] |
+| `Qf (F) ≤ λ Qf (F + (1−λ) a ⊗ n) + (1−λ) Qf (F − λ a ⊗ n)`, in `EReal`; `Qf` finite ⇒ rank-one convex, continuous | `cubeInf_le_two_point_vecMulVec`, `cubeInf_le_two_point` (`n = e_j`), `cubeInfReal_rankOneConvex`, `cubeInfReal_continuous` | [KP, Prop. 8.1 (ii), (iii)] |
+| `⨍_Q Qf (F + ∇ψ) ≥ Qf (F)` for piecewise affine test maps `ψ`; `Qf` finite ⇒ quasiconvex | `cubeInf_le_sum_of_piecewiseAffine`, `cubeInfReal_quasiconvex` | [KP, Prop. 8.1 (iv), Prop. 7.2, Step 6] |
 | Kuhn–Freudenthal interpolation: Lipschitz, piecewise affine; for `C¹` maps with compact support, `∇ I_k ψ → ∇ψ` uniformly | `kuhnInterpolation_lipschitz`, `kuhnInterpolation_piecewiseAffineOn`, `kuhnInterpolation_grad_uniform` | [F], [Ku] (the triangulation) |
 | `⟨(ofFun g)'', ψ⟩ = ∫ g ψ''`; `(ofFun f)' = ofFun f'` for locally Lipschitz `f`; Leibniz for `(h f)''` | `lineDerivOp_lineDerivOp_ofFun_apply`, `lineDerivOp_ofFun_eq_ofFun_deriv`, `integral_deriv_deriv_mul_mul`, `lineDerivOp_lineDerivOp_ofFun_mul_apply` | |
 | on `ℝ`: `f` convex ⇒ `(ofFun f)'' ≥ 0`; `g` continuous with `(ofFun g)'' ≥ 0` ⇒ `g` convex | `ConvexOn.distribNonneg_lineDerivOp_lineDerivOp_ofFun`, `convexOn_of_distribNonneg` | |
@@ -119,21 +122,17 @@ theorem CalculusOfVariations.qcEnvelope_eq_iInf {f : Matrix (Fin d) (Fin m) ℝ 
   every rank-one direction. The truncated laminates
   `v_k = min (k⁻¹ h (k x_j), dist_∞ (x, ∂Q)) a` of [M, Lemma 4.3], which have finitely many
   gradients, give the inequality on a cube without any regularity of `f`.
-- **Dacorogna's formula** follows the proof of [M, Thm 4.5 (iii), §4.8]: the proofs of [KP,
-  Prop. 8.1] and [Da82] were not accessible. A quasiconvex minorant is quasiconvex on `Ω`, so it
-  is below every average over `Ω`; the infimum formula over `Ω` is below the infimum formula `Qf`
-  over the cube, by gluing rescaled copies of the cube test maps into finitely many disjoint small
-  cubes filling `Ω` (Besicovitch); and `Qf` is `≡ −∞` or a continuous quasiconvex minorant of `f`:
-  the inequality [M, (4.28)] for piecewise affine test maps, by gluing almost minimisers on the
-  pieces, gives with the laminates of [M, Lemma 4.3] the two-point inequality of `Qf`, hence the
-  dichotomy, convexity in each entry and continuity ([M, Def. 4.2, Remark 3]); and (4.28) with
-  the "density arguments" of [M] gives quasiconvexity. The density argument is the one of the
-  proof of [M, Thm 4.4 (i)]: a test map, shrunk into a smaller cube by scaling, is approximated
-  by smooth maps (mollification), each of them by piecewise affine maps on a fine
-  Kuhn–Freudenthal triangulation (whose gradients converge uniformly), with the triangulation
-  chosen diagonally; the gradients stay bounded and converge almost everywhere, and dominated
-  convergence passes (4.28) to the limit. Müller assumes `|∂Ω| = 0`; the independence of the
-  domain used here does not need it.
+- **Dacorogna's formula** follows [KP, Prop. 8.1]. (i) The infimum formula over `Ω` is at most the one
+  over `D`, if `|∂D| = 0`: `Ω` is, up to a null set, a disjoint union of countably many copies of `D̄`
+  (Vitali), and the rescaled copies of a test map glue to one with the same average. (ii) The formula
+  `Qf` over the cube is rank-one convex: cut-off laminates on a cube with a face orthogonal to the
+  direction, with test maps chosen independently on the slabs where the gradient is constant. (iii)
+  `Qf` is `≡ −∞` or finite everywhere, along paths of rank-one segments, and then continuous, as a
+  rank-one convex function. (iv) `Qf` is then quasiconvex: the inequality for piecewise affine test
+  maps, by gluing almost minimisers into the pieces, and an approximation of the test maps by
+  piecewise affine ones (mollification and Kuhn–Freudenthal interpolation), which [KP] leave to the
+  reader. [KP] do not state the formula itself: a quasiconvex minorant is quasiconvex on `Ω`, so it
+  is below every average over `Ω`; and `Qf` is `≡ −∞` or a quasiconvex minorant of `f`.
 - **Distributions on `ℝ`.** Integration by parts for locally Lipschitz functions (absolute
   continuity); a convex function has a nonnegative second distributional derivative, by second
   differences and dominated convergence; conversely, the mollifications of a continuous `g` with
@@ -152,8 +151,6 @@ theorem CalculusOfVariations.qcEnvelope_eq_iInf {f : Matrix (Fin d) (Fin m) ℝ 
 - Mathlib-style names for the helper lemmas (prefixes `rd_`, `cv_`, `env_`, `glue_`, `lam_`,
   `distrib_`, `nl_`, and `plancherel` for the mollification lemmas), and one family of lemmas on
   gradients of Lipschitz maps in `Lipschitz/Gradient.lean` instead of two.
-- The gluing lemma `cv_glue_on` for maps that are affine on the cubes, without the tangent maps
-  and cut-offs it allows for (every use in the package is of that kind).
 
 ## Using it from another Lake project
 
@@ -188,7 +185,7 @@ lake env lean scripts/Audit.lean   # axioms; fails on any `sorry`
 | [`CalculusOfVariations/Quasiconvex/`](CalculusOfVariations/Quasiconvex) | `Domain`, `Cutoff`, `Periodic`, `Laminate`, `RankOneConvex`, `TruncatedLaminate` |
 | [`CalculusOfVariations/QuadraticForm/`](CalculusOfVariations/QuadraticForm) | `Plancherel`, `Quasiconvex` |
 | [`CalculusOfVariations/Minors/`](CalculusOfVariations/Minors) | `RankOneAffine`, `RankOneAffineContinuous`, `NullLagrangian`, `Quasiaffine` |
-| [`CalculusOfVariations/Envelope/`](CalculusOfVariations/Envelope) | `Cube` (the infimum formula on the cube), `Tangent` (gluing rescaled copies into cubes), `Glue` ((4.28)), `Convexity`, `Formula` |
+| [`CalculusOfVariations/Envelope/`](CalculusOfVariations/Envelope) | `Cube` (the infimum formula on the cube), `Domain` (independence of the domain), `RankOneConvex`, `Glue` (piecewise affine test maps), `Convexity` (continuity, quasiconvexity), `Formula` |
 | [`CalculusOfVariations/Smoothing/`](CalculusOfVariations/Smoothing) | `RankOneConvex` |
 | [`CalculusOfVariations/Distribution/`](CalculusOfVariations/Distribution) | `SecondDerivative`, `Convex` |
 | [`scripts/Audit.lean`](scripts/Audit.lean) | the axiom audit |
@@ -198,8 +195,8 @@ lake env lean scripts/Audit.lean   # axioms; fails on any `sorry`
 
 - [M] S. Müller, *Variational models for microstructure and phase transitions*, Max-Planck-Institut
   für Mathematik in den Naturwissenschaften, Leipzig, Lecture notes no. 2, 1998 (C.I.M.E. summer
-  school, Cetraro, 1996): Definition 4.2 and Remarks 2, 3; Lemma 4.3; Theorem 4.5 (ii), (iii) and
-  its proof in §4.8, with (4.28); Proposition 4.19.
+  school, Cetraro, 1996): Definition 4.2 and Remark 3; Lemma 4.3; the density argument of Theorem 4.4
+  (i).
 - [R] F. Rindler, *Calculus of Variations*, 2nd ed., Graduate Texts in Mathematics 310, Springer,
   2026: Lemma 5.2 (i), Proposition 5.6, Lemma 5.9 (by content, Lemma 5.6 of the first edition, 2018,
   which was not consulted), Appendix A.1.
@@ -208,7 +205,8 @@ lake env lean scripts/Audit.lean   # axioms; fails on any `sorry`
 - [Da82] B. Dacorogna, *Quasiconvexity and relaxation of nonconvex problems in the calculus of
   variations*, J. Funct. Anal. 46 (1982), 102–118.
 - [KP] D. Kinderlehrer, P. Pedregal, *Characterizations of Young measures generated by gradients*,
-  Arch. Rational Mech. Anal. 115 (1991), 329–365: Proposition 8.1 (statement).
+  Arch. Rational Mech. Anal. 115 (1991), 329–365: Proposition 8.1, with Step 6 of the proof of
+  Proposition 7.2.
 - [Da08] B. Dacorogna, *Direct methods in the calculus of variations*, 2nd ed., Springer, 2008:
   Propositions 5.11, 5.13, Theorem 5.20 with Lemma 5.24, Theorem 5.25.
 - [K] J. Kristensen, *On the non-locality of quasiconvexity*, Ann. Inst. H. Poincaré Anal. Non

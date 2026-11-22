@@ -12,9 +12,10 @@ public import CalculusOfVariations.Distribution.Convex
 public import CalculusOfVariations.Distribution.SecondDerivative
 public import CalculusOfVariations.Envelope.Convexity
 public import CalculusOfVariations.Envelope.Cube
+public import CalculusOfVariations.Envelope.Domain
 public import CalculusOfVariations.Envelope.Formula
 public import CalculusOfVariations.Envelope.Glue
-public import CalculusOfVariations.Envelope.Tangent
+public import CalculusOfVariations.Envelope.RankOneConvex
 public import CalculusOfVariations.Lipschitz.Cutoff
 public import CalculusOfVariations.Lipschitz.Gradient
 public import CalculusOfVariations.Lipschitz.Mollify

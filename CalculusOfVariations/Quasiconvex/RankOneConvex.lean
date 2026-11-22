@@ -56,7 +56,7 @@ private lemma rd_convex_line {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (A₀ B : 
     show A₀ + (l * x + (1 - l) * y) • B - l • ((x - y) • B) = A₀ + y • B by module] at this
 
 /-- A matrix of rank one is `a ⊗ q`. -/
-private lemma rd_rank_one_eq {B : Matrix (Fin d) (Fin m) ℝ} (hB : B.rank = 1) :
+lemma exists_eq_vecMulVec_of_rank_eq_one {B : Matrix (Fin d) (Fin m) ℝ} (hB : B.rank = 1) :
     ∃ (a : Fin d → ℝ) (q : Fin m → ℝ), B = Matrix.vecMulVec a q := by
   rw [Matrix.rank_eq_finrank_span_cols] at hB
   obtain ⟨v, -, hv⟩ := finrank_eq_one_iff'.1 hB
@@ -71,8 +71,8 @@ private lemma rd_rank_one_eq {B : Matrix (Fin d) (Fin m) ℝ} (hB : B.rank = 1) 
 /-- **A quasiconvex integrand is rank-one convex** ([R2], Proposition 5.6): a lower semicontinuous,
 locally bounded `f` that is quasiconvex on the unit cube at every matrix is rank-one convex.
 
-Proof: a rank-one matrix is `a ⊗ q` (`rd_rank_one_eq`). At every matrix `P`, the laminates of [R2]
-on a cube with faces orthogonal to `q`, cut off near its boundary, give
+Proof: a rank-one matrix is `a ⊗ q` (`exists_eq_vecMulVec_of_rank_eq_one`). At every matrix `P`, the
+laminates of [R2] on a cube with faces orthogonal to `q`, cut off near its boundary, give
 `f (P) ≤ λ f (P + (1 − λ) (c a) ⊗ q) + (1 − λ) f (P − λ (c a) ⊗ q)` for every `c ∈ ℝ` and
 `λ ∈ (0, 1)` (`le_of_quasiconvexAtOn_vecMulVec`, from quasiconvexity at `P` on the unit cube and the
 independence of the domain for the rotated cube); this two-point inequality along the line
@@ -81,7 +81,7 @@ theorem rankOneConvex_of_quasiconvex {f : Matrix (Fin d) (Fin m) ℝ → ℝ}
     (hlsc : LowerSemicontinuous f) (hbdd : IsLocallyBounded f) (hf : Quasiconvex f) :
     RankOneConvex f := by
   intro A B hB
-  obtain ⟨a, q, rfl⟩ := rd_rank_one_eq hB
+  obtain ⟨a, q, rfl⟩ := exists_eq_vecMulVec_of_rank_eq_one hB
   refine rd_convex_line _ _ fun P c l hl0 hl1 => ?_
   rw [show c • Matrix.vecMulVec a q = Matrix.vecMulVec (c • a) q by
     ext i k; simp only [Matrix.smul_apply, Matrix.vecMulVec_apply, Pi.smul_apply, smul_eq_mul]

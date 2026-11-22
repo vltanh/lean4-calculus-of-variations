@@ -144,6 +144,25 @@ theorem cv_continuous_integral {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : Co
     continuous_pi fun i => continuous_pi fun k => continuous_id.matrix_elem i k
   exact hg.comp hc
 
+/-- An `EReal` bounded by `b + C ε` for all small `ε > 0` is bounded by `b`. -/
+theorem cv_ereal_le_of_eps {a : EReal} {b C : ℝ} (hC : 0 ≤ C)
+    (h : ∀ ε : ℝ, 0 < ε → ε < 1 / 2 → a ≤ ((b + C * ε : ℝ) : EReal)) : a ≤ (b : EReal) := by
+  induction a using EReal.rec with
+  | bot => exact bot_le
+  | top => exact absurd (h (1 / 4) (by norm_num) (by norm_num)) (not_le.2 (EReal.coe_lt_top _))
+  | coe a =>
+    rw [EReal.coe_le_coe_iff]
+    by_contra hab
+    push Not at hab
+    set ε := min (1 / 4) ((a - b) / (2 * (C + 1))) with hε
+    have hε0 : 0 < ε := lt_min (by norm_num) (div_pos (by linarith) (by positivity))
+    have hε1 : ε < 1 / 2 := (min_le_left _ _).trans_lt (by norm_num)
+    have h1 := h ε hε0 hε1
+    rw [EReal.coe_le_coe_iff] at h1
+    have h2 : ε ≤ (a - b) / (2 * (C + 1)) := min_le_right _ _
+    rw [le_div_iff₀ (by positivity)] at h2
+    nlinarith
+
 /-- `cubeInf f` is upper semicontinuous, as an infimum of continuous functions. -/
 theorem cubeInf_usc {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : Continuous f) :
     UpperSemicontinuous (cubeInf f) := by
