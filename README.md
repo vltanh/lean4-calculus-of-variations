@@ -154,7 +154,7 @@ theorem CalculusOfVariations.quasiconvexEnvelope_eq_domainInf {f : Matrix (Fin d
 ## Shorter proofs
 
 Arguments shorter or simpler than those of the sources, which the library follows ("checked in Lean":
-the argument compiles, but it is not part of the library):
+the argument compiles against the library at `e474abf`, in a file that is not part of it):
 
 - Rank-one convex ⇒ locally Lipschitz: a rank-one convex function is separately convex, and
   `Matrix.locallyLipschitz_of_convexOn_single` applies; no singular values, no explicit constant.
@@ -180,8 +180,9 @@ the argument compiles, but it is not part of the library):
 
 **The theorems.** Morrey [Mo] introduced quasiconvexity, proved that it is equivalent to the lower
 semicontinuity of `∫ f (∇u)` under uniform convergence with bounded Lipschitz constants, and that
-it implies rank-one convexity. The converse fails for `d ≥ 3`, `m ≥ 2` [Š] and is open for `2 × 2`
-matrices ([R], Chapter 8). Laminate proofs of the implication: [Fo], [M], [R]; the independence of
+it implies rank-one convexity. The converse fails for `d ≥ 3`, `m ≥ 2` [Š]; for `d = 2`, preprints
+of 2026 claim that it fails for `m ≥ 3` (arXiv:2608.03488; also arXiv:2608.12298, `m = 4`); it is open
+for `2 × 2` matrices ([R], Chapter 8). Laminate proofs of the implication: [Fo], [M], [R]; the independence of
 the domain by Vitali coverings: [BM]. Rank-one convex functions are locally Lipschitz by
 [Mo, Thm 4.3] (continuous `f`) and [KK, Lemma 2.3] (any `f`). Rank-one convex quadratic forms:
 [VH], [Mo, Thm 5.2]; they are polyconvex when `d = 2` or `m = 2`, not in general ([T],
@@ -200,12 +201,12 @@ the Lean Zulip archive, the Archive of Formal Proofs, MathComp-Analysis).
   means convex sublevel sets.
 - Lean developments with Morrey's quasiconvexity include
   [so3-r1c-and-not-qc](https://github.com/sergioconti/so3-r1c-and-not-qc) (Conti, Dolzmann,
-  Dondl: a frame-indifferent counterexample on `ℝ^{3×3}`; the inequality for smooth periodic maps
-  and continuous quasiconvex `f`),
+  Dondl, arXiv:2610.31886: a frame-indifferent counterexample on `ℝ^{3×3}`),
   [hierarchical_laminates_lean](https://github.com/lcao11/hierarchical_laminates_lean) (Cao: two
   envelopes that differ, for `d = 32`, `m = 2`; in that size, periodic quasiconvex functions below
   a continuous one are rank-one convex; functions convex in each coordinate and locally bounded
-  are locally Lipschitz) and [atlas-lean](https://github.com/facebookresearch/atlas-lean)
+  are locally Lipschitz; a test with `C¹` periodic maps, whose envelope does not depend on the size of
+  the cube) and [atlas-lean](https://github.com/facebookresearch/atlas-lean)
   (definitions for `2 × 2` matrices).
 - [PDEAtlas](https://github.com/Robertboy18/PDEAtlas), after Evans, has null Lagrangians, the
   divergence form (for `C²` maps) and the weak continuity of minors of every order, and minimizers of
