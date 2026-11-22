@@ -12,14 +12,15 @@ public import CalculusOfVariations.Quasiconvex.RankOneConvex
 # Quasiaffine functions are the affine combinations of minors
 
 `rankOneAffine_tfae`: for `f : ℝ^{d×m} → ℝ`, the following are equivalent: `f` is rank-one affine;
-`f` is quasiaffine (`f` and `−f` are quasiconvex); `f` is a null Lagrangian
-(`∫_Ω f (A + ∇φ) = |Ω| f (A)` for every bounded open `Ω` and every test map `φ` on `Ω`); `f` is an
-affine combination of minors. This is the equivalence of (i), (ii), (iii') in Theorem 5.20 of
-B. Dacorogna, *Direct Methods in the Calculus of Variations*, 2nd ed., Springer, 2008 ([D08],
-p. 179), which is due to J. M. Ball, *Convexity conditions and existence theorems in nonlinear
-elasticity*, Arch. Ration. Mech. Anal. 63 (1977), 337–403, with the null Lagrangians of
-Proposition 4 of B. Dacorogna, *Quasiconvexity and relaxation of nonconvex problems in the calculus
-of variations*, J. Funct. Anal. 46 (1982), 102–118 ([D82]; on every bounded domain). The proof is
+`f` is quasiaffine (Borel, locally bounded, and `f` and `−f` are quasiconvex); `f` is a null
+Lagrangian (Borel, locally bounded, and `∫_Ω f (A + ∇φ) = |Ω| f (A)` for every bounded open `Ω`,
+every `A` and every test map `φ` on `Ω`); `f` is an affine combination of minors. This is the
+equivalence of (i), (ii), (iii') in Theorem 5.20 of B. Dacorogna, *Direct Methods in the Calculus of
+Variations*, 2nd ed., Springer, 2008 ([D08], p. 179), which is due to J. M. Ball, *Convexity
+conditions and existence theorems in nonlinear elasticity*, Arch. Ration. Mech. Anal. 63 (1977),
+337–403. The third condition is (ii) of Proposition 4 of B. Dacorogna, *Quasiconvexity and
+relaxation of nonconvex problems in the calculus of variations*, J. Funct. Anal. 46 (1982), 102–118
+([D82]), where `f` is continuous, `φ ∈ C^∞_c (Ω, ℝ^d)` and `Ω` is a bounded domain. The proof is
 that of [D08]:
 
 * (ii) ⇒ (iii'), rank-one affine ⇒ affine combination of minors, in [D08] through (ii'):
@@ -27,10 +28,10 @@ that of [D08]:
   "the only non trivial implication".
 * (iii') ⇒ (i), affine combination of minors ⇒ quasiaffine. [D08] gives two arguments: through (iii)
   and Theorem 5.3 (polyconvex ⇒ quasiconvex, by (8.44) and Jensen's inequality), and by Theorem 8.35
-  (p. 181). The second one is used: (8.44) (`setIntegral_minor_add_grad`) makes an affine
-  combination of minors a null Lagrangian, which is also the argument of [D08] for Corollary 5.22,
-  and a null Lagrangian is quasiaffine, by the case of the unit cube. [D82] states Proposition 4
-  without proof.
+  (p. 181). The second one is used, since it also gives the third condition: (8.44)
+  (`setIntegral_minor_add_grad`) makes an affine combination of minors a null Lagrangian
+  (Corollary 5.22 of [D08] is the same argument with part (ii) of Theorem 8.35), and a null
+  Lagrangian is quasiaffine, by the case of the unit cube. [D82] states Proposition 4 without proof.
 * (i) ⇒ (ii), quasiaffine ⇒ rank-one affine: "immediately from Theorem 5.3", quasiconvex ⇒ rank-one
   convex, for `f` and `−f` (`rankOneConvex_of_quasiconvex`). The library proves this theorem once,
   by the proof of F. Rindler, *Calculus of Variations*, 2nd ed., 2026, Proposition 5.6; the proof of

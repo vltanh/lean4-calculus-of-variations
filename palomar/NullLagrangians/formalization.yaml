@@ -35,7 +35,8 @@ sources:
     relationship: "formalizes"
     note: >-
       Theorem 5.20, the equivalence of (i), (ii) and (iii'), and Theorem 8.35, (8.44), with Theorem
-      8.33; the proofs follow its proofs, with repairs of Lemma 5.24 (see fidelity).
+      8.33; the proofs follow its proofs, with repairs of Lemma 5.24 (see fidelity), except that of
+      its Theorem 5.3, used for (i) => (ii), which is proved as in Rindler.
     author_endorsement: "not-contacted"
   - title: "Quasiconvexity and relaxation of nonconvex problems in the calculus of variations"
     authors:
@@ -117,8 +118,9 @@ status:
   scope: >-
     Proved, for all d and m: the statements listed under alignment. Not included: the conditions
     (ii') (f of class C^1, with an identity for the gradient) and (iii) (polyaffine) of Dacorogna's
-    Theorem 5.20; Theorem 8.35 (ii), for maps in W^{1,p}; that smooth test maps with compact support
-    suffice (Remark 5.2 (iii) of Dacorogna 2008).
+    Theorem 5.20; Theorem 8.33 for C^2 maps (it is proved for smooth ones, inside the library);
+    Theorem 8.35 (ii), for maps in W^{1,p}; that smooth test maps with compact support suffice
+    (Remark 5.2 (iii) of Dacorogna 2008).
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: []
@@ -153,18 +155,19 @@ fidelity:
     For bounded Lipschitz domains the first two classes agree; for a general bounded open set the
     maps here are among those of Dacorogna 2008 (W^{1,infinity} and W^{1,1}_0), possibly not all of
     them. Theorem 8.35 is stated for every bounded set Omega (the source: bounded open). Borel
-    measurability and local boundedness, part of the definition of quasiconvexity in the source, are
-    stated with the conditions 2 and 3. The four conditions are (ii), (i), none and (iii') of
-    Dacorogna 2008, Theorem 5.20, and (iii), (i), (ii) and (iv) of Dacorogna 1982, Proposition 4.
-    Condition 3 has more test maps and more domains than (ii) there (smooth maps with compact
-    support, bounded domains), so it is a priori stronger. The name null Lagrangian is used for it;
-    Dacorogna 1982 and Ball use it for condition 2, other authors for the functions f for which the
-    integral of f(Du) depends only on the boundary values of u (here: for affine boundary values).
-    Quasiconvexity is tested on the unit cube, which is the same by Dacorogna 2008, Proposition
-    5.11. The minors are indexed by pairs of strictly increasing maps Fin k -> Fin d, Fin k -> Fin
-    m, for all k <= min(d, m), including the minor of order 0, the constant 1 (the source: f(0) and
-    the vector T(xi) of the minors, with signs); the coefficients are functions of k and of these
-    maps.
+    measurability and local boundedness, part of the definition of quasiconvexity in Dacorogna 2008
+    (Definition 5.1 (ii)), are stated with the conditions 2 and 3; in Dacorogna 1982 f is continuous
+    and quasiconvexity is tested with smooth maps with compact support. The four conditions are
+    (ii), (i), none and (iii') of Dacorogna 2008, Theorem 5.20, and (iii), (i), (ii) and (iv) of
+    Dacorogna 1982, Proposition 4. Condition 3 has more test maps and more domains than (ii) there
+    (smooth maps with compact support, bounded domains), so it is a priori stronger. The name null
+    Lagrangian is used for it; Dacorogna 1982 and Ball use it for condition 2, other authors for the
+    functions f for which the integral of f(Du) depends only on the boundary values of u (here: for
+    affine boundary values). Quasiconvexity is tested on the unit cube, which is the same by
+    Dacorogna 2008, Proposition 5.11. The minors are indexed by pairs of strictly increasing maps
+    Fin k -> Fin d, Fin k -> Fin m, for all k <= min(d, m), including the minor of order 0, the
+    constant 1 (the source: f(0) and the vector T(xi) of the minors, with signs); the coefficients
+    are functions of k and of these maps.
 
 
     Proofs. They follow Dacorogna 2008. Theorem 5.20 (ii) => (iii'): by induction on the number of
@@ -175,21 +178,22 @@ fidelity:
     that the functions chi and psi_l of (5.42) are rank-one affine, and every row set, are treated
     (the source treats the last row set); that f is of class C^1 is neither justified there nor used
     here. (iii') => (i): by Theorem 8.35, the second of the two arguments of the source (the first
-    goes through polyconvexity and Jensen's inequality); it also gives condition 3, as in Corollary
-    5.22 there. (i) => (ii): the source cites its Theorem 5.3, quasiconvex implies rank-one convex;
-    the library proves that theorem by the proof of Rindler's Proposition 5.6, and the source by
-    test maps from its Lemma 3.11.
+    goes through polyconvexity and Jensen's inequality); it also gives condition 3 (Corollary 5.22
+    there is the same argument with part (ii) of Theorem 8.35). (i) => (ii): the source cites its
+    Theorem 5.3, quasiconvex implies rank-one convex; the library proves that theorem once, by the
+    proof of Rindler's Proposition 5.6, where the source has test maps from its Lemma 3.11.
 
 
     Theorem 8.35, (8.44): by the proof of its part (i). Step 1, (8.46), by induction on the order,
     with the expansion along the first row, integration by parts and (8.42); for minors of maps of m
     variables in s different directions, where the source reduces to square matrices by abuse of
-    notation (its induction step uses minors of order s - 1 of maps of s variables). Step 2, the
-    density argument, which the source does not detail: mollification on R^m, Step 1 on a ball, and
-    the vanishing of the gradient almost everywhere outside Omega, since mollified test maps need
-    not have their support in Omega. Theorem 8.33, (8.42) and (8.43): by its proof, induction on the
-    order, for smooth maps (the source: C^2, where the second derivatives in the proof are those of
-    functions that are only C^1). Dacorogna 1982 gives no proof of Proposition 4.
+    notation (its induction step uses minors of order s - 1 of maps of s variables); the induction
+    starts at the order 0 (there: 1). Step 2, the density argument, which the source does not
+    detail: mollification on R^m, Step 1 on a ball, and the vanishing of the gradient almost
+    everywhere outside Omega, since mollified test maps need not have their support in Omega.
+    Theorem 8.33, (8.42) and (8.43): by its proof, induction on the order, for smooth maps (the
+    source: C^2, where for s >= 3 the second derivatives in the proof are those of functions that
+    are only C^1). Dacorogna 1982 gives no proof of Proposition 4.
 
 review:
   status: "agent-reviewed"
@@ -200,8 +204,9 @@ review:
     the texts of the sources and not the writers' conclusions, compared every statement with the
     sources and looked for vacuous cases and missing hypotheses. It found no wrong, vacuous or
     altered statement; its findings (missing citations, unrecorded differences, wording) are
-    corrected here. It also compared the routes of the proofs about minors of every order with the
-    source's. Other agents had compared the proof of (ii) => (iii') with the source.
+    corrected here. A second independent agent compared the proofs of Theorems 8.33 and 8.35 and of
+    the equivalence, step by step, with the source's and found no departure to redo, and rechecked
+    the corrections. Other agents had compared the proof of (ii) => (iii') with the source.
 
 alignment:
   namespace: "NullLagrangiansChallenge"

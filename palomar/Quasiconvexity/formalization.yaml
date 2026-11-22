@@ -105,10 +105,10 @@ related_formalizations:
 status:
   scope: >-
     Proved, for all d and m: the statements listed under alignment. Not included: the growth
-    estimate (5.8) of Rindler's Lemma 5.9, the better constant of Remark 5.10 and Lemma 5.2 (ii)
-    (test maps in W^{1,p}); the other implications of Dacorogna's Theorem 5.3 (convex, polyconvex;
-    its parts (ii) and (iii)) and parts (ii), (iii) of Theorem 5.25; integrands with the value
-    +infinity; lower semicontinuity of integrals.
+    estimate (5.8) of Rindler's Lemma 5.9, the estimate of Remark 5.10 (the ball of radius 2r) and
+    Lemma 5.2 (ii) (test maps in W^{1,p}); the other implications of Dacorogna's Theorem 5.3
+    (convex, polyconvex; its parts (ii) and (iii)) and parts (ii), (iii) of Theorem 5.25; integrands
+    with the value +infinity; lower semicontinuity of integrals.
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: []

@@ -28,8 +28,8 @@ Theorem 8.35 of B. Dacorogna, *Direct Methods in the Calculus of Variations*, 2n
   and `c_α`, and for `r < β` the terms `(t, α) = (r, β)` and `(β, r)` have opposite signs. In Lean
   `α` is given by its position among the indices different from `t` (`Fin.succAbove`), which
   contains the distinction between `α < t` and `α > t` of [D08]. [D08] states the theorem for `u` of
-  class `C²`; the second derivatives in its proof are those of functions that are then only of class
-  `C¹`. Here `u` is smooth, which is enough for Theorem 8.35.
+  class `C²`; for `s ≥ 3` the second derivatives in its proof are those of functions that are then
+  only of class `C¹`. Here `u` is smooth, which is enough for Theorem 8.35.
 * (Step 1, p. 409–410) `∫_Ω det (ξ + ∇ψ) = |Ω| det ξ`, (8.46), for smooth `ψ` with compact support
   in `Ω`, by induction on the order (`nl_setIntegral_det_add_smooth`). Expand the determinant along
   the first row (Proposition 5.65 of [D08]): the terms with the entries `ξ^1_t` integrate by the
@@ -39,10 +39,11 @@ Theorem 8.35 of B. Dacorogna, *Direct Methods in the Calculus of Variations*, 2n
   is a map of `m` variables and `c_1, …, c_s` are `s` different directions, the form in which the
   step of the induction uses its hypothesis (minors of order `s − 1` of a map of `s` variables). The
   induction starts at the order `0` (in [D08], at `1`).
-* (Step 2, p. 410, "by an elementary density argument") The identity passes to compactly supported
-  Lipschitz maps by mollification (`nl_lipschitz_limit`; `nl_integral_minor_sub`, with Step 1 on a
-  ball that contains the supports), and the gradient of `φ` vanishes almost everywhere outside `Ω`
-  (`rd_ae_grad_eq_zero`).
+* (Step 2, p. 410, "by an elementary density argument", with no details) The identity passes to
+  compactly supported Lipschitz maps by mollification (`nl_lipschitz_limit`;
+  `nl_integral_minor_sub`, with Step 1 on a ball that contains the supports, since mollified maps
+  need not have their support in `Ω`), and the gradient of `φ` vanishes almost everywhere outside
+  `Ω` (`rd_ae_grad_eq_zero`).
 
 The minors of orders `2` and `3` are treated with explicit formulas in `Minors.NullLagrangian` and
 `Minors.Quasiaffine`.
@@ -114,11 +115,11 @@ theorem nl_jac_eq_sum_D_of {v : Fin (k + 1) → (Fin m → ℝ) → ℝ} (hv : �
   rw [nl_D_mul (hv 0) (nl_contDiff_jac (fun i => hv i.succ) _)]
   ring
 
-/-- **Theorem 8.33 of [D08], (8.42)**, for smooth functions (`s = k + 1`, and `w_1, …, w_k` are
+/-- **Theorem 8.33 of [D08], (8.42)**, for smooth functions (`s = k + 1`, and `w_0, …, w_{k−1}` are
 `u^2, …, u^s`): `∑_t (−1)^t ∂_{c_t} (∂ w / ∂ (x_{c_0}, …, x̂_{c_t}, …, x_{c_k})) = 0`. The proof is
 that of [D08], by induction on the order: (8.43), one order lower, makes the sum
-`∑_{t, α} ± ∂_{c_t} ∂_{c_α} (w_1 ∂ (w_2, …, w_k) / ∂ (…))`, where the terms `(r, β)` and `(β, r)`
-cancel. -/
+`∑_{t, α} ± ∂_{c_t} ∂_{c_α} (w_0 ∂ (w_1, …, w_{k−1}) / ∂ (…))`, where the terms `(r, β)` and
+`(β, r)` cancel. -/
 theorem nl_sum_D_jac_eq_zero {w : Fin k → (Fin m → ℝ) → ℝ} (hw : ∀ i, ContDiff ℝ ∞ (w i))
     (c : Fin (k + 1) → Fin m) (x : Fin m → ℝ) :
     ∑ t : Fin (k + 1), (-1) ^ (t : ℕ) * nlD (c t) (nlJac w fun j => c (t.succAbove j)) x = 0 := by
@@ -182,8 +183,9 @@ theorem nl_D_linear (a : Fin m → ℝ) (b : Fin m) (x : Fin m → ℝ) :
 
 /-- The second term in the proof of (8.46) of [D08]: for smooth `ψ_0, …, ψ_k`, `ψ_0` with compact
 support in `Ω`, `∫_Ω ∑_t (−1)^t ∂_{c_t} ψ_0 · M_t = 0`, where `M_t` is the minor without the column
-`t` of the matrix with the rows `X_i + ∇ψ_i`, `i ≥ 1`. These rows are the gradients of the functions
-`w_i`, the sum of a linear function and `ψ_i`; integrate by parts, and use (8.42) for the `w_i`. -/
+`t` of the `k × (k + 1)` matrix with the rows `X_i + ∇ψ_{i+1}`, `0 ≤ i < k`. These rows are the
+gradients of the functions `w_i`, the sum of a linear function and `ψ_{i+1}`; integrate by parts,
+and use (8.42) for the `w_i`. -/
 theorem nl_setIntegral_D_mul_det_eq_zero {Ω : Set (Fin m → ℝ)}
     (X : Matrix (Fin k) (Fin (k + 1)) ℝ) {ψ : Fin (k + 1) → (Fin m → ℝ) → ℝ}
     (hψ : ∀ i, ContDiff ℝ ∞ (ψ i))
@@ -345,8 +347,8 @@ theorem nl_integral_minor_sub {φ : (Fin m → ℝ) → Fin d → ℝ} {K : NNRe
   · rw [show (Matrix.of fun i a => nlD a (ψ i) x) = 0 from by
       ext i a; exact hD0 x hx i a, add_zero, sub_self]
 
-/-- **Minors of every order are quasiaffine** ([D08], Theorem 8.35, (8.44)): for a bounded `Ω` and a
-Lipschitz `φ` vanishing outside `Ω`, `∫_Ω minor (A + ∇φ) = |Ω| minor A`. -/
+/-- **Minors of every order are null Lagrangians** ([D08], Theorem 8.35, (8.44)): for a bounded `Ω`
+and a Lipschitz `φ` vanishing outside `Ω`, `∫_Ω minor (A + ∇φ) = |Ω| minor A`. -/
 theorem setIntegral_minor_add_grad {Ω : Set (Fin m → ℝ)} (hb : Bornology.IsBounded Ω)
     {φ : (Fin m → ℝ) → Fin d → ℝ} {K : NNReal} (hφ : LipschitzWith K φ) (h0 : ∀ x ∉ Ω, φ x = 0)
     (A : Matrix (Fin d) (Fin m) ℝ) (r : Fin k ↪o Fin d) (c : Fin k ↪o Fin m) :

@@ -35,8 +35,10 @@ also the null Lagrangians, the `f` with `∫_Ω f (A + ∇φ) = |Ω| f (A)` for 
 2. `rankOneAffine_tfae`: for an arbitrary `f : ℝ^{d×m} → ℝ`, the equivalence of the four notions.
 
 The sources are [D] B. Dacorogna, *Direct Methods in the Calculus of Variations*, 2nd ed., Springer,
-2008, Theorems 5.20 and 8.35, whose proofs are followed, and [D82] B. Dacorogna, *Quasiconvexity and
-relaxation of nonconvex problems in the calculus of variations*, J. Funct. Anal. 46 (1982), 102–118,
+2008, Theorems 5.20 and 8.35, whose proofs are followed (except that of its Theorem 5.3, quasiconvex
+implies rank-one convex, which Theorem 5.20 uses and which is proved as in F. Rindler, *Calculus of
+Variations*, 2nd ed., 2026, Proposition 5.6), and [D82] B. Dacorogna, *Quasiconvexity and relaxation
+of nonconvex problems in the calculus of variations*, J. Funct. Anal. 46 (1982), 102–118,
 Proposition 4. The characterization is due to J. M. Ball, *Convexity conditions and existence
 theorems in nonlinear elasticity*, Arch. Ration. Mech. Anal. 63 (1977), 337–403, after Edelen,
 Ericksen and Rund ([D], p. 179).

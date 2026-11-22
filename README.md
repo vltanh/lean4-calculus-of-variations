@@ -55,7 +55,7 @@ quasiconvex minorants, in `EReal`; equal to `qcEnvelope`, over the lower semicon
 | `Q` bilinear: `A ↦ Q (A, A)` quasiconvex ⇔ rank-one convex | `quadraticForm_quasiconvex_iff`, `quadraticForm_quasiconvex` | [Da08, Thm 5.25 (i)] |
 | `f` rank-one affine ⇔ quasiaffine ⇔ null Lagrangian ⇔ affine combination of minors | `rankOneAffine_tfae` | [Da08, Thm 5.20, (i), (ii), (iii′)], [Da82, Prop. 4] |
 | rank-one affine ⇒ affine combination of minors (continuity not assumed) | `RankOneAffine.exists_eq_sum_minor` | [Da08, Thm 5.20, (ii) ⇒ (iii′)] |
-| `∫_Ω minor (A + ∇φ) = \|Ω\| minor A`, minors of every order, `φ` Lipschitz, `φ = 0` off the bounded set `Ω` | `setIntegral_minor_add_grad`; `nl_jac_eq_sum_D` (a Jacobian is a divergence), `nl_sum_D_jac_eq_zero` | [Da08, Thm 8.35, (8.44); Thm 8.33] |
+| `∫_Ω minor (A + ∇φ) = \|Ω\| minor A`, minors of every order, `φ` Lipschitz, `φ = 0` off the bounded set `Ω` | `setIntegral_minor_add_grad`; `nl_jac_eq_sum_D` (a Jacobian of smooth maps is a divergence), `nl_sum_D_jac_eq_zero` | [Da08, Thm 8.35, (8.44); Thm 8.33] |
 | with explicit formulas: `∫ minor (∇φ) = 0` for `2 × 2`, `3 × 3` minors, `φ` Lipschitz with compact support; `∫_Q minor (A + ∇φ) = minor A` for `3 × 3` minors | `nl_null2`, `nl_null3`, `nl_minor3_quasiaffine` | [Da08, Thm 8.35], [Mo, Lemma 5.1] |
 | `f^{qc} (A) = inf_φ ⨍_Ω f (A + ∇φ)`, `Ω` nonempty, bounded, open, `f` continuous; `Ω` the unit ball | `quasiconvexEnvelope_eq_domainInf`, `qcEnvelope_eq_iInf`, `qcEnvelope_eq_iInf_unitBall` | from [KP, Prop. 8.1]; [Da82, Thm 5], [Da08, Thm 6.9] |
 | the infimum formula, `Ω` nonempty, bounded, open: independent of `Ω`; rank-one convex; finite at one matrix ⇒ real-valued, continuous, quasiconvex | `domainInf_eq_of_isBounded`, `domainInf_le_of_rank_le_one`, `exists_domainInf_eq_coe` | [KP, Prop. 8.1] |
@@ -103,13 +103,19 @@ theorem CalculusOfVariations.quasiconvexEnvelope_eq_domainInf {f : Matrix (Fin d
   quadratic term is nonnegative under the Legendre–Hadamard condition, by Plancherel's formula,
   applied to smooth maps and then, by mollification, to Lipschitz maps.
 - **Null Lagrangians** follow [Da08, Thm 8.35 (i)]: for smooth maps, (8.46) by induction on the
-  order, with the expansion along the first row, integration by parts and the identity (8.42) of
-  [Da08, Thm 8.33], which is proved by induction on the order as well; then mollification. The
-  induction is for minors of maps of `m` variables; [Da08] reduces to square matrices. [Da08,
-  Thm 8.33] is stated there for `C²` maps, here for smooth ones. The orders `2` and `3` are also done
-  with explicit formulas, by [Da08, Thm 8.35 (ii)] and [Mo, Lemma 5.1].
+  order, with the expansion along the first row (Prop. 5.65), integration by parts and the identity
+  (8.42) of [Da08, Thm 8.33], which is proved by induction on the order as well; then mollification
+  (the smooth case on a ball, and `∇φ = 0` almost everywhere off `Ω`, since mollified maps need not
+  have support in `Ω`). The induction is for minors of maps of `m` variables; [Da08] reduces to
+  square matrices, but its induction step uses minors of order `s − 1` of maps of `s` variables.
+  [Da08, Thm 8.33] is stated there for `C²` maps, here for smooth ones (for `C²` maps and order
+  `s ≥ 3`, the second derivatives in its proof are those of functions that are only `C¹`). The orders
+  `2` and `3` are also done with explicit formulas, by [Da08, Thm 8.35 (ii)] and [Mo, Lemma 5.1].
 - **Quasiaffine functions** follow [Da08, Thm 5.20]: rank-one affine ⇒ affine combination of minors
-  (next item) ⇒ null Lagrangian [Da08, Thm 8.35] ⇒ quasiaffine ⇒ rank-one affine.
+  (next item) ⇒ null Lagrangian, by [Da08, Thm 8.35], the second of its two arguments (p. 181; the
+  first goes through polyconvexity; [Da08, Cor. 5.22] is the same argument with part (ii)) ⇒
+  quasiaffine ⇒ rank-one affine, by the theorem that quasiconvex functions are rank-one convex, which
+  is proved here once, as in [R, Prop. 5.6] ([Da08] uses its Theorem 5.3, proved with its Lemma 3.11).
 - **Rank-one affine functions** follow the proof of [Da08, Thm 5.20, (ii) ⇒ (iii′)]: induction on
   the number of rows (after a transposition, `N ≤ n`). The function is affine in its first row
   (5.42), the coefficients are combinations of minors of the other rows (5.43), the parts with a
@@ -172,13 +178,14 @@ the argument compiles against the library at `e474abf`, in a file that is not pa
   Lemma 5.24. On paper.
 - Lemma 5.24 of [Da08]: the same argument shows that the part `g^i` with the other rows `I` is alternating in
   the rows `{1} ∪ I`. On paper.
-- (8.42) and (8.43) of [Da08, Thm 8.33]: expand the Jacobian by Leibniz' formula; in (8.42) the
-  involution `σ ↦ σ ∘ (i₀ i)` of the permutations exchanges two mixed second derivatives of `u^i` and
-  changes the sign; no induction. 68 lines instead of 89 (without docstrings). In the library's
-  history, commit `cbc1d7b`.
+- (8.42) and (8.43) of [Da08, Thm 8.33]: expand the Jacobian by Leibniz' formula, with the row `i₀`
+  of the component left undifferentiated in (8.43); in (8.42) the involution `σ ↦ σ ∘ (i₀ i)` of the
+  permutations exchanges two mixed second derivatives of `u^i` and changes the sign; no induction.
+  68 lines instead of 89 (without docstrings). In the library's history, commit `cbc1d7b`.
 - (8.44) of [Da08, Thm 8.35] from (8.43), by the proof of part (ii) with `v` affine: the minors of
-  `A + ∇φ` are expanded into mixed minors [Da08, Prop. 5.67], which are divergences; no induction.
-  With the previous item, 186 lines instead of 264. In the library's history, commit `cbc1d7b`.
+  `A + ∇φ` are expanded into mixed minors [Da08, Prop. 5.67], and those with a row of `∇φ` are
+  divergences; no induction. With the previous item, 186 lines instead of 264. In the library's
+  history, commit `cbc1d7b`.
 - Dacorogna's formula: (ii) of [KP, Prop. 8.1] is needed only along the `e_i ⊗ e_j`
   (`cubeInf_le_two_point`), with `Matrix.locallyLipschitz_of_convexOn_single` for the continuity; no
   rotated cubes. Checked in Lean.
@@ -194,7 +201,8 @@ the domain by Vitali coverings: [BM]. Rank-one convex functions are locally Lips
 [Mo, Thm 4.3] (continuous `f`) and [KK, Lemma 2.3] (any `f`). Rank-one convex quadratic forms:
 [VH], [Mo, Thm 5.2]; they are polyconvex when `d = 2` or `m = 2`, not in general ([T],
 [Da08, Thm 5.25]). Null Lagrangians are the affine combinations of minors: [La], [Er], [Ed],
-[Ba77], and [BCO] for higher derivatives; a short proof is in [CDKM]. The formula for the
+[Ba77] (after Edelen, Ericksen and Rund, according to [Da08, p. 179]), and [BCO] for higher
+derivatives; a short proof is in [CDKM]. The formula for the
 quasiconvex envelope is due to Dacorogna [Da82], for cubes and growth conditions, and was extended
 in [Fo], [Hü], [KP], [Da08]. Kristensen [K] deduced from [Š] that quasiconvexity is not a local
 condition for `d ≥ 3`, `m ≥ 2`. On `ℝ`, convexity through the second distributional derivative is
@@ -289,7 +297,7 @@ made by [`scripts/sync_challenge_defs.py`](scripts/sync_challenge_defs.py).
 | [`CalculusOfVariations/Covering/`](CalculusOfVariations/Covering) | `Cubes` (finite Besicovitch coverings) |
 | [`CalculusOfVariations/Quasiconvex/`](CalculusOfVariations/Quasiconvex) | `Domain`, `Cutoff`, `Periodic`, `Laminate`, `RankOneConvex`, `TruncatedLaminate` |
 | [`CalculusOfVariations/QuadraticForm/`](CalculusOfVariations/QuadraticForm) | `Plancherel`, `Quasiconvex` |
-| [`CalculusOfVariations/Minors/`](CalculusOfVariations/Minors) | `RankOneAffine`, `NullLagrangian`, `Quasiaffine` (orders `2`, `3`), `AllOrders`, `Characterization` |
+| [`CalculusOfVariations/Minors/`](CalculusOfVariations/Minors) | `RankOneAffine`, `NullLagrangian` (orders `2`, `3`), `Quasiaffine` (order `3`), `AllOrders`, `Characterization` |
 | [`CalculusOfVariations/Envelope/`](CalculusOfVariations/Envelope) | `Cube` (the infimum formula on the cube), `Domain` (independence of the domain), `RankOneConvex`, `Glue` (piecewise affine test maps), `Convexity` (continuity, quasiconvexity), `Formula` |
 | [`CalculusOfVariations/Smoothing/`](CalculusOfVariations/Smoothing) | `RankOneConvex` |
 | [`CalculusOfVariations/Distribution/`](CalculusOfVariations/Distribution) | `SecondDerivative`, `Convex` |
@@ -302,19 +310,20 @@ made by [`scripts/sync_challenge_defs.py`](scripts/sync_challenge_defs.py).
 - [M] S. Müller, *Variational models for microstructure and phase transitions*, Max-Planck-Institut
   für Mathematik in den Naturwissenschaften, Leipzig, Lecture notes no. 2, 1998 (C.I.M.E. summer
   school, Cetraro, 1996): Definition 4.2 and Remark 3; Lemma 4.3; the density argument of Theorem 4.4
-  (i).
+  (i); Theorem 4.5 (iii) (statement).
 - [R] F. Rindler, *Calculus of Variations*, 2nd ed., Graduate Texts in Mathematics 310, Springer,
   2026: Lemma 5.2 (i), Proposition 5.6, Lemma 5.9, Appendix A.1; Chapter 8.
 - [Mo] C. B. Morrey, *Quasi-convexity and the lower semicontinuity of multiple integrals*, Pacific
-  J. Math. 2 (1952), 25–53: Lemma 5.1; Theorems 2.1, 2.2, 4.1–4.3, 5.2.
+  J. Math. 2 (1952), 25–53: Lemmas 4.1 (statement), 5.1; Theorems 2.1, 2.2, 4.1–4.3, 5.2.
 - [Da82] B. Dacorogna, *Quasiconvexity and relaxation of nonconvex problems in the calculus of
   variations*, J. Funct. Anal. 46 (1982), 102–118: Proposition 4, Theorem 5 (statements).
 - [KP] D. Kinderlehrer, P. Pedregal, *Characterizations of Young measures generated by gradients*,
   Arch. Rational Mech. Anal. 115 (1991), 329–365: Proposition 8.1, with Step 6 of the proof of
   Proposition 7.2.
 - [Da08] B. Dacorogna, *Direct methods in the calculus of variations*, 2nd ed., Springer, 2008:
-  Theorem 5.3 (i), (iv) (statements), Propositions 5.11, 5.13, Theorem 5.20 with Lemma 5.24, Theorem
-  5.25 (i), Theorem 6.9 (statement), Theorems 8.33, 8.35.
+  Theorem 5.3 (i), (iv) (statements), Propositions 5.11, 5.13, Theorem 5.20 with Lemma 5.24,
+  Corollary 5.22 (statement), Theorem 5.25 (i), Propositions 5.65, 5.67, Theorem 6.9 (statement),
+  Theorems 8.33, 8.35.
 - [K] J. Kristensen, *On the non-locality of quasiconvexity*, Ann. Inst. H. Poincaré Anal. Non
   Linéaire 16 (1999), 1–13: proof of Proposition 2.
 - [F] H. Freudenthal, *Simplizialzerlegungen von beschränkter Flachheit*, Ann. of Math. 43 (1942),
