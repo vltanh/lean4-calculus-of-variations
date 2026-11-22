@@ -5,16 +5,16 @@ project:
   name: "Dacorogna's formula for the quasiconvex envelope, in Lean"
   description: >-
     For a continuous function f on d x m matrices, the quasiconvex envelope (the supremum of the
-    quasiconvex functions below f) is the infimum, over the Lipschitz maps phi vanishing outside Omega,
-    of the averages over Omega of f(A + D phi), for every nonempty bounded open set Omega
+    quasiconvex functions below f) is the infimum, over the Lipschitz maps phi vanishing outside
+    Omega, of the averages over Omega of f(A + D phi), for every nonempty bounded open set Omega
     (Dacorogna's formula). No growth or lower bound of f is assumed: both sides have values in
     [-infinity, infinity).
 
 
     Also proved, for this infimum formula: it does not depend on Omega, it is rank-one convex, and,
-    if it is finite at one matrix, it is finite everywhere, continuous and quasiconvex
-    (Kinderlehrer and Pedregal 1991, Proposition 8.1). Part of a Lean library of the vectorial
-    calculus of variations.
+    if it is finite at one matrix, it is finite everywhere, continuous and quasiconvex (Kinderlehrer
+    and Pedregal 1991, Proposition 8.1). Part of a Lean library of the vectorial calculus of
+    variations.
   authors:
     - "The-Anh Vu-Le"
   license: "Apache-2.0"
@@ -35,9 +35,9 @@ sources:
     location: "Arch. Rational Mech. Anal. 115 (1991), 329-365; https://doi.org/10.1007/BF00375279"
     relationship: "formalizes"
     note: >-
-      Proposition 8.1 (i)-(iv), whose proof is followed, with Step 6 of the proof of Proposition 7.2,
-      to which the proof of (iv) refers. Dacorogna's formula is derived from it (the source does not
-      state the formula).
+      Proposition 8.1 (i)-(iv), whose proof is followed, with Step 6 of the proof of Proposition
+      7.2, to which the proof of (iv) refers. Dacorogna's formula is derived from it (the source
+      does not state the formula).
     author_endorsement: "not-contacted"
   - title: "Quasiconvexity and relaxation of nonconvex problems in the calculus of variations"
     authors:
@@ -47,8 +47,8 @@ sources:
     location: "J. Funct. Anal. 46 (1982), 102-118; https://doi.org/10.1016/0022-1236(82)90046-5"
     relationship: "formalizes"
     note: >-
-      Theorem 5, the original formula, here for continuous f without its growth condition and for every
-      nonempty bounded open set; the proof is not the source's.
+      Theorem 5, the original formula, here for continuous f without its growth condition and for
+      every nonempty bounded open set; the proof is not the source's.
     author_endorsement: "not-contacted"
   - title: "Direct Methods in the Calculus of Variations, second edition"
     authors:
@@ -58,8 +58,8 @@ sources:
     location: "Applied Mathematical Sciences 78, Springer, 2008; https://doi.org/10.1007/978-0-387-55249-1"
     relationship: "formalizes"
     note: >-
-      Theorem 6.9, for continuous f, without its hypothesis of a quasiconvex minorant; the source has f
-      Borel and locally bounded. The proof is not the source's.
+      Theorem 6.9, for continuous f, without its hypothesis of a quasiconvex minorant; the source
+      has f Borel and locally bounded. The proof is not the source's.
     author_endorsement: "not-contacted"
   - title: "Calculus of Variations, second edition"
     authors:
@@ -70,7 +70,9 @@ sources:
     relationship: "background"
     note: >-
       Proposition 7.1, the formula on the unit ball for Borel, locally bounded f with a quasiconvex
-      minorant; Remark 7.2.
+      minorant, and Remark 7.2. Lemma 5.9 and Proposition 5.6, by whose proofs rank-one convex
+      functions are locally Lipschitz and quasiconvex functions rank-one convex, are used in the
+      proofs.
     author_endorsement: "not-contacted"
   - title: "Variational models for microstructure and phase transitions"
     authors:
@@ -80,31 +82,34 @@ sources:
     location: "Lecture notes no. 2, Max-Planck-Institut für Mathematik in den Naturwissenschaften, Leipzig, 1998; Lecture Notes in Mathematics 1713, Springer, 1999, 85-210"
     relationship: "background"
     note: >-
-      Theorem 4.5 and the proof of Theorem 4.4 (i): the formula, and the density argument for piecewise
-      affine maps, which is used for the quasiconvexity of the infimum formula.
+      Theorem 4.5 (iii): the formula for every f with values in [-infinity, infinity) and every
+      bounded domain with null boundary (the proof here is not that one). Proof of Theorem 4.4 (i):
+      the density argument for piecewise affine maps, used for the quasiconvexity of the infimum
+      formula.
     author_endorsement: "not-contacted"
 
 related_formalizations:
   - id: "https://github.com/sergioconti/so3-r1c-and-not-qc"
     relationship: "independent"
     note: >-
-      Conti, Dolzmann and Dondl (October 2026): a frame-indifferent rank-one convex function on
-      R^{3x3} that is not quasiconvex. It has Morrey's quasiconvexity for m x n matrices with smooth
-      compactly supported test maps, and the inequality for smooth periodic maps and continuous
-      quasiconvex f. Not used: after the proofs that this library had on 22 November 2026, a
-      literature search displayed its README, its definitions, docstrings and statements, and a few
-      short auxiliary proofs; nothing was taken from it.
+      Conti, Dolzmann and Dondl (arXiv:2610.31886): a frame-indifferent rank-one convex function on
+      R^{3x3} that is not quasiconvex. Nothing was taken from it. A literature search of 22 November
+      2026 displayed its README, its definitions, docstrings and statements, and a few short
+      auxiliary proofs. The proof of Dacorogna's formula is older; the corollaries stated here (the
+      envelope over Borel minorants, the infimum formula over every bounded open set) are later.
   - id: "https://github.com/lcao11/hierarchical_laminates_lean"
     relationship: "independent"
     note: >-
-      Cao (October 2026): a minimum of two quadratic forms whose quasiconvex and rank-one convex envelopes differ (d = 32,
-      m = 2), with the envelopes as suprema of minorants; no infimum formula. Seen (statements and docstrings) in the literature search of
-      22 November 2026, after the proofs that this library had then; not used.
+      Cao (October 2026): a minimum of two quadratic forms whose quasiconvex and rank-one convex
+      envelopes differ (d = 32, m = 2), with the envelopes as suprema of minorants; no infimum
+      formula. Some of its statements and docstrings were seen in the same literature search; not
+      used.
   - id: "https://github.com/Robertboy18/PDEAtlas"
     relationship: "independent"
     note: >-
       After Evans: null Lagrangians, polyconvex energies, the Legendre-Hadamard condition for
-      minimizers; no quasiconvexity or rank-one convexity. Seen (statements and docstrings) in the literature search of 22 November 2026; not used.
+      minimizers; no quasiconvexity or rank-one convexity. Some of its statements and docstrings
+      were seen in the same literature search; not used.
   - id: "https://github.com/facebookresearch/atlas-lean"
     relationship: "independent"
     note: "Definitions of rank-one convexity and quasiconvexity for 2 x 2 matrices; not used."
@@ -129,17 +134,17 @@ automation:
         reviewers, a literature search); the number of agents was not tracked for this library
         alone. Lean v4.36.0-rc2, Mathlib v4.36.0-rc2.
       cost:
-        wall_time: "about WALL hours from the first to the last commit of the library, 22 November 2026 (git log), with other work in parallel; agent time not tracked"
+        wall_time: "about 11 hours from the first to the last commit of the library, 22 November 2026 (git log), with other work in parallel; agent time not tracked"
         spend_usd: "not tracked"
         hardware: "local machine (20 cores, 62 GB RAM) and API"
       prompting_notes: >-
-        The maintainer asked for the theorems to be proved in general form, by the proofs of the
-        cited sources, without sorry or axioms.
+        The maintainer asked for every result to be proved by the argument of its cited source,
+        without sorry or axioms.
   spend_usd: "not tracked"
   notes: >-
-    The AI system wrote the statements, the proofs and the documents. Independent AI agents
-    compared the proofs of the library with the cited sources, and one compared the statements of
-    this entry with them. No person has reviewed the statements or the proofs.
+    The AI system wrote the statements, the proofs and the documents. Independent AI agents compared
+    the proofs of the library with the cited sources, and one compared the statements of this entry
+    with them. No person has reviewed the statements or the proofs.
 
 fidelity:
   divergences: >-
@@ -149,26 +154,37 @@ fidelity:
     for a general bounded open set the maps here are among those of Dacorogna 2008 (W^{1,infinity}
     and W^{1,1}_0), possibly not all of them. Integrands: f is continuous, as in Kinderlehrer and
     Pedregal, with no growth condition and no quasiconvex minorant; Dacorogna 1982 assumes a <= f <=
-    b + c|F|^p, Dacorogna 2008 that f is Borel and locally bounded with a quasiconvex minorant, a case
-    that is not covered when f is discontinuous. Values: the envelope and the infimum formula are in
-    EReal, with the value -infinity where there is no quasiconvex minorant. Domains: every nonempty
-    bounded open set, without a condition on the boundary (the source's argument for the independence
-    of the domain needs null boundaries). Quasiconvexity is tested on the unit cube; the minorants
-    are Borel and locally bounded, as in the definition of quasiconvexity in Dacorogna 2008. The
-    finite case states continuity and quasiconvexity together with rank-one convexity.
-    Proofs. They follow Kinderlehrer and Pedregal, Proposition 8.1. Gap fills: the formula itself,
-    which the source does not state; (iii), left to the reader there; in (iv), the approximation of
-    test maps by piecewise affine ones, by mollification and Kuhn-Freudenthal interpolation; the
-    independence of the domain without null boundaries, as a consequence of the formula. In (ii)
-    rotated cubes are treated by an orthogonal change of variables, and the limit is taken before the
-    infimum over the test maps on the slabs.
+    b + c|F|^p, Dacorogna 2008 that f is Borel and locally bounded with a quasiconvex minorant, a
+    case that is not covered when f is discontinuous; Müller (Theorem 4.5 (iii)) has every f with
+    values in [-infinity, infinity) and domains with null boundary. The infimum of Dacorogna 1982,
+    over smooth maps with compact support, is over fewer maps; that it is the same is not stated.
+    Values: the envelope and the infimum formula are in EReal, with the value -infinity where there
+    is no quasiconvex minorant. Domains: every nonempty bounded open set, without a condition on the
+    boundary (the source's argument for the independence of the domain needs null boundaries).
+    Quasiconvexity is tested on the unit cube; the minorants are Borel and locally bounded, as in
+    the definition of quasiconvexity in Dacorogna 2008. The finite case states continuity and
+    quasiconvexity together with rank-one convexity.
+
+
+    Proofs. They follow Kinderlehrer and Pedregal, Proposition 8.1. The continuity in (iii), and the
+    rank-one convexity of quasiconvex functions, which is used for the minorants, are Rindler's
+    Lemma 5.9 and Proposition 5.6. Gap fills: the formula itself, which the source does not state;
+    the last step of (iii), left to the reader there; in (iv), the approximation of test maps by
+    piecewise affine ones, by mollification and Kuhn-Freudenthal interpolation; the independence of
+    the domain without null boundaries, as a consequence of the formula. In (ii) rotated cubes are
+    treated by an orthogonal change of variables, and the limit is taken before the infimum over the
+    test maps on the slabs.
 
 review:
   status: "agent-reviewed"
   reviewers:
     - "none"
   notes: >-
-    No human review. REVIEWE
+    No human review. An independent AI agent (Claude Opus 5.5), given the Challenge, this file and
+    the texts of the sources and not the writers' conclusions, compared every statement with the
+    sources and looked for vacuous cases and missing hypotheses. It found no wrong, vacuous or
+    altered statement; its findings (missing citations, unrecorded differences, wording) are
+    corrected here. Other agents compared the proofs of the library with the sources.
 
 alignment:
   namespace: "QuasiconvexEnvelopeChallenge"
@@ -179,7 +195,7 @@ alignment:
       status: "proved"
       note: "Dacorogna's formula for continuous f, every nonempty bounded open set, values in [-infinity, infinity)."
     - source: "Kinderlehrer-Pedregal 1991, Proposition 8.1 (i); Dacorogna 2008, Theorem 6.9"
-      lean: "QuasiconvexEnvelopeChallenge.domainInf_eq"
+      lean: "QuasiconvexEnvelopeChallenge.domainInf_eq_of_isBounded"
       module: "QuasiconvexEnvelope.Challenge"
       status: "proved"
       note: "The infimum formula does not depend on the nonempty bounded open set; no condition on the boundary."

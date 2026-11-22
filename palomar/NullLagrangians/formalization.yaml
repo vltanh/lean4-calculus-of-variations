@@ -6,14 +6,15 @@ project:
   description: >-
     Functions f on d x m matrices that are affine along rank-one lines are exactly the affine
     combinations of the minors of the matrix, of all orders, with no regularity assumed. They are
-    also exactly the quasiaffine functions (f and -f quasiconvex), and the null Lagrangians: the
-    integral of f(A + D phi) over a bounded open set Omega is |Omega| f(A) for every matrix A and every
-    Lipschitz map phi that vanishes outside Omega.
+    also exactly the quasiaffine functions (Borel and locally bounded, with f and -f quasiconvex),
+    and the null Lagrangians (Borel and locally bounded, such that the integral of f(A + D phi) over
+    every bounded open set Omega is |Omega| f(A) for every matrix A and every Lipschitz map phi that
+    vanishes outside Omega).
 
 
-    This is the characterization due to Ball (1977), after Ericksen and Edelen, in the form and with
-    the proofs of Dacorogna's book (2008, Theorems 5.20 and 8.35). Part of a Lean library of the
-    vectorial calculus of variations.
+    This is the characterization due to Ball (1977), after Edelen, Ericksen and Rund, in the form
+    and with the proofs of Dacorogna's book (2008, Theorems 5.20 and 8.35). Part of a Lean library
+    of the vectorial calculus of variations.
   authors:
     - "The-Anh Vu-Le"
   license: "Apache-2.0"
@@ -33,8 +34,8 @@ sources:
     location: "Applied Mathematical Sciences 78, Springer, 2008; https://doi.org/10.1007/978-0-387-55249-1"
     relationship: "formalizes"
     note: >-
-      Theorem 5.20, the equivalence of (i), (ii) and (iii'), and Theorem 8.35, (8.44), with
-      Theorem 8.33; the proofs follow its proofs, with repairs of Lemma 5.24 (see fidelity).
+      Theorem 5.20, the equivalence of (i), (ii) and (iii'), and Theorem 8.35, (8.44), with Theorem
+      8.33; the proofs follow its proofs, with repairs of Lemma 5.24 (see fidelity).
     author_endorsement: "not-contacted"
   - title: "Quasiconvexity and relaxation of nonconvex problems in the calculus of variations"
     authors:
@@ -45,6 +46,17 @@ sources:
     relationship: "formalizes"
     note: >-
       Proposition 4, the equivalence of (i)-(iv), stated there without proof.
+    author_endorsement: "not-contacted"
+  - title: "Calculus of Variations, second edition"
+    authors:
+      - "Filip Rindler"
+    id: "doi:10.1007/978-3-032-24483-3"
+    type: "book"
+    location: "Graduate Texts in Mathematics 310, Springer, 2026; https://doi.org/10.1007/978-3-032-24483-3"
+    relationship: "background"
+    note: >-
+      Proposition 5.6 (quasiconvex implies rank-one convex), whose proof is followed, for the
+      implication from quasiaffine to rank-one affine.
     author_endorsement: "not-contacted"
   - title: "Convexity conditions and existence theorems in nonlinear elasticity"
     authors:
@@ -72,27 +84,31 @@ related_formalizations:
   - id: "https://github.com/sergioconti/so3-r1c-and-not-qc"
     relationship: "independent"
     note: >-
-      Conti, Dolzmann and Dondl (October 2026): a frame-indifferent rank-one convex function on
-      R^{3x3} that is not quasiconvex. It has Morrey's quasiconvexity for m x n matrices with smooth
-      compactly supported test maps, and the inequality for smooth periodic maps and continuous
-      quasiconvex f. Not used: after the proofs that this library had on 22 November 2026, a
-      literature search displayed its README, its definitions, docstrings and statements, and a few
-      short auxiliary proofs; nothing was taken from it.
+      Conti, Dolzmann and Dondl (arXiv:2610.31886): a frame-indifferent rank-one convex function on
+      R^{3x3} that is not quasiconvex. Nothing was taken from it. A literature search of 22 November
+      2026 displayed its README, its definitions, docstrings and statements, and a few short
+      auxiliary proofs. The proof that a rank-one affine function is a combination of minors is
+      older; the proofs about minors of every order and the equivalence are later, and were written
+      from Dacorogna's book without opening the code of any other formalization.
   - id: "https://github.com/lcao11/hierarchical_laminates_lean"
     relationship: "independent"
     note: >-
-      Cao (October 2026): a minimum of two quadratic forms whose quasiconvex and rank-one convex envelopes differ (d = 32,
-      m = 2); in that size, periodic quasiconvex functions below a continuous one are rank-one
-      convex; functions convex in each coordinate and locally bounded are locally Lipschitz. Seen (statements and docstrings) in the literature search of
-      22 November 2026, after the proofs that this library had then; not used.
+      Cao (October 2026): a minimum of two quadratic forms whose quasiconvex and rank-one convex
+      envelopes differ (d = 32, m = 2); in that size, periodic quasiconvex functions below a
+      continuous one are rank-one convex; functions convex in each coordinate and locally bounded
+      are locally Lipschitz. Some of its statements and docstrings were seen in the same literature
+      search; not used.
   - id: "https://github.com/Robertboy18/PDEAtlas"
     relationship: "independent"
     note: >-
-      After Evans (November 2026): null Lagrangians, the divergence form of the minors of every order
-      of a C^2 map, their weak continuity in W^{1,q}, and existence for polyconvex energies. It has
-      the closest results: the divergence form of minors (here Theorem 8.33 of Dacorogna 2008, inside
-      the proof) and null Lagrangians for C^2 maps. It has no quasiconvexity or rank-one convexity,
-      and no characterization of quasiaffine functions. Seen (statements and docstrings) in the literature search of 22 November 2026; not used.
+      After Evans (November 2026): null Lagrangians, the divergence form of the minors of every
+      order of a C^2 map, their weak continuity in W^{1,q}, and existence for polyconvex energies.
+      It has the closest results: the divergence form of minors (here Theorem 8.33 of Dacorogna
+      2008, inside the proof) and null Lagrangians for C^2 maps. It has no quasiconvexity or
+      rank-one convexity, and no characterization of quasiaffine functions. Its statements and
+      docstrings were seen in the same literature search, before the proofs of this library about
+      minors of every order (AllOrders.lean, Characterization.lean) were written, by another agent
+      than the one that wrote them; not used.
   - id: "https://github.com/facebookresearch/atlas-lean"
     relationship: "independent"
     note: "Definitions of rank-one convexity and quasiconvexity for 2 x 2 matrices; not used."
@@ -101,8 +117,8 @@ status:
   scope: >-
     Proved, for all d and m: the statements listed under alignment. Not included: the conditions
     (ii') (f of class C^1, with an identity for the gradient) and (iii) (polyaffine) of Dacorogna's
-    Theorem 5.20; Theorem 8.35 (ii), for maps in W^{1,p}; quasiaffine functions with values
-    +infinity.
+    Theorem 5.20; Theorem 8.35 (ii), for maps in W^{1,p}; that smooth test maps with compact support
+    suffice (Remark 5.2 (iii) of Dacorogna 2008).
   sorry_count: 0
   sorry_in_definitions: 0
   axioms: []
@@ -118,17 +134,17 @@ automation:
         reviewers, a literature search); the number of agents was not tracked for this library
         alone. Lean v4.36.0-rc2, Mathlib v4.36.0-rc2.
       cost:
-        wall_time: "about WALL hours from the first to the last commit of the library, 22 November 2026 (git log), with other work in parallel; agent time not tracked"
+        wall_time: "about 11 hours from the first to the last commit of the library, 22 November 2026 (git log), with other work in parallel; agent time not tracked"
         spend_usd: "not tracked"
         hardware: "local machine (20 cores, 62 GB RAM) and API"
       prompting_notes: >-
-        The maintainer asked for the theorems to be proved in general form, by the proofs of the
-        cited sources, without sorry or axioms.
+        The maintainer asked for every result to be proved by the argument of its cited source,
+        without sorry or axioms.
   spend_usd: "not tracked"
   notes: >-
-    The AI system wrote the statements, the proofs and the documents. Independent AI agents
-    compared the proofs of the library with the cited sources, and one compared the statements of
-    this entry with them. No person has reviewed the statements or the proofs.
+    The AI system wrote the statements, the proofs and the documents. Independent AI agents compared
+    the proofs of the library with the cited sources, and one compared the statements of this entry
+    with them. No person has reviewed the statements or the proofs.
 
 fidelity:
   divergences: >-
@@ -138,26 +154,45 @@ fidelity:
     maps here are among those of Dacorogna 2008 (W^{1,infinity} and W^{1,1}_0), possibly not all of
     them. Theorem 8.35 is stated for every bounded set Omega (the source: bounded open). Borel
     measurability and local boundedness, part of the definition of quasiconvexity in the source, are
-    stated with the conditions 2 and 3 (a null Lagrangian is assumed Borel and locally bounded).
-    Quasiconvexity is tested on the unit cube, which is the same by Dacorogna 2008, Proposition 5.11.
-    The minors are indexed by pairs of strictly increasing maps Fin k -> Fin d, Fin k -> Fin m, for all
-    k <= min(d, m), including the minor of order 0, the constant 1 (the source: f(0) and the vector
-    T(xi) of the minors, with signs); the coefficients are functions of k and of these maps.
-    Proofs. They follow Dacorogna 2008: Theorem 5.20 (ii) => (iii') by induction on the number of rows
-    and Lemma 5.24, repaired: for n > s + 1 the functions X_beta of (5.47) are not rank-one affine and
-    their sum is not g, so the columns are restricted first; the t^2 coefficients displayed on p. 190
-    omit terms, so the matrices are chosen with zero columns; that f is of class C^1 is neither
-    justified there nor used. Theorem 8.35, (8.44), by the proof of its part (ii) with v affine; the
-    divergence identity (8.42) is proved with Leibniz' formula and a sign-reversing involution on
-    permutations instead of an induction on the order, with the same cancelling terms. (iii') => (i)
-    by Theorem 8.35, the source's second argument (its first one goes through polyconvexity).
+    stated with the conditions 2 and 3. The four conditions are (ii), (i), none and (iii') of
+    Dacorogna 2008, Theorem 5.20, and (iii), (i), (ii) and (iv) of Dacorogna 1982, Proposition 4.
+    Condition 3 has more test maps and more domains than (ii) there (smooth maps with compact
+    support, bounded domains), so it is a priori stronger. The name null Lagrangian is used for it;
+    Dacorogna 1982 and Ball use it for condition 2, other authors for the functions f for which the
+    integral of f(Du) depends only on the boundary values of u (here: for affine boundary values).
+    Quasiconvexity is tested on the unit cube, which is the same by Dacorogna 2008, Proposition
+    5.11. The minors are indexed by pairs of strictly increasing maps Fin k -> Fin d, Fin k -> Fin
+    m, for all k <= min(d, m), including the minor of order 0, the constant 1 (the source: f(0) and
+    the vector T(xi) of the minors, with signs); the coefficients are functions of k and of these
+    maps.
+
+
+    Proofs. They follow Dacorogna 2008: Theorem 5.20 (ii) => (iii') by induction on the number of
+    rows and Lemma 5.24, repaired: for n > s + 1 the functions X_beta of (5.47) are not rank-one
+    affine in general and their sum is not g in general, so the columns are restricted first; the
+    t^2 coefficients displayed on p. 190 omit terms, so the matrices are chosen with zero columns;
+    the choice of b in (5.50) and (5.52) leaves some coefficients undetermined, so b is arbitrary;
+    that the functions chi and psi_l of (5.42) are rank-one affine, and every row set, are treated
+    (the source treats the last row set); that f is of class C^1 is neither justified there nor used
+    here. Theorem 8.35, (8.44), by the proof of its part (ii) with v affine, for rectangular
+    matrices (the source reduces to square ones, (8.46)); the divergence identity (8.42), for smooth
+    maps (the source: C^2), is proved with Leibniz' formula and a sign-reversing involution on
+    permutations instead of an induction on the order, with the same cancellation (mixed second
+    derivatives are symmetric and the sign changes). (iii') => (i) by Theorem 8.35, the source's
+    second argument (its first one goes through polyconvexity). (i) => (ii), quasiaffine implies
+    rank-one affine, is Rindler's Proposition 5.6, where Dacorogna has Theorem 5.3.
 
 review:
   status: "agent-reviewed"
   reviewers:
     - "none"
   notes: >-
-    No human review. REVIEWN
+    No human review. An independent AI agent (Claude Opus 5.5), given the Challenge, this file and
+    the texts of the sources and not the writers' conclusions, compared every statement with the
+    sources and looked for vacuous cases and missing hypotheses. It found no wrong, vacuous or
+    altered statement; its findings (missing citations, unrecorded differences, wording) are
+    corrected here. It also compared the routes of the proofs about minors of every order with the
+    source's. Other agents had compared the proof of (ii) => (iii') with the source.
 
 alignment:
   namespace: "NullLagrangiansChallenge"

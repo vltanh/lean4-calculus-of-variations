@@ -40,8 +40,7 @@ conventions of the package): `RankOneConvex`,
 for which the integral exists), `QuasiconvexAtPeriodic`, `Quasiconvex` (on the unit cube, at every
 matrix), `IsLocallyBounded`, `quasiconvexEnvelope` (the supremum of the Borel, locally bounded,
 quasiconvex minorants, in `EReal`; equal to `qcEnvelope`, over the lower semicontinuous ones),
-`domainInf Ω f` (the infimum formula `inf_φ ⨍_Ω f (A + ∇φ)`) and `minor`. The theorems on Borel
-integrands (`…_of_measurable`) have versions for lower semicontinuous ones, without the suffix.
+`domainInf Ω f` (the infimum formula `inf_φ ⨍_Ω f (A + ∇φ)`) and `minor`.
 
 | Statement | Lean | Source |
 | --- | --- | --- |
@@ -49,13 +48,13 @@ integrands (`…_of_measurable`) have versions for lower semicontinuous ones, wi
 | rank-one convex ⇒ locally Lipschitz; in the Frobenius norm, `lip (f; B_r (F)) ≤ √(min d m) osc (f; B̄_{6r} (F)) / (3r)` | `RankOneConvex.locallyLipschitz`, `RankOneConvex.abs_sub_le_of_osc` | [R, Lemma 5.9] (without (5.8)) |
 | `M = ∑_{i < min d m} σ_i p_i ⊗ q_i`, `σ_0 ≥ σ_1 ≥ … ≥ 0`, `p_i`, `q_i` orthonormal (singular value decomposition) | `Matrix.exists_singularValueDecomposition` | [R, Appendix A.1] |
 | `f` Borel, locally bounded, quasiconvex at `F` on the unit cube ⇒ `f (F) ≤ λ f (F + (1−λ) a ⊗ n) + (1−λ) f (F − λ a ⊗ n)`, by laminates with cut-offs | `le_of_quasiconvexAtOn_vecMulVec`, with `sawLaminate`, `setIntegral_sawLaminate`, `le_of_quasiconvexAtOn_of_tendsto` (the cut-off), `le_of_quasiconvexAtOn_unitCube_of_measurable` (`n = e_j`) | [R, Prop. 5.6] |
-| `f` Borel, locally bounded, quasiconvex ⇒ rank-one convex | `rankOneConvex_of_quasiconvex_of_measurable` | [R, Prop. 5.6] |
+| `f` Borel, locally bounded, quasiconvex ⇒ rank-one convex | `rankOneConvex_of_quasiconvex` | [R, Prop. 5.6] |
 | without regularity of `f`: quasiconvex at `F` on the unit cube ⇒ the two-point inequality along `a ⊗ e_j`, by truncated laminates; on a rotated cube, along `a ⊗ R e_j` | `le_of_quasiconvexAtOn_unitCube`, `le_of_quasiconvexAtOn_orthogonal`, with `cubeLaminate` | [M, Lemma 4.3] |
-| `f` Borel, locally bounded: quasiconvexity on the cube ⇔ on any nonempty bounded open `Ω` | `quasiconvexAtOn_iff_of_measurable`, `quasiconvexAtOn_of_unitCube` | [Da08, Prop. 5.11], [R, Lemma 5.2 (i)] |
-| `f` Borel, locally bounded: quasiconvexity on the cube ⇔ with periodic test maps | `quasiconvexAtOn_iff_periodic_of_measurable` | [Da08, Prop. 5.13] |
+| `f` Borel, locally bounded: quasiconvexity on the cube ⇔ on any nonempty bounded open `Ω` | `quasiconvexAtOn_iff`, `quasiconvexAtOn_of_unitCube` | [Da08, Prop. 5.11], [R, Lemma 5.2 (i)] |
+| `f` Borel, locally bounded: quasiconvexity on the cube ⇔ with periodic test maps | `quasiconvexAtOn_iff_periodic` | [Da08, Prop. 5.13] |
 | `Q` bilinear: `A ↦ Q (A, A)` quasiconvex ⇔ rank-one convex | `quadraticForm_quasiconvex_iff`, `quadraticForm_quasiconvex` | [Da08, Thm 5.25 (i)] |
 | `f` rank-one affine ⇔ quasiaffine ⇔ null Lagrangian ⇔ affine combination of minors | `rankOneAffine_tfae` | [Da08, Thm 5.20, (i), (ii), (iii′)], [Da82, Prop. 4] |
-| rank-one affine ⇒ affine combination of minors (continuity not assumed) | `RankOneAffine.exists_eq_sum_minor`; for continuous functions, `RankOneAffine.exists_eq_sum_minor_of_continuous` | [Da08, Thm 5.20, (ii) ⇒ (iii′)] |
+| rank-one affine ⇒ affine combination of minors (continuity not assumed) | `RankOneAffine.exists_eq_sum_minor` | [Da08, Thm 5.20, (ii) ⇒ (iii′)] |
 | `∫_Ω minor (A + ∇φ) = \|Ω\| minor A`, minors of every order, `φ` Lipschitz, `φ = 0` off the bounded set `Ω` | `setIntegral_minor_add_grad`; `nl_det_eq_sum_D` (a Jacobian is a divergence) | [Da08, Thm 8.35, (8.44); Thm 8.33] |
 | with explicit formulas: `∫ minor (∇φ) = 0` for `2 × 2`, `3 × 3` minors, `φ` Lipschitz with compact support; `∫_Q minor (A + ∇φ) = minor A` for `3 × 3` minors | `nl_null2`, `nl_null3`, `nl_minor3_quasiaffine` | [Da08, Thm 8.35], [Mo, Lemma 5.1] |
 | `f^{qc} (A) = inf_φ ⨍_Ω f (A + ∇φ)`, `Ω` nonempty, bounded, open, `f` continuous; `Ω` the unit ball | `quasiconvexEnvelope_eq_domainInf`, `qcEnvelope_eq_iInf`, `qcEnvelope_eq_iInf_unitBall` | from [KP, Prop. 8.1]; [Da82, Thm 5], [Da08, Thm 6.9] |
@@ -76,7 +75,7 @@ All names are in the namespace `CalculusOfVariations` except those that begin wi
 them in Lean:
 
 ```lean
-theorem CalculusOfVariations.quasiconvexAtOn_iff_of_measurable {f : Matrix (Fin d) (Fin m) ℝ → ℝ}
+theorem CalculusOfVariations.quasiconvexAtOn_iff {f : Matrix (Fin d) (Fin m) ℝ → ℝ}
     (hf : Measurable f) (hbdd : IsLocallyBounded f) (A : Matrix (Fin d) (Fin m) ℝ)
     {Ω : Set (Fin m → ℝ)} (hΩ : IsOpen Ω) (hb : Bornology.IsBounded Ω) (hne : Ω.Nonempty) :
     QuasiconvexAtOn (unitCube m) f A ↔ QuasiconvexAtOn Ω f A
@@ -106,8 +105,8 @@ theorem CalculusOfVariations.quasiconvexEnvelope_eq_domainInf {f : Matrix (Fin d
 - **Null Lagrangians** follow [Da08, Thm 8.35 (ii)] and [Mo, Lemma 5.1]: the minors of a sum are
   expanded into mixed minors, which are divergences [Da08, Thm 8.33], for smooth maps; then
   mollification. The identity (8.42) under the divergence form is proved with Leibniz' formula and a
-  sign-reversing involution on permutations, where [Da08] argues by induction on the order with the
-  same cancelling terms.
+  sign-reversing involution on permutations; [Da08] argues by induction on the order, with the same
+  cancellation (mixed second derivatives are symmetric and the sign changes).
 - **Quasiaffine functions** follow [Da08, Thm 5.20]: rank-one affine ⇒ affine combination of minors
   (next item) ⇒ null Lagrangian [Da08, Thm 8.35] ⇒ quasiaffine ⇒ rank-one affine.
 - **Rank-one affine functions** follow the proof of [Da08, Thm 5.20, (ii) ⇒ (iii′)]: induction on
@@ -282,7 +281,7 @@ made by [`scripts/sync_challenge_defs.py`](scripts/sync_challenge_defs.py).
 | [`CalculusOfVariations/Covering/`](CalculusOfVariations/Covering) | `Cubes` (finite Besicovitch coverings) |
 | [`CalculusOfVariations/Quasiconvex/`](CalculusOfVariations/Quasiconvex) | `Domain`, `Cutoff`, `Periodic`, `Laminate`, `RankOneConvex`, `TruncatedLaminate` |
 | [`CalculusOfVariations/QuadraticForm/`](CalculusOfVariations/QuadraticForm) | `Plancherel`, `Quasiconvex` |
-| [`CalculusOfVariations/Minors/`](CalculusOfVariations/Minors) | `RankOneAffine`, `RankOneAffineContinuous`, `NullLagrangian`, `Quasiaffine` (orders `2`, `3`), `AllOrders`, `Characterization` |
+| [`CalculusOfVariations/Minors/`](CalculusOfVariations/Minors) | `RankOneAffine`, `NullLagrangian`, `Quasiaffine` (orders `2`, `3`), `AllOrders`, `Characterization` |
 | [`CalculusOfVariations/Envelope/`](CalculusOfVariations/Envelope) | `Cube` (the infimum formula on the cube), `Domain` (independence of the domain), `RankOneConvex`, `Glue` (piecewise affine test maps), `Convexity` (continuity, quasiconvexity), `Formula` |
 | [`CalculusOfVariations/Smoothing/`](CalculusOfVariations/Smoothing) | `RankOneConvex` |
 | [`CalculusOfVariations/Distribution/`](CalculusOfVariations/Distribution) | `SecondDerivative`, `Convex` |
