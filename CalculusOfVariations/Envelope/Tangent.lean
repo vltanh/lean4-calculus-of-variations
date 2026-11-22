@@ -11,18 +11,23 @@ public import CalculusOfVariations.Lipschitz.Rescale
 public import CalculusOfVariations.Covering.Cubes
 
 /-!
-# Quasiconvexity of the infimum formula, by gluing at points of differentiability
+# Gluing rescaled test maps into small cubes
 
-`cubeInf_quasiconvex_robust`: for continuous `f`, a test map `φ` on the unit cube and a truncation
-level `N`, `cubeInf f (A) ≤ ∫_{(0,1)^m} max (cubeInf f (A + ∇φ), N)`. Almost every point of the cube
-is a point of differentiability of `φ` and a Lebesgue point of the truncated integrand; finitely
-many disjoint small cubes centred at such points cover the unit cube up to `ε`
-(`cv_exists_finite_cover`); in each, `φ` is replaced by its tangent map glued to `φ` by a cut-off,
-with a rescaled almost minimiser for `cubeInf f (A + ∇φ (x))` in the inner cube (`cv_glue`); the
-energy of the new test map is at most `∫ max (cubeInf f (A + ∇φ), N) + C ε`.
+`cv_glue_on`: take finitely many disjoint closed cubes `closedBall x_p r_p` (sup norm) in a set
+`Ω` of finite measure, a Lipschitz `φ` vanishing off `Ω` and `δ r_p`-close to its tangent map on
+each cube, and test maps `ψ_p` on the unit cube. Replacing `φ` in each cube by its tangent map,
+glued to `φ` by a cut-off, plus the rescaled copy of `ψ_p` in the inner cube
+`ball x_p ((1 - δ) r_p)`, gives a Lipschitz map vanishing off `Ω` whose energy is at most the sum
+of the energies of the copies plus `M` times the measure of the rest (`cv_glue` on the unit cube).
 
-The gluing of almost minimisers on the pieces of a piecewise affine map, with piecewise affine
-approximation, is stated in `Envelope.Glue` and `Lipschitz.PiecewiseAffine`.
+Where `φ` is affine on each cube, as in all uses in this package, `φ` is its own tangent map
+there, the cut-off changes nothing, and the glued map is `φ` plus the rescaled copies: with
+`φ = 0` for the covering step of the independence of the domain (`env_iInf_le_cubeInf`,
+`Envelope.Formula`), and with a piecewise affine `φ` for the inequality (4.28) of S. Müller's
+lecture notes (`cubeInf_le_sum_of_piecewiseAffine`, `Envelope.Glue`).
+
+Also: `cv_ereal_le_of_eps` (an `EReal` below `b + C ε` for all small `ε` is below `b`), and the
+volumes of sup-norm balls.
 -/
 
 @[expose] public section
@@ -352,35 +357,7 @@ theorem cv_glue {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : Continuous f)
   cv_glue_on hf A hφ (by rw [cv_volume_unitCube]; exact ENNReal.one_ne_top) hφQ hδ0 hδ1 t ht
     hdisj ψ hψ hM
 
-/-! ### Quasiconvexity of the infimum formula, robust form -/
-
-/-- The truncation `max (cubeInf f B) N` is a real number between `N` and `max (f B) N`. -/
-theorem cv_trunc (f : Matrix (Fin d) (Fin m) ℝ → ℝ) (B : Matrix (Fin d) (Fin m) ℝ) (N : ℝ) :
-    (((max (cubeInf f B) (N : EReal)).toReal : ℝ) : EReal) = max (cubeInf f B) (N : EReal) ∧
-      N ≤ (max (cubeInf f B) (N : EReal)).toReal ∧
-      (max (cubeInf f B) (N : EReal)).toReal ≤ max (f B) N := by
-  have h1 : (N : EReal) ≤ max (cubeInf f B) (N : EReal) := le_max_right _ _
-  have h2 : max (cubeInf f B) (N : EReal) ≤ ((max (f B) N : ℝ) : EReal) := by
-    exact max_le ((cubeInf_le B).trans (EReal.coe_le_coe_iff.2 (le_max_left _ _)))
-      (EReal.coe_le_coe_iff.2 (le_max_right _ _))
-  have hne1 : max (cubeInf f B) (N : EReal) ≠ ⊤ := ne_top_of_le_ne_top (EReal.coe_ne_top _) h2
-  have hne2 : max (cubeInf f B) (N : EReal) ≠ ⊥ := ne_bot_of_le_ne_bot (EReal.coe_ne_bot _) h1
-  have e := EReal.coe_toReal hne1 hne2
-  refine ⟨e, ?_, ?_⟩
-  · rw [← EReal.coe_le_coe_iff, e]; exact h1
-  · rw [← EReal.coe_le_coe_iff, e]; exact h2
-
-theorem cv_measurable_trunc {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : Continuous f)
-    (A : Matrix (Fin d) (Fin m) ℝ) (φ : (Fin m → ℝ) → Fin d → ℝ) (N : ℝ) :
-    Measurable fun x => (max (cubeInf f (A + grad φ x)) (N : EReal)).toReal := by
-  have hU : UpperSemicontinuous fun X : Fin d → Fin m → ℝ => cubeInf f
-      (Matrix.of X) := cubeInf_usc hf
-  have hG : Measurable fun X : Fin d → Fin m → ℝ => cubeInf f (Matrix.of X) := hU.measurable
-  have hin : Measurable fun x => (fun i k => A i k + grad φ x i k : Fin d → Fin m → ℝ) :=
-    Measurable.of_eval fun i => Measurable.of_eval fun k =>
-      measurable_const.add
-          ((measurable_pi_iff.1 ((measurable_pi_iff.1 (cv_measurable_grad φ)) i)) k)
-  exact measurable_ereal_toReal.comp ((hG.comp hin).max measurable_const)
+/-! ### Auxiliary estimates -/
 
 /-- An `EReal` bounded by `b + C ε` for all small `ε > 0` is bounded by `b`. -/
 theorem cv_ereal_le_of_eps {a : EReal} {b C : ℝ} (hC : 0 ≤ C)
@@ -410,259 +387,5 @@ theorem cv_measureReal_ball (x : Fin m → ℝ) {r : ℝ} (hr : 0 < r) :
     volume.real (ball x r) = (2 * r) ^ m := by
   rw [measureReal_def, Real.volume_pi_ball x hr, Fintype.card_fin,
     ENNReal.toReal_ofReal (by positivity)]
-
-/-- The arithmetic at the end of the gluing argument. -/
-theorem cv_final_estimate {m : ℕ} {ε H M G S T R I V : ℝ} (hε0 : 0 < ε) (hε1 : ε < 1 / 2)
-    (_hH0 : 0 ≤ H) (hM0 : 0 ≤ M) (hG : G ≤ (1 - ε) ^ m * (S + 2 * ε * T)) (hI : I = S + R)
-    (hR : |R| ≤ H * ε) (hS : |S| ≤ H) (hT1 : 1 - ε ≤ T) (hT2 : T ≤ 1)
-    (hV : V = 1 - (1 - ε) ^ m * T) :
-    G + M * V ≤ I + (H + 3 + m * (H + 2) + M * (m + 1)) * ε := by
-  have hpow0 : 0 ≤ (1 - ε) ^ m := pow_nonneg (by linarith) m
-  have hpow1 : (1 - ε) ^ m ≤ 1 := pow_le_one₀ (by linarith) (by linarith)
-  have hbern : 1 + (m : ℝ) * (-ε) ≤ (1 + -ε) ^ m :=
-    one_add_le_pow_of_two_add_nonneg (by linarith) m
-  rw [← sub_eq_add_neg] at hbern
-  have hm0 : (0 : ℝ) ≤ m := Nat.cast_nonneg m
-  -- the measure of the rest
-  have hV' : V ≤ m * ε + ε := by
-    rw [hV]
-    have h1 : (1 - ε) ^ m * (1 - ε) ≤ (1 - ε) ^ m * T := mul_le_mul_of_nonneg_left hT1 hpow0
-    have h2 : (1 - m * ε) * (1 - ε) ≤ (1 - ε) ^ m * (1 - ε) :=
-      mul_le_mul_of_nonneg_right (by linarith) (by linarith)
-    have h3 : 0 ≤ (m : ℝ) * ε * ε := by positivity
-    have e : (1 - m * ε) * (1 - ε) = 1 - m * ε - ε + m * ε * ε := by ring
-    linarith
-  set Y := S + 2 * ε * T with hY
-  have hT0 : 0 ≤ T := by linarith
-  have hYabs : |Y| ≤ H + 1 := by
-    have h0 : 0 ≤ 2 * ε * T := by positivity
-    have h1 : 2 * ε * T ≤ 1 := by nlinarith
-    calc |S + 2 * ε * T| ≤ |S| + |2 * ε * T| := abs_add_le _ _
-      _ ≤ H + 1 := by rw [abs_of_nonneg h0]; linarith
-  have hYle : Y ≤ I + H * ε + 2 * ε := by
-    have := neg_abs_le R
-    have h1 : 2 * ε * T ≤ 2 * ε := by nlinarith
-    rw [hY, hI]; linarith
-  have hpowY : (1 - ε) ^ m * Y ≤ Y + m * ε * (H + 1) := by
-    have h0 : 0 ≤ 1 - (1 - ε) ^ m := by linarith
-    have h1 : ((1 - ε) ^ m - 1) * Y ≤ (1 - (1 - ε) ^ m) * |Y| := by
-      have e : ((1 - ε) ^ m - 1) * Y = (1 - (1 - ε) ^ m) * (-Y) := by ring
-      rw [e]
-      exact mul_le_mul_of_nonneg_left (neg_le_abs Y) h0
-    have h2 : (1 - (1 - ε) ^ m) * |Y| ≤ m * ε * (H + 1) :=
-      mul_le_mul (by linarith) hYabs (abs_nonneg _) (by positivity)
-    have e : (1 - ε) ^ m * Y = Y + ((1 - ε) ^ m - 1) * Y := by ring
-    linarith
-  have hMV : M * V ≤ M * (m * ε + ε) := mul_le_mul_of_nonneg_left hV' hM0
-  have hfin : I + H * ε + 2 * ε + m * ε * (H + 1) + M * (m * ε + ε) ≤
-      I + (H + 3 + m * (H + 2) + M * (m + 1)) * ε := by
-    have e : I + (H + 3 + m * (H + 2) + M * (m + 1)) * ε =
-        I + H * ε + 2 * ε + m * ε * (H + 1) + M * (m * ε + ε) + (ε + m * ε) := by ring
-    have : 0 ≤ ε + m * ε := by positivity
-    linarith
-  linarith
-
-/-- The fine cover of the gluing argument: almost every point of the cube is a point of
-differentiability of `φ` and a Lebesgue point of `h`, so that all small cubes around it are
-admissible. -/
-theorem cv_fine_cover {φ : (Fin m → ℝ) → Fin d → ℝ} {K : NNReal} (hK : LipschitzWith K φ)
-    {h : (Fin m → ℝ) → ℝ} (hhint : IntegrableOn h (unitCube m)) {ε : ℝ} (hε0 : 0 < ε) :
-    ∀ᵐ x, x ∈ unitCube m → ∀ δ' > 0, ∃ r ∈ Ioo 0 δ', closedBall x r ⊆ unitCube m ∧
-      DifferentiableAt ℝ φ x ∧ (∀ z ∈ closedBall x r, ‖φ z - tangentMap φ x z‖ ≤ ε * r) ∧
-      volume.real (closedBall x r) * h x ≤
-        (∫ y in closedBall x r, h y) + ε * volume.real (closedBall x r) := by
-  have hloc : LocallyIntegrable ((unitCube m).indicator h) volume :=
-    (hhint.integrable_indicator cv_measurableSet_unitCube).locallyIntegrable
-  have hleb := (Besicovitch.vitaliFamily (volume : Measure (Fin m → ℝ))).ae_tendsto_average hloc
-  filter_upwards [hK.ae_differentiableAt (μ := volume), hleb] with x hxd hxl hxQ δ' hδ'
-  have e1 : ∀ᶠ r in 𝓝[>] (0 : ℝ), closedBall x r ⊆ unitCube m := by
-    obtain ⟨ε', hε', hball⟩ := Metric.isOpen_iff.1 cv_isOpen_unitCube x hxQ
-    filter_upwards [Ioo_mem_nhdsGT (half_pos hε')] with r hr
-    exact (closedBall_subset_ball (by linarith [hr.2])).trans hball
-  have e2 : ∀ᶠ r in 𝓝[>] (0 : ℝ), ∀ z ∈ closedBall x r, ‖φ z - tangentMap φ x z‖ ≤ ε * r := by
-    have hlo := hxd.hasFDerivAt.isLittleO
-    obtain ⟨ρ0, hρ0, hball⟩ := Metric.eventually_nhds_iff.1 (Asymptotics.isLittleO_iff.1 hlo hε0)
-    filter_upwards [Ioo_mem_nhdsGT hρ0] with r hr z hz
-    have hzx : dist z x < ρ0 := lt_of_le_of_lt (mem_closedBall.1 hz) hr.2
-    have := hball hzx
-    calc ‖φ z - tangentMap φ x z‖ = ‖φ z - φ x - fderiv ℝ φ x (z - x)‖ := by
-          simp only [tangentMap, sub_sub]
-      _ ≤ ε * ‖z - x‖ := this
-      _ ≤ ε * r := mul_le_mul_of_nonneg_left (by rw [← dist_eq_norm]; exact hz) hε0.le
-  have e3 : ∀ᶠ r in 𝓝[>] (0 : ℝ), volume.real (closedBall x r) * h x ≤
-      (∫ y in closedBall x r, h y) + ε * volume.real (closedBall x r) := by
-    have ht := hxl.comp (Besicovitch.tendsto_filterAt volume x)
-    have hx' : (unitCube m).indicator h x = h x := indicator_of_mem hxQ h
-    rw [hx'] at ht
-    filter_upwards [ht (Ioi_mem_nhds (show h x - ε < h x by linarith)), e1,
-      self_mem_nhdsWithin] with r hr hrQ hr0
-    simp only [Function.comp_apply, mem_preimage, mem_Ioi] at hr
-    rw [setAverage_eq, smul_eq_mul] at hr
-    have hind : ∫ y in closedBall x r, (unitCube m).indicator h y =
-        ∫ y in closedBall x r, h y :=
-      setIntegral_congr_fun measurableSet_closedBall fun y hy => indicator_of_mem (hrQ hy) h
-    rw [hind] at hr
-    have hvpos : 0 < volume.real (closedBall x r) := by
-      rw [cv_measureReal_closedBall x (le_of_lt hr0)]
-      exact pow_pos (by linarith [mem_Ioi.1 hr0]) m
-    rw [lt_inv_mul_iff₀ hvpos] at hr
-    nlinarith
-  obtain ⟨r, hr⟩ := (e1.and (e2.and (e3.and (Ioo_mem_nhdsGT hδ')))).exists
-  exact ⟨r, hr.2.2.2, hr.1, hxd, hr.2.1, hr.2.2.1⟩
-
-/-- **The infimum formula is quasiconvex** (robust form: no integrability is needed): for a test
-map `φ` and a truncation level `N`, `cubeInf f (A) ≤ ∫_Q max (cubeInf f (A + ∇φ), N)`.
-
-Proof, by gluing at points of differentiability: almost every point of the cube is a point of
-differentiability of `φ` and a Lebesgue point of the truncated integrand `h`; finitely many disjoint
-small cubes centred at such points cover the unit cube up to `ε` (`cv_exists_finite_cover`); in
-each, `φ` is replaced by its tangent map glued to `φ` by a cut-off, with a rescaled almost minimiser
-for `cubeInf f (A + ∇φ (x))` in the inner cube (`cv_glue`); the energy of the new test map is at
-most `∫_Q h + C ε`. -/
-theorem cubeInf_quasiconvex_robust {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : Continuous f)
-    (A : Matrix (Fin d) (Fin m) ℝ) {φ : (Fin m → ℝ) → Fin d → ℝ} (hφ : IsCubeTestMap φ) (N : ℝ) :
-    cubeInf f A ≤
-      ((∫ x in unitCube m, (max (cubeInf f (A + grad φ x)) (N : EReal)).toReal : ℝ) : EReal) := by
-  classical
-  obtain ⟨⟨K, hK⟩, hφQ⟩ := hφ
-  set h : (Fin m → ℝ) → ℝ := fun x => (max (cubeInf f (A + grad φ x)) (N : EReal)).toReal with hh
-  obtain ⟨Mf, -, hMf⟩ := cv_bdd hf A K
-  obtain ⟨M, hM0, hM⟩ := cv_bdd hf A (3 * K + 1)
-  set H := max |N| Mf with hH
-  have hH0 : 0 ≤ H := (abs_nonneg N).trans (le_max_left _ _)
-  have hhb : ∀ x, |h x| ≤ H := by
-    intro x
-    obtain ⟨-, h1, h2⟩ := cv_trunc f (A + grad φ x) N
-    have h3 : f (A + grad φ x) ≤ Mf := (le_abs_self _).trans (hMf _ (cv_grad_abs_le hK x))
-    rw [abs_le]; constructor
-    · have := neg_abs_le N; have := le_max_left |N| Mf; linarith
-    · calc h x ≤ max (f (A + grad φ x)) N := h2
-        _ ≤ max Mf |N| := max_le_max h3 (le_abs_self N)
-        _ = H := max_comm _ _
-  have hhm : Measurable h := cv_measurable_trunc hf A φ N
-  have hQfin : volume (unitCube m) ≠ ⊤ := by rw [cv_volume_unitCube]; exact ENNReal.one_ne_top
-  have hhint : IntegrableOn h (unitCube m) :=
-    Measure.integrableOn_of_bounded (M := H) hQfin hhm.aestronglyMeasurable
-      (Filter.Eventually.of_forall fun x => by rw [Real.norm_eq_abs]; exact hhb x)
-  -- almost minimisers
-  have hchoice : ∀ ε > 0, ∀ B : Matrix (Fin d) (Fin m) ℝ, ∃ ψ, IsCubeTestMap ψ ∧
-      ∫ y in unitCube m, f (A + B + grad ψ y) ≤ (max (cubeInf f (A + B)) (N : EReal)).toReal
-          + ε := by
-    intro ε hε B
-    obtain ⟨e, -, -⟩ := cv_trunc f (A + B) N
-    have hlt : cubeInf f (A + B) <
-        (((max (cubeInf f (A + B)) (N : EReal)).toReal + ε : ℝ) : EReal) := by
-      calc cubeInf f (A + B) ≤ max (cubeInf f (A + B)) (N : EReal) := le_max_left _ _
-        _ = ((max (cubeInf f (A + B)) (N : EReal)).toReal : EReal) := e.symm
-        _ < _ := EReal.coe_lt_coe_iff.2 (by linarith)
-    unfold cubeInf at hlt
-    obtain ⟨ψ, hψ⟩ := iInf_lt_iff.1 hlt
-    obtain ⟨hadm, hψ'⟩ := iInf_lt_iff.1 hψ
-    exact ⟨ψ, hadm, (EReal.coe_lt_coe_iff.1 hψ').le⟩
-  refine cv_ereal_le_of_eps (C := H + 3 + m * (H + 2) + M * (m + 1)) (by positivity)
-    fun ε hε0 hε1 => ?_
-  choose ψ hψadm hψle using hchoice ε hε0
-  -- the fine cover
-  set P : (Fin m → ℝ) → ℝ → Prop := fun x r => closedBall x r ⊆ unitCube m ∧
-    DifferentiableAt ℝ φ x ∧ (∀ z ∈ closedBall x r, ‖φ z - tangentMap φ x z‖ ≤ ε * r) ∧
-    volume.real (closedBall x r) * h x ≤
-      (∫ y in closedBall x r, h y) + ε * volume.real (closedBall x r) with hPdef
-  have hP : ∀ᵐ x, x ∈ unitCube m → ∀ δ' > 0, ∃ r ∈ Ioo 0 δ', P x r :=
-    cv_fine_cover hK hhint hε0
-  obtain ⟨t, htP, htdisj, htvol⟩ := cv_exists_finite_cover hQfin cv_measurableSet_unitCube P hP
-    (ENNReal.ofReal_pos.2 hε0)
-  obtain ⟨Φ, hΦadm, hΦle⟩ := cv_glue hf A hK hφQ hε0 (by linarith : ε < 1) t
-    (fun p hp => ⟨(htP p hp).1, (htP p hp).2.1, (htP p hp).2.2.1, (htP p hp).2.2.2.1⟩) htdisj
-    (fun p => ψ (grad φ p.1)) (fun p _ => hψadm _) hM
-  have hQ : cubeInf f A ≤ ((∫ x in unitCube m, f (A + grad Φ x) : ℝ) : EReal) := iInf₂_le Φ hΦadm
-  refine hQ.trans (EReal.coe_le_coe_iff.2 (hΦle.trans ?_))
-  -- the estimates
-  have hQ1 : volume.real (unitCube m) = 1 := by
-    rw [measureReal_def, cv_volume_unitCube, ENNReal.toReal_one]
-  have hV : ∀ p ∈ t, volume.real (closedBall p.1 p.2) = (2 * p.2) ^ m := fun p hp =>
-    cv_measureReal_closedBall _ (htP p hp).1.le
-  have hpow0 : 0 ≤ (1 - ε) ^ m := pow_nonneg (by linarith) m
-  have hA : ∀ p ∈ t, (2 * ((1 - ε) * p.2)) ^ m *
-      ∫ y in unitCube m, f (A + grad φ p.1 + grad (ψ (grad φ p.1)) y) ≤
-      (1 - ε) ^ m * ((∫ y in closedBall p.1 p.2, h y) +
-        2 * ε * volume.real (closedBall p.1 p.2)) := by
-    intro p hp
-    have hr := (htP p hp).1
-    have hlebp := (htP p hp).2.2.2.2
-    have hI := hψle (grad φ p.1)
-    rw [hV p hp] at hlebp ⊢
-    have e : (2 * ((1 - ε) * p.2)) ^ m = (1 - ε) ^ m * (2 * p.2) ^ m := by
-      rw [← mul_pow]; ring_nf
-    rw [e, mul_assoc]
-    refine mul_le_mul_of_nonneg_left ?_ hpow0
-    have h2 : 0 ≤ (2 * p.2) ^ m := pow_nonneg (by linarith) m
-    change (2 * p.2) ^ m * ∫ y in unitCube m, f (A + grad φ p.1 + grad (ψ (grad φ p.1)) y) ≤ _
-    have : (2 * p.2) ^ m * ∫ y in unitCube m, f (A + grad φ p.1 + grad (ψ (grad φ p.1)) y) ≤
-        (2 * p.2) ^ m * (h p.1 + ε) := mul_le_mul_of_nonneg_left hI h2
-    nlinarith
-  have hsumA := Finset.sum_le_sum hA
-  rw [← Finset.mul_sum, Finset.sum_add_distrib, ← Finset.mul_sum] at hsumA
-  set S := ∑ p ∈ t, ∫ y in closedBall p.1 p.2, h y with hSdef
-  set T := ∑ p ∈ t, volume.real (closedBall p.1 p.2) with hTdef
-  have hUC : (⋃ p ∈ t, closedBall p.1 p.2) ⊆ unitCube m := by
-    intro z hz
-    obtain ⟨p, hp, hzp⟩ := mem_iUnion₂.1 hz
-    exact (htP p hp).2.1 hzp
-  have hUCm : MeasurableSet (⋃ p ∈ t, closedBall p.1 p.2) :=
-    Finset.measurableSet_biUnion _ fun _ _ => measurableSet_closedBall
-  have hS : S = ∫ y in ⋃ p ∈ t, closedBall p.1 p.2, h y :=
-    (integral_biUnion_finset t (fun _ _ => measurableSet_closedBall) htdisj
-      (fun p hp => hhint.mono_set (htP p hp).2.1)).symm
-  have hT : T = volume.real (⋃ p ∈ t, closedBall p.1 p.2) :=
-    (measureReal_biUnion_finset htdisj (fun _ _ => measurableSet_closedBall)
-      (fun _ _ => measure_closedBall_lt_top.ne)).symm
-  have hrest : volume.real (unitCube m \ ⋃ p ∈ t, closedBall p.1 p.2) ≤ ε :=
-    (ENNReal.toReal_lt_of_lt_ofReal htvol).le
-  have hTeq : T = 1 - volume.real (unitCube m \ ⋃ p ∈ t, closedBall p.1 p.2) := by
-    rw [measureReal_sdiff hUC hUCm hQfin, hQ1, hT]; ring
-  have hrest0 : 0 ≤ volume.real (unitCube m \ ⋃ p ∈ t, closedBall p.1 p.2) := measureReal_nonneg
-  have hSeq : (∫ x in unitCube m, h x) =
-      S + ∫ x in unitCube m \ ⋃ p ∈ t, closedBall p.1 p.2, h x := by
-    rw [hS, ← integral_inter_add_sdiff hUCm hhint, inter_eq_right.2 hUC]
-  have hfinC : volume (⋃ p ∈ t, closedBall p.1 p.2) < ⊤ :=
-    (measure_mono hUC).trans_lt (by rw [cv_volume_unitCube]; exact ENNReal.one_lt_top)
-  have hfinR : volume (unitCube m \ ⋃ p ∈ t, closedBall p.1 p.2) < ⊤ :=
-    (measure_mono sdiff_subset).trans_lt (by rw [cv_volume_unitCube]; exact ENNReal.one_lt_top)
-  have hSrest : |∫ x in unitCube m \ ⋃ p ∈ t, closedBall p.1 p.2, h x| ≤ H * ε := by
-    rw [← Real.norm_eq_abs]
-    refine (norm_setIntegral_le_of_norm_le_const hfinR fun x _ => ?_).trans
-      (mul_le_mul_of_nonneg_left hrest hH0)
-    rw [Real.norm_eq_abs]; exact hhb x
-  have hSabs : |S| ≤ H := by
-    rw [hS, ← Real.norm_eq_abs]
-    refine (norm_setIntegral_le_of_norm_le_const (C := H) hfinC fun x _ => ?_).trans ?_
-    · rw [Real.norm_eq_abs]; exact hhb x
-    · rw [← hT]
-      have : T ≤ 1 := by linarith
-      nlinarith
-  -- the inner cubes
-  set U := ⋃ p ∈ t, ball p.1 ((1 - ε) * p.2) with hUdef
-  have hUQ : U ⊆ unitCube m := by
-    intro z hz
-    obtain ⟨p, hp, hzp⟩ := mem_iUnion₂.1 hz
-    have h1 : (1 - ε) * p.2 ≤ p.2 := by nlinarith [(htP p hp).1]
-    exact (htP p hp).2.1 (ball_subset_closedBall (ball_subset_ball h1 hzp))
-  have hUm : MeasurableSet U := Finset.measurableSet_biUnion _ fun _ _ => measurableSet_ball
-  have hUvol : volume.real U = (1 - ε) ^ m * T := by
-    rw [hUdef, measureReal_biUnion_finset (fun p hp q hq hpq => by
-      have h1 : (1 - ε) * p.2 ≤ p.2 := by nlinarith [(htP p hp).1]
-      have h2 : (1 - ε) * q.2 ≤ q.2 := by nlinarith [(htP q hq).1]
-      exact (htdisj hp hq hpq).mono (ball_subset_closedBall.trans (closedBall_subset_closedBall h1))
-        (ball_subset_closedBall.trans (closedBall_subset_closedBall h2)))
-      (fun _ _ => measurableSet_ball) (fun _ _ => measure_ball_lt_top.ne), hTdef, Finset.mul_sum]
-    refine Finset.sum_congr rfl fun p hp => ?_
-    have hr := (htP p hp).1
-    rw [cv_measureReal_ball _ (mul_pos (by linarith) hr), hV p hp, ← mul_pow]
-    ring_nf
-  have hQU : volume.real (unitCube m \ U) = 1 - (1 - ε) ^ m * T := by
-    rw [measureReal_sdiff hUQ hUm hQfin, hQ1, hUvol]
-  have hT1 : 1 - ε ≤ T := by linarith
-  have hTle : T ≤ 1 := by linarith
-  exact cv_final_estimate hε0 hε1 hH0 hM0 hsumA hSeq hSrest hSabs hT1 hTle hQU
 
 end CalculusOfVariations
