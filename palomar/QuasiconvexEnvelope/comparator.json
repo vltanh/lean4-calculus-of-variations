@@ -1,0 +1,13 @@
+{
+  "challenge_module": "QuasiconvexEnvelope.Challenge",
+  "solution_module": "QuasiconvexEnvelope.Solution",
+  "theorem_names": [
+    "QuasiconvexEnvelopeChallenge.quasiconvexEnvelope_eq_domainInf",
+    "QuasiconvexEnvelopeChallenge.domainInf_eq",
+    "QuasiconvexEnvelopeChallenge.domainInf_le_of_rank_le_one",
+    "QuasiconvexEnvelopeChallenge.exists_domainInf_eq_coe"
+  ],
+  "definition_names": [],
+  "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
+  "enable_nanoda": true
+}

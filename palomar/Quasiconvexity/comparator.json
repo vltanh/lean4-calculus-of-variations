@@ -1,0 +1,16 @@
+{
+  "challenge_module": "Quasiconvexity.Challenge",
+  "solution_module": "Quasiconvexity.Solution",
+  "theorem_names": [
+    "QuasiconvexityChallenge.rankOneConvex_locallyLipschitz",
+    "QuasiconvexityChallenge.rankOneConvex_abs_sub_le_of_osc",
+    "QuasiconvexityChallenge.rankOneConvex_of_quasiconvex",
+    "QuasiconvexityChallenge.quasiconvexAtOn_iff",
+    "QuasiconvexityChallenge.quasiconvexAtOn_unitCube_iff_periodic",
+    "QuasiconvexityChallenge.quadraticForm_quasiconvex_iff",
+    "QuasiconvexityChallenge.integrableOn_add_grad"
+  ],
+  "definition_names": [],
+  "permitted_axioms": ["propext", "Quot.sound", "Classical.choice"],
+  "enable_nanoda": true
+}

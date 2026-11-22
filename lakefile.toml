@@ -1,7 +1,7 @@
 name = "CalculusOfVariations"
 version = "0.1.0"
 keywords = ["math"]
-defaultTargets = ["CalculusOfVariations"]
+defaultTargets = ["CalculusOfVariations", "Palomar"]
 
 [leanOptions]
 pp.unicode.fun = true
@@ -17,3 +17,10 @@ rev = "v4.36.0-rc2"
 [[lean_lib]]
 name = "CalculusOfVariations"
 globs = ["CalculusOfVariations.*"]
+
+# The Challenge and the Solution of each Palomar entry, as the modules `Quasiconvexity.Challenge`,
+# `Quasiconvexity.Solution`, ... of the source directory `palomar/`.
+[[lean_lib]]
+name = "Palomar"
+srcDir = "palomar"
+globs = ["Quasiconvexity.+", "QuasiconvexEnvelope.+", "NullLagrangians.+"]
