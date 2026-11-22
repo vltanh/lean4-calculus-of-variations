@@ -48,7 +48,7 @@ semicontinuous, locally bounded minorants, in `EReal`).
 | quasiconvexity on the cube ⇔ on any nonempty bounded open `Ω` | `quasiconvexAtOn_iff`, `quasiconvexAtOn_of_unitCube` | [M, Def. 4.2, Remark 2] |
 | quasiconvexity on the cube ⇔ with periodic test maps | `quasiconvexAtOn_iff_periodic` | [M, Prop. 4.19] |
 | `Q` bilinear, `A ↦ Q (A, A)` rank-one convex ⇒ quasiconvex | `quadraticForm_quasiconvex` | [Da08, Thm 5.25 (i)]; [Mo, Thm 5.2] |
-| rank-one affine ⇒ affine combination of minors | `RankOneAffine.exists_eq_sum_minor` | [Da08, Thm 5.20, (iii) ⇒ (iv)] |
+| rank-one affine ⇒ affine combination of minors | `RankOneAffine.exists_eq_sum_minor` | [Da08, Thm 5.20, (iii) ⇒ (iv)]; proof of [CDKM, Thm 6.1] |
 | `∫ minor (∇φ) = 0` for `2 × 2`, `3 × 3` minors, `φ` Lipschitz with compact support | `nl_null2`, `nl_null3` | [Mo, Lemma 5.1] |
 | `∫_Q minor (A + ∇φ) = minor A` for `3 × 3` minors, `φ` a test map on `Q` | `nl_minor3_quasiaffine` | |
 | `f^{qc} (A) = inf_φ ⨍_Ω f (A + ∇φ)`, `Ω` nonempty, bounded, open, `f` continuous; `Ω` the unit ball | `qcEnvelope_eq_iInf`, `qcEnvelope_eq_iInf_unitBall` | [KP, Prop. 8.1], [Da82]; proof of [M, Thm 4.5 (iii)] |
@@ -90,6 +90,15 @@ theorem CalculusOfVariations.qcEnvelope_eq_iInf {f : Matrix (Fin d) (Fin m) ℝ 
   mollification).
 - **Null Lagrangians** follow [Mo, Lemma 5.1]: divergence identities for smooth maps, then
   mollification.
+- **Rank-one affine functions** follow the proof of [CDKM, Thm 6.1]: the proof of [Da08,
+  Thm 5.20] was not accessible. The homogeneous part `P_k` of degree `k` vanishes on matrices of
+  rank `< k`; so the terms of `P_k` whose rows `I` or columns `J` number fewer than `k` cancel
+  (induction on `|I| + |J|`), and for `|I| = |J| = k` they form an alternating multilinear form in
+  the columns, a multiple of the minor. [CDKM] reach `P_k` and its vanishing through the
+  continuity of the function (distributional derivatives, a polynomial of degree `≤ min (d, m)`);
+  without continuity, here: the function is affine in each entry, hence a sum of products of
+  distinct entries, and `t ↦ f (t F)` has degree `< k` when `F` is a sum of fewer than `k` rank-one
+  matrices (module docstring of `Minors/RankOneAffine.lean`).
 - **Quasiconvex ⇒ rank-one convex** follows [M, Lemma 4.3]: quasiconvexity on the unit cube,
   tested with the laminates `v_k = min (k⁻¹ h (k x_j), dist_∞ (x, ∂Q)) a`, gives the two-point
   inequality along `a ⊗ e_j`, since `∇v_k` differs from the gradient of the sawtooth laminate only
@@ -191,6 +200,9 @@ lake env lean scripts/Audit.lean   # axioms; fails on any `sorry`
   Arch. Rational Mech. Anal. 115 (1991), 329–365: Proposition 8.1 (statement).
 - [Da08] B. Dacorogna, *Direct methods in the calculus of variations*, 2nd ed., Springer, 2008:
   Theorems 5.20 and 5.25 (statements).
+- [CDKM] S. Conti, G. Dolzmann, B. Kirchheim, S. Müller, *Sufficient conditions for the validity
+  of the Cauchy–Born rule close to SO(n)*, J. Eur. Math. Soc. 8 (2006), 515–530: Appendix,
+  Theorem 6.1 and its proof.
 - [K] J. Kristensen, *On the non-locality of quasiconvexity*, Ann. Inst. H. Poincaré Anal. Non
   Linéaire 16 (1999), 1–13: proof of Proposition 2.
 - [F] H. Freudenthal, *Simplizialzerlegungen von beschränkter Flachheit*, Ann. of Math. 43 (1942),
