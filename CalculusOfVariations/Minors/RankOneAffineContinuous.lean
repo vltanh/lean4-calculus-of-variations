@@ -25,15 +25,17 @@ is viewed as a function `g` on `ℝ^{d × m}` (`minorsVec`, `minorsMat`).
 
 ## [CDKM]'s proof, step by step
 
+The steps are numbered 1 to 7 in this module and in `Minors.RankOneAffine`.
+
 1. `N` is affine along every rank-one line `t ↦ F + t A` ([CDKM] derive this from the null
-   Lagrangian property). Here `f` is convex and concave along them
+   Lagrangian property). Here `f` is convex and concave along them, hence affine along them
    (`RankOneAffine.add_smul_vecMulVec`).
 2. The second derivative of `N` in a rank-one direction `A` vanishes, since `t ↦ N (F + t A)` is
    affine; taking further derivatives gives (6.1) `D^k N (·) (A, A, H₃, …, H_k) = 0` for
    `rank A ≤ 1`. Here: `D² h (·) (A, A) = 0` for a smooth `h` affine along `A`
    (`iterDirDeriv_pair_eq_zero`), and its further derivatives `∂_{H₃} ⋯ ∂_{H_k}` vanish; with the
-   symmetry of the derivative, a derivative in which `A` occurs twice vanishes
-   (`iterDirDeriv_eq_zero_of_count`).
+   symmetry of the derivative, which [CDKM] use in the next step, a derivative in which `A` occurs
+   twice vanishes (`iterDirDeriv_eq_zero_of_count`).
 3. (6.2) `D^k N (·) (F, …, F) = 0` if `rank F < k`: `F` is a sum of at most `k − 1` rank-one
    matrices, the multilinear expansion has two equal indices in every term, and (6.1) and the
    symmetry of the derivative apply (`iteratedFDeriv_sum_eq_zero`,
@@ -44,18 +46,22 @@ is viewed as a function `g` on `ℝ^{d × m}` (`minorsVec`, `minorsMat`).
    previous identities hold pointwise, and Taylor's formula (6.3) gives
    `N = ∑_{k ≤ min (d, m)} P_k`, `P_k (F) = D^k N (0) (F, …, F) / k!`, where `P_k` is a linear
    combination of products of `k` entries (`minors_expand`) and `P_k (F) = 0` when `rank F < k`.
-5. The rest of the proof shows that such a `P_k` is a linear combination of the `k × k` minors:
-   `exists_eq_sum_minor_of_rank_lt` (module `Minors.RankOneAffine`), proved as in [CDKM].
+5. to 7. The rest of the proof shows that such a `P_k` is a linear combination of the `k × k`
+   minors: `exists_eq_sum_minor_of_rank_lt` (module `Minors.RankOneAffine`), proved as in [CDKM].
 
-**Departure from [CDKM] (steps 2 to 4): mollification instead of distributions.** [CDKM] take the
-derivatives of `N` in the sense of distributions. Here steps 2 to 4 are carried out with classical
-derivatives for the smooth mollifications `g_n = ρ_n ⋆ g` (`plancherelMollify`, with bumps `ρ_n`
-of radii `→ 0`). Each `g_n` is affine along the rank-one lines (`minors_mollify_affineAlong`), so
-by steps 2 to 4 and Taylor's formula it is a polynomial of degree at most `min (d, m)`
+**Departure from [CDKM] (Steps 2 to 4): mollification instead of distributions.** [CDKM] take the
+derivatives of `N` in the sense of distributions; their Step 2 tests `D² N (A, A)` against a
+function `ϕ` and integrates along the lines in the direction `A`. Here the derivatives are
+classical derivatives of the smooth mollifications `g_n = ρ_n ⋆ g` (`plancherelMollify`, with
+bumps `ρ_n` of radii `→ 0`), and Step 2 is the computation along those lines for `g_n`. The
+continuity of `g` makes `g_n` smooth and gives `g_n → g` pointwise. Each `g_n` is affine along the
+rank-one lines (`minors_mollify_affineAlong`), so by Steps 2 and 3 (with `k = min (d, m) + 1`),
+Proposition 6.2 and Taylor's formula it is a polynomial of degree at most `min (d, m)`
 (`minors_mem_polySpace`). These polynomials form a finite-dimensional, hence closed, space of
-functions, and `g_n → g` pointwise, so `g` is a polynomial of degree at most `min (d, m)`
-(`minors_mem_of_tendsto`), in particular smooth (`minors_contDiff_of_mem`). That "the previous
-identities hold also pointwise" is then obtained by running steps 2 to 4 for `g` itself.
+functions (for the pointwise topology), and `g_n → g` pointwise, so `g` is a polynomial of degree
+at most `min (d, m)` (`minors_mem_of_tendsto`), in particular smooth (`minors_contDiff_of_mem`).
+That "the previous identities hold also pointwise" is then obtained by running Steps 2 to 4 for
+`g` itself.
 -/
 
 @[expose] public section
@@ -111,8 +117,9 @@ private lemma iterDirDeriv_pair_eq_zero {h : E → ℝ} (hh : ContDiff ℝ ∞ h
   rw [hconst] at h1
   exact h1.unique (hasDerivAt_const _ _)
 
-/-- **(6.1)** of [CDKM]: a derivative of `h` in which a direction `a` along which `h` is affine
-occurs twice vanishes. -/
+/-- **(6.1)** of [CDKM], with the symmetry of the derivative: a derivative of `h` in which a
+direction `a` along which `h` is affine occurs twice vanishes (by symmetry the two occurrences are
+moved to the end, and the derivatives of `D² h (·) (a, a) = 0` vanish). -/
 private lemma iterDirDeriv_eq_zero_of_count [DecidableEq E] {h : E → ℝ} (hh : ContDiff ℝ ∞ h)
     {a : E}
     (ha : AffineAlong h a) {l : List E} (hl : 2 ≤ l.count a) : iterDirDeriv h l = 0 := by
