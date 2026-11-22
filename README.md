@@ -55,7 +55,7 @@ quasiconvex minorants, in `EReal`; equal to `qcEnvelope`, over the lower semicon
 | `Q` bilinear: `A ↦ Q (A, A)` quasiconvex ⇔ rank-one convex | `quadraticForm_quasiconvex_iff`, `quadraticForm_quasiconvex` | [Da08, Thm 5.25 (i)] |
 | `f` rank-one affine ⇔ quasiaffine ⇔ null Lagrangian ⇔ affine combination of minors | `rankOneAffine_tfae` | [Da08, Thm 5.20, (i), (ii), (iii′)], [Da82, Prop. 4] |
 | rank-one affine ⇒ affine combination of minors (continuity not assumed) | `RankOneAffine.exists_eq_sum_minor` | [Da08, Thm 5.20, (ii) ⇒ (iii′)] |
-| `∫_Ω minor (A + ∇φ) = \|Ω\| minor A`, minors of every order, `φ` Lipschitz, `φ = 0` off the bounded set `Ω` | `setIntegral_minor_add_grad`; `nl_det_eq_sum_D` (a Jacobian is a divergence) | [Da08, Thm 8.35, (8.44); Thm 8.33] |
+| `∫_Ω minor (A + ∇φ) = \|Ω\| minor A`, minors of every order, `φ` Lipschitz, `φ = 0` off the bounded set `Ω` | `setIntegral_minor_add_grad`; `nl_jac_eq_sum_D` (a Jacobian is a divergence), `nl_sum_D_jac_eq_zero` | [Da08, Thm 8.35, (8.44); Thm 8.33] |
 | with explicit formulas: `∫ minor (∇φ) = 0` for `2 × 2`, `3 × 3` minors, `φ` Lipschitz with compact support; `∫_Q minor (A + ∇φ) = minor A` for `3 × 3` minors | `nl_null2`, `nl_null3`, `nl_minor3_quasiaffine` | [Da08, Thm 8.35], [Mo, Lemma 5.1] |
 | `f^{qc} (A) = inf_φ ⨍_Ω f (A + ∇φ)`, `Ω` nonempty, bounded, open, `f` continuous; `Ω` the unit ball | `quasiconvexEnvelope_eq_domainInf`, `qcEnvelope_eq_iInf`, `qcEnvelope_eq_iInf_unitBall` | from [KP, Prop. 8.1]; [Da82, Thm 5], [Da08, Thm 6.9] |
 | the infimum formula, `Ω` nonempty, bounded, open: independent of `Ω`; rank-one convex; finite at one matrix ⇒ real-valued, continuous, quasiconvex | `domainInf_eq_of_isBounded`, `domainInf_le_of_rank_le_one`, `exists_domainInf_eq_coe` | [KP, Prop. 8.1] |
@@ -102,11 +102,12 @@ theorem CalculusOfVariations.quasiconvexEnvelope_eq_domainInf {f : Matrix (Fin d
 - **Quadratic forms** follow [Da08, Thm 5.25 (i)]: the linear term integrates to zero, and the
   quadratic term is nonnegative under the Legendre–Hadamard condition, by Plancherel's formula,
   applied to smooth maps and then, by mollification, to Lipschitz maps.
-- **Null Lagrangians** follow [Da08, Thm 8.35 (ii)] and [Mo, Lemma 5.1]: the minors of a sum are
-  expanded into mixed minors, which are divergences [Da08, Thm 8.33], for smooth maps; then
-  mollification. The identity (8.42) under the divergence form is proved with Leibniz' formula and a
-  sign-reversing involution on permutations; [Da08] argues by induction on the order, with the same
-  cancellation (mixed second derivatives are symmetric and the sign changes).
+- **Null Lagrangians** follow [Da08, Thm 8.35 (i)]: for smooth maps, (8.46) by induction on the
+  order, with the expansion along the first row, integration by parts and the identity (8.42) of
+  [Da08, Thm 8.33], which is proved by induction on the order as well; then mollification. The
+  induction is for minors of maps of `m` variables; [Da08] reduces to square matrices. [Da08,
+  Thm 8.33] is stated there for `C²` maps, here for smooth ones. The orders `2` and `3` are also done
+  with explicit formulas, by [Da08, Thm 8.35 (ii)] and [Mo, Lemma 5.1].
 - **Quasiaffine functions** follow [Da08, Thm 5.20]: rank-one affine ⇒ affine combination of minors
   (next item) ⇒ null Lagrangian [Da08, Thm 8.35] ⇒ quasiaffine ⇒ rank-one affine.
 - **Rank-one affine functions** follow the proof of [Da08, Thm 5.20, (ii) ⇒ (iii′)]: induction on
@@ -171,6 +172,13 @@ the argument compiles against the library at `e474abf`, in a file that is not pa
   Lemma 5.24. On paper.
 - Lemma 5.24 of [Da08]: the same argument shows that the part `g^i` with the other rows `I` is alternating in
   the rows `{1} ∪ I`. On paper.
+- (8.42) and (8.43) of [Da08, Thm 8.33]: expand the Jacobian by Leibniz' formula; in (8.42) the
+  involution `σ ↦ σ ∘ (i₀ i)` of the permutations exchanges two mixed second derivatives of `u^i` and
+  changes the sign; no induction. 68 lines instead of 89 (without docstrings). In the library's
+  history, commit `cbc1d7b`.
+- (8.44) of [Da08, Thm 8.35] from (8.43), by the proof of part (ii) with `v` affine: the minors of
+  `A + ∇φ` are expanded into mixed minors [Da08, Prop. 5.67], which are divergences; no induction.
+  With the previous item, 186 lines instead of 264. In the library's history, commit `cbc1d7b`.
 - Dacorogna's formula: (ii) of [KP, Prop. 8.1] is needed only along the `e_i ⊗ e_j`
   (`cubeInf_le_two_point`), with `Matrix.locallyLipschitz_of_convexOn_single` for the continuity; no
   rotated cubes. Checked in Lean.
@@ -306,7 +314,7 @@ made by [`scripts/sync_challenge_defs.py`](scripts/sync_challenge_defs.py).
   Proposition 7.2.
 - [Da08] B. Dacorogna, *Direct methods in the calculus of variations*, 2nd ed., Springer, 2008:
   Theorem 5.3 (i), (iv) (statements), Propositions 5.11, 5.13, Theorem 5.20 with Lemma 5.24, Theorem
-  5.25 (i), Proposition 5.67, Theorem 6.9 (statement), Theorems 8.33, 8.35.
+  5.25 (i), Theorem 6.9 (statement), Theorems 8.33, 8.35.
 - [K] J. Kristensen, *On the non-locality of quasiconvexity*, Ann. Inst. H. Poincaré Anal. Non
   Linéaire 16 (1999), 1–13: proof of Proposition 2.
 - [F] H. Freudenthal, *Simplizialzerlegungen von beschränkter Flachheit*, Ann. of Math. 43 (1942),

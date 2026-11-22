@@ -22,12 +22,19 @@ Proposition 4 of B. Dacorogna, *Quasiconvexity and relaxation of nonconvex probl
 of variations*, J. Funct. Anal. 46 (1982), 102–118 ([D82]; on every bounded domain). The proof is
 that of [D08]:
 
-* rank-one affine ⇒ affine combination of minors, the only nontrivial implication:
-  `RankOneAffine.exists_eq_sum_minor`;
-* affine combination of minors ⇒ null Lagrangian: [D08], Theorem 8.35
-  (`setIntegral_minor_add_grad`);
-* null Lagrangian ⇒ quasiaffine: the case of the unit cube;
-* quasiaffine ⇒ rank-one affine: `rankOneConvex_of_quasiconvex`.
+* (ii) ⇒ (iii'), rank-one affine ⇒ affine combination of minors, in [D08] through (ii'):
+  `RankOneAffine.exists_eq_sum_minor`, by the proof of [D08] (see there), where (ii') ⇒ (iii') is
+  "the only non trivial implication".
+* (iii') ⇒ (i), affine combination of minors ⇒ quasiaffine. [D08] gives two arguments: through (iii)
+  and Theorem 5.3 (polyconvex ⇒ quasiconvex, by (8.44) and Jensen's inequality), and by Theorem 8.35
+  (p. 181). The second one is used: (8.44) (`setIntegral_minor_add_grad`) makes an affine
+  combination of minors a null Lagrangian, which is also the argument of [D08] for Corollary 5.22,
+  and a null Lagrangian is quasiaffine, by the case of the unit cube. [D82] states Proposition 4
+  without proof.
+* (i) ⇒ (ii), quasiaffine ⇒ rank-one affine: "immediately from Theorem 5.3", quasiconvex ⇒ rank-one
+  convex, for `f` and `−f` (`rankOneConvex_of_quasiconvex`). The library proves this theorem once,
+  by the proof of F. Rindler, *Calculus of Variations*, 2nd ed., 2026, Proposition 5.6; the proof of
+  Theorem 5.3 in [D08] compares the same energies, with test maps from its Lemma 3.11.
 
 Conditions (ii') and (iii) of [D08], Theorem 5.20 (`f` of class `C¹` with
 `f (ξ + a ⊗ b) = f (ξ) + ⟨∇f (ξ); a ⊗ b⟩`; `f` and `−f` polyconvex) are not treated.
