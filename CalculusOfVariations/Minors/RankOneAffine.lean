@@ -33,10 +33,10 @@ import Mathlib.LinearAlgebra.Matrix.RowCol
   book is not openly accessible, and its proof was not consulted), and
   `RankOneAffine.exists_eq_sum_minor_of_continuous` (module `Minors.RankOneAffineContinuous`)
   proves it by [CDKM]'s argument. **The proof of `RankOneAffine.exists_eq_sum_minor` is not
-  [CDKM]'s.** [CDKM]'s Steps 2 to 4 differentiate the function (in the sense of distributions,
-  which needs it continuous); here they are replaced by an elementary multi-affine argument
-  (Steps A and B below), not taken from [CDKM], simpler than their Steps 2 to 4, and needing no
-  continuity. Steps 5 to 7 are [CDKM]'s.
+  [CDKM]'s.** [CDKM]'s argument for Steps 2 to 4 differentiates the function in the sense of
+  distributions ([CDKM] assume it continuous); here these steps are replaced by an elementary
+  multi-affine argument (Steps A and B below), not taken from [CDKM], simpler than theirs, and
+  needing no continuity. Steps 5 to 7 follow [CDKM]'s argument.
 
 Below, `d × m` and `min (d, m)` stand for [CDKM]'s `m × n` and `min (m, n)`. The steps of [CDKM]'s
 proof are numbered 1 to 7, in both modules.
@@ -569,8 +569,9 @@ private lemma minors_restr_Fv {k : ℕ} (r : Fin k ↪o Fin d) (c : Fin k ↪o F
   ext j i
   rw [minors_Fv_apply, minors_emb_apply]
 
-/-- If the columns `v^p` and `v^q` coincide (`p ≠ q`), then `F_v` is a sum of `k − 1` rank-one
-matrices: `F_v = ∑_{j ≠ q} ṽ^j ⊗ b_j`, `b_j = e_{c_j}` for `j ≠ p` and `b_p = e_{c_p} + e_{c_q}`. -/
+/-- If the columns `v^p` and `v^q` coincide (`p ≠ q`), then `F_v` is a sum of `k − 1` matrices of
+rank `≤ 1`: `F_v = ∑_{j ≠ q} ṽ^j ⊗ b_j`, `b_j = e_{c_j}` for `j ≠ p` and
+`b_p = e_{c_p} + e_{c_q}`. -/
 private lemma minors_Fv_eq_sum_erase {k : ℕ} (r : Fin k ↪o Fin d) (c : Fin k ↪o Fin m)
     (v : Fin k → Fin k → ℝ) {p q : Fin k} (hpq : v p = v q) (hne : p ≠ q) :
     minorsFv r c v = ∑ j ∈ Finset.univ.erase q, vecMulVec (minorsEmb r (v j))
@@ -877,12 +878,13 @@ rank-one affine `f : ℝ^{d×m} → ℝ` there are coefficients `a k r c` with
 constant `1`). With continuity this is the implication (iii) ⇒ (iv) of Dacorogna 2008,
 Theorem 5.20 (the statement cited), proved by the argument of Conti–Dolzmann–Kirchheim–Müller
 2006, Theorem 6.1, in `RankOneAffine.exists_eq_sum_minor_of_continuous`. **This proof is not
-theirs**: in place of their first half, which uses continuity (distributional derivatives,
-Proposition 6.2, Taylor's formula), it uses an elementary multi-affine argument, not taken from
-them, simpler than theirs and needing no continuity: `f` is affine in each entry, hence
+theirs**: in place of their argument for Steps 2 to 4, which uses distributional derivatives of a
+continuous function, it uses an elementary multi-affine argument, not taken from them, simpler
+than theirs and needing no continuity: `f` is affine in each entry, hence
 `f = ∑_S c_S ∏_{s ∈ S} F_s` over the sets of entries (Step A), and the part `P_k` of degree `k`
 vanishes on the matrices of rank `< k` because `t ↦ f (t F)` is then a polynomial of degree `< k`
-(Step B). The second half, `exists_eq_sum_minor_of_rank_lt` (their Steps 5 to 7), is theirs. -/
+(Step B). The second half, `exists_eq_sum_minor_of_rank_lt` (Steps 5 to 7), follows their
+argument. -/
 theorem RankOneAffine.exists_eq_sum_minor {f : Matrix (Fin d) (Fin m) ℝ → ℝ}
     (hf : RankOneAffine f) :
     ∃ a : (k : ℕ) → (Fin k ↪o Fin d) → (Fin k ↪o Fin m) → ℝ,

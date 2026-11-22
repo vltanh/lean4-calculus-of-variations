@@ -50,8 +50,8 @@ The steps are numbered 1 to 7 in this module and in `Minors.RankOneAffine`.
    minors: `exists_eq_sum_minor_of_rank_lt` (module `Minors.RankOneAffine`), proved as in [CDKM].
 
 **Departure from [CDKM] (Steps 2 to 4): mollification instead of distributions.** [CDKM] take the
-derivatives of `N` in the sense of distributions; their Step 2 tests `D² N (A, A)` against a
-function `ϕ` and integrates along the lines in the direction `A`. Here the derivatives are
+derivatives of `N` in the sense of distributions; their argument for Step 2 tests `D² N (A, A)`
+against a function `ϕ` and integrates along the lines in the direction `A`. Here the derivatives are
 classical derivatives of the smooth mollifications `g_n = ρ_n ⋆ g` (`plancherelMollify`, with
 bumps `ρ_n` of radii `→ 0`), and Step 2 is the computation along those lines for `g_n`. The
 continuity of `g` makes `g_n` smooth and gives `g_n → g` pointwise. Each `g_n` is affine along the
