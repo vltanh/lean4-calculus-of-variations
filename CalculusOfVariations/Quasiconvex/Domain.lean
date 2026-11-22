@@ -15,12 +15,20 @@ equivalent to quasiconvexity at `A` on any nonempty bounded open set (`quasiconv
 direction from the cube holds on every bounded measurable set
 (`quasiconvexAtOn_of_unitCube`).
 
-The argument is the one of S. Müller, *Variational models for microstructure and phase
-transitions*, lecture notes, MPI MiS Leipzig, 1998, Definition 4.2, Remark 2: for real-valued `f`
-it suffices to extend the test map by zero outside the domain and to translate and scale the
-domain. Müller considers domains with `|∂U| = 0`; for an arbitrary bounded open domain the
-boundary is handled by the vanishing of the gradient of a Lipschitz map almost everywhere on its
-zero set (`Lipschitz.ZeroSet`).
+This is Proposition 5.11 of B. Dacorogna, *Direct Methods in the Calculus of Variations*, 2nd ed.,
+Springer, 2008 ([D08], p. 172), and Lemma 5.2 (i) of F. Rindler, *Calculus of Variations*, 2nd ed.,
+Graduate Texts in Mathematics 310, Springer, 2026 ([R2], p. 106; Lipschitz domains), with their
+argument (also Remark 2 after Definition 4.2 in S. Müller, *Variational models for microstructure
+and phase transitions*, lecture notes, MPI MiS Leipzig, 1998): extend the test map by zero, put a
+translated and scaled copy of its domain inside the other domain, and compute the energy of the
+copy, the rest contributing `f (A)` times its measure. Here the unit cube is the intermediate
+domain.
+
+The computation uses that the gradient of the extended map vanishes almost everywhere outside the
+domain of the test map. [D08] uses this without proof for arbitrary bounded open sets ([R2] and
+Müller assume Lipschitz domains, `|∂U| = 0`); it is the vanishing of the gradient of a Lipschitz map
+almost everywhere on its zero set (`Lipschitz.ZeroSet`). [D08] does not say that the first domain is
+nonempty; for the empty set the proposition is false (its hypothesis is void).
 -/
 
 @[expose] public section
@@ -248,16 +256,14 @@ bounded `f`, quasiconvexity at `A` on the unit cube is equivalent to quasiconvex
 nonempty bounded open `Ω`. (For `Ω = ∅` the condition holds for every `f`: the only test map is
 `0`, and both sides vanish.)
 
-Proof: the argument of S. Müller, *Variational models for microstructure and phase transitions*,
-lecture notes, MPI MiS Leipzig, 1998, Definition 4.2, Remark 2: "If `f` takes values in `ℝ` it
-suffices to extend `φ` by zero outside `U` and to translate and scale `U`." Müller considers domains
-with `|∂U| = 0`; here the boundary needs no condition, because quasiconvexity on a set passes to its
-measurable subsets, because a test map on the subset vanishes on the rest, so its gradient vanishes
-almost everywhere there (`rd_quasiconvexAtOn_mono`, from `rd_ae_fderiv_eq_zero`: at a density point
-of the zero set of a Lipschitz map, its derivative is `0`); and quasiconvexity on the unit cube is
-quasiconvexity on every cube `x₀ + R (0, 1)^m`, by the change of variables `x = x₀ + R y`. "⇒": `Ω`
-lies in a large cube (`quasiconvexAtOn_of_unitCube`); "⇐": `Ω` contains a small cube
-(`rd_unitCube_of_quasiconvexAtOn`). -/
+Proof: the argument of [D08], Proposition 5.11, and [R2], Lemma 5.2 (i), with the unit cube as the
+intermediate domain. Quasiconvexity on the unit cube is quasiconvexity on every cube
+`x₀ + R (0, 1)^m`, by the change of variables `x = x₀ + R y`, and quasiconvexity on a set passes to
+its measurable subsets, because a test map on the subset vanishes on the rest, so its gradient
+vanishes almost everywhere there (`rd_quasiconvexAtOn_mono`, from `rd_ae_fderiv_eq_zero`: at a
+density point of the zero set of a Lipschitz map, its derivative is `0`; no condition on the
+boundary is needed). "⇒": `Ω` lies in a large cube (`quasiconvexAtOn_of_unitCube`); "⇐": `Ω`
+contains a small cube (`rd_unitCube_of_quasiconvexAtOn`). -/
 theorem quasiconvexAtOn_iff {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hlsc : LowerSemicontinuous f)
     (hbdd : IsLocallyBounded f) (A : Matrix (Fin d) (Fin m) ℝ) {Ω : Set (Fin m → ℝ)}
     (hΩ : IsOpen Ω) (hb : Bornology.IsBounded Ω) (hne : Ω.Nonempty) :

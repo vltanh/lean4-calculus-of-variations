@@ -28,10 +28,12 @@ public import CalculusOfVariations.Minors.RankOneAffine
 public import CalculusOfVariations.Minors.RankOneAffineContinuous
 public import CalculusOfVariations.QuadraticForm.Plancherel
 public import CalculusOfVariations.QuadraticForm.Quasiconvex
+public import CalculusOfVariations.Quasiconvex.Cutoff
 public import CalculusOfVariations.Quasiconvex.Domain
 public import CalculusOfVariations.Quasiconvex.Laminate
 public import CalculusOfVariations.Quasiconvex.Periodic
 public import CalculusOfVariations.Quasiconvex.RankOneConvex
+public import CalculusOfVariations.Quasiconvex.TruncatedLaminate
 public import CalculusOfVariations.RankOneConvex.LocallyLipschitz
 public import CalculusOfVariations.RankOneConvex.SingularValues
 public import CalculusOfVariations.Smoothing.RankOneConvex

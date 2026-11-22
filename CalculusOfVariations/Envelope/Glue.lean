@@ -8,7 +8,7 @@ module
 public import CalculusOfVariations.Envelope.Cube
 public import CalculusOfVariations.Envelope.Tangent
 public import CalculusOfVariations.Lipschitz.PiecewiseAffine
-public import CalculusOfVariations.Quasiconvex.Laminate
+public import CalculusOfVariations.Quasiconvex.TruncatedLaminate
 public import Mathlib.Data.EReal.Inv
 
 /-!
@@ -31,7 +31,7 @@ For a continuous `f`, with `cubeInf f` the infimum formula on the unit cube `Q` 
   `η → 0` and `b i ↓ cubeInf f (F + ∇ (L i))`, or, when a piece of positive measure has
   `cubeInf f (F + ∇ (L i)) = −∞`, `b i → −∞` there, which gives `cubeInf f F = −∞` (Müller's
   "obvious modification");
-* `cubeLaminate_piecewiseAffineOn`: the laminate `v_k` of `Quasiconvex.Laminate` is piecewise
+* `cubeLaminate_piecewiseAffineOn`: the laminate `v_k` of `Quasiconvex.TruncatedLaminate` is piecewise
   affine on `Q`. On the slab `{c < k x_j < c + 1}` of `Q`, `v_k = h a` with `h` the minimum of the
   affine functions `(1 − λ) (x_j − c / k)`, `λ ((c + 1) / k − x_j)` (the sawtooth) and `x_i`,
   `1 − x_i` (the sup-norm distance to the complement of `Q`); the minimum of finitely many affine
@@ -588,7 +588,7 @@ private theorem glue_pa_slab (a : Fin d → ℝ) (j : Fin m) {l : ℝ} (hl0 : 0 
       · exact ⟨(false, true, i), by rw [hi]; simp [hG, glue_coordAff_apply]⟩
       · exact ⟨(false, false, i), by rw [hi]; simp [hG, glue_coordAff_apply]; ring⟩
 
-/-- The laminate `v_k` of `Quasiconvex.Laminate` is piecewise affine on the unit cube: the
+/-- The laminate `v_k` of `Quasiconvex.TruncatedLaminate` is piecewise affine on the unit cube: the
 sawtooth is affine between the points of `k⁻¹ (ℤ ∪ (ℤ + λ))`, the distance to the boundary is
 affine on each of the `2 m` pyramids over the faces, and the minimum of two affine maps is affine
 on each side of a hyperplane. In the proof, on each slab `{c < k x_j < c + 1}` (whose complement in

@@ -27,10 +27,12 @@ import all CalculusOfVariations.Minors.RankOneAffine
 import all CalculusOfVariations.Minors.RankOneAffineContinuous
 import all CalculusOfVariations.QuadraticForm.Plancherel
 import all CalculusOfVariations.QuadraticForm.Quasiconvex
+import all CalculusOfVariations.Quasiconvex.Cutoff
 import all CalculusOfVariations.Quasiconvex.Domain
 import all CalculusOfVariations.Quasiconvex.Laminate
 import all CalculusOfVariations.Quasiconvex.Periodic
 import all CalculusOfVariations.Quasiconvex.RankOneConvex
+import all CalculusOfVariations.Quasiconvex.TruncatedLaminate
 import all CalculusOfVariations.RankOneConvex.LocallyLipschitz
 import all CalculusOfVariations.RankOneConvex.SingularValues
 import all CalculusOfVariations.Smoothing.RankOneConvex
@@ -72,6 +74,8 @@ meta def mainResults : List Name :=
    ``CalculusOfVariations.nl_minor3_quasiaffine,
    ``CalculusOfVariations.qcEnvelope_eq_iInf_unitBall,
    ``CalculusOfVariations.Smoothing.exists_smoothing,
+   ``CalculusOfVariations.le_of_quasiconvexAtOn_of_tendsto,
+   ``CalculusOfVariations.le_of_quasiconvexAtOn_unitCube_of_lsc,
    ``CalculusOfVariations.le_of_quasiconvexAtOn_unitCube,
    ``CalculusOfVariations.le_of_quasiconvexAtOn_orthogonal,
    ``CalculusOfVariations.le_of_quasiconvexAtOn_vecMulVec,

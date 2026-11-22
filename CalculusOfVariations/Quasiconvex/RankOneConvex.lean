@@ -10,16 +10,15 @@ public import CalculusOfVariations.Quasiconvex.Laminate
 /-!
 # A quasiconvex integrand is rank-one convex
 
-`rankOneConvex_of_quasiconvex`: a lower semicontinuous, locally bounded `f` that is quasiconvex
-on the unit cube at every matrix is rank-one convex.
-
-The proof is the one of S. Müller, *Variational models for microstructure and phase transitions*,
-lecture notes, MPI MiS Leipzig, 1998, Lemma 4.3: laminates on a cube with faces orthogonal to the
-rank-one direction (`Quasiconvex.Laminate`) give the two-point inequality
-`f (A) ≤ λ f (A + (1 − λ) a ⊗ n) + (1 − λ) f (A − λ a ⊗ n)` in every rank-one direction `a ⊗ n`
-(`le_of_quasiconvexAtOn_vecMulVec`; the passage from the unit cube to the rotated cube is the
-independence of the domain, `quasiconvexAtOn_iff`), and this inequality at every matrix is the
-convexity of `f` along every rank-one line.
+`rankOneConvex_of_quasiconvex`: a lower semicontinuous, locally bounded `f` that is quasiconvex on
+the unit cube at every matrix is rank-one convex. This is Proposition 5.6 of F. Rindler, *Calculus
+of Variations*, 2nd ed., Graduate Texts in Mathematics 310, Springer, 2026 ([R2]), p. 111–113, for
+lower semicontinuous integrands ([R2]: locally bounded and Borel), with its proof: laminates on a
+cube with two faces orthogonal to the rank-one direction (Step 1), cut off near the boundary (Step
+2), give the two-point inequality `f (F) ≤ λ f (F + (1 − λ) a ⊗ n) + (1 − λ) f (F − λ a ⊗ n)`
+(`le_of_quasiconvexAtOn_vecMulVec`, `Quasiconvex.Laminate`), which is (5.7) of [R2] for the matrices
+`F + (1 − λ) a ⊗ n` and `F − λ a ⊗ n`. This inequality at every matrix is the convexity of `f` along
+every rank-one line. The numbering of the first edition (2018) differs; it was not consulted.
 -/
 
 @[expose] public section
@@ -69,16 +68,14 @@ private lemma rd_rank_one_eq {B : Matrix (Fin d) (Fin m) ℝ} (hB : B.rank = 1) 
   rw [Matrix.vecMulVec_apply, ← h1, mul_comm]
   rfl
 
-/-- **A quasiconvex integrand is rank-one convex** (S. Müller, *Variational models for
-microstructure and phase transitions*, lecture notes, MPI MiS Leipzig, 1998, Lemma 4.3): a lower
-semicontinuous, locally bounded `f` that is quasiconvex on the unit cube at every matrix is
-rank-one convex.
+/-- **A quasiconvex integrand is rank-one convex** ([R2], Proposition 5.6): a lower semicontinuous,
+locally bounded `f` that is quasiconvex on the unit cube at every matrix is rank-one convex.
 
-Proof: a rank-one matrix is `a ⊗ q` (`rd_rank_one_eq`). At every matrix `P`, Müller's laminates on
-a cube with faces orthogonal to `q` give
+Proof: a rank-one matrix is `a ⊗ q` (`rd_rank_one_eq`). At every matrix `P`, the laminates of [R2]
+on a cube with faces orthogonal to `q`, cut off near its boundary, give
 `f (P) ≤ λ f (P + (1 − λ) (c a) ⊗ q) + (1 − λ) f (P − λ (c a) ⊗ q)` for every `c ∈ ℝ` and
-`λ ∈ (0, 1)` (`le_of_quasiconvexAtOn_vecMulVec`, from quasiconvexity at `P` on the unit cube and
-the independence of the domain for the rotated cube); this two-point inequality along the line
+`λ ∈ (0, 1)` (`le_of_quasiconvexAtOn_vecMulVec`, from quasiconvexity at `P` on the unit cube and the
+independence of the domain for the rotated cube); this two-point inequality along the line
 `t ↦ A + t a ⊗ q` is its convexity (`rd_convex_line`). -/
 theorem rankOneConvex_of_quasiconvex {f : Matrix (Fin d) (Fin m) ℝ → ℝ}
     (hlsc : LowerSemicontinuous f) (hbdd : IsLocallyBounded f) (hf : Quasiconvex f) :
