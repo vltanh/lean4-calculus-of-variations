@@ -67,9 +67,10 @@ So `f (F) = ∑_{k ≤ min (d, m)} ∑_{α,β} ĉ_{α,β} minor F α β` (`RankO
 of `N` in a rank-one direction vanishes, and (6.1) follows by differentiating further. Then
 `D^{min (d, m) + 1} N = 0` by (6.2) and their Proposition 6.2, so `N` is a polynomial, and (6.3)
 is Taylor's formula. The statement here does not assume `f` continuous, so the derivatives are
-replaced by algebra (Steps 2a and 2b), and Proposition 6.2 is not needed; the rest of step 2
-(the reduction of a matrix of rank `< k` to a sum of at most `k − 1` rank-one matrices, and the
-case `k = min (d, m) + 1` for the degree bound) is kept.
+replaced by algebra (Steps 2a and 2b), and Proposition 6.2 is not needed. The reduction of a
+matrix of rank `< k` to a sum of at most `k − 1` rank-one matrices is kept; the degree bound is
+obtained from Step 2b for every `k > min (d, m)` (there is no derivative to carry the vanishing
+from `k = min (d, m) + 1` to the higher orders).
 
 * **Step 2a** (for "`N` is a polynomial" and (6.3)). `f` is affine in each entry, since
   `e_i ⊗ e_j` has rank one, and a function on `ℝ^ι` (`ι` finite) that is affine in each
@@ -81,15 +82,14 @@ case `k = min (d, m) + 1` for the degree bound) is kept.
   Step 2a the function `t ↦ f (t F)` is a polynomial of degree at most `r`, while
   `f (t F) = ∑_j t^j P_j (F)`. As in [CDKM], a matrix of rank `< k` is a sum of at most `k − 1`
   rank-one matrices (`minors_exists_sum_vecMulVec`), so `P_k (F) = 0` when `rank F < k`
-  (`minors_hom_eq_zero_of_rank_lt`); this is the form in which [CDKM] use (6.2) with (6.3), in
-  steps 3 and 5 and, with `k = min (d, m) + 1`, for the degree bound (`minors_eq_sum_hom`).
+  (`minors_hom_eq_zero_of_rank_lt`). This is the form in which [CDKM] use (6.2) with (6.3) in
+  steps 3 and 5; it also gives the degree bound, `P_k = 0` for every `k > min (d, m)`
+  (`minors_eq_sum_hom`).
 
 The monomials of Step 2a have no repeated entry and are indexed by their sets of entries, so the
 coefficient `c^σ` of step 4 is the coefficient `c_S` of the set `S = {(α_i, β_{σ i})}`
 (`minorsGraph`), where [CDKM], whose monomials are indexed by tuples of entries, have
-`c^σ = ∑_τ c̃_{τ(α), (τ ∘ σ)(β)}`. [CDKM] print `Q (v) = ∑_σ c^σ v^1_{σ 1} ⋯ v^k_{σ k}`; with their
-`F_v`, `P_{α,β} (F_v) = ∑_σ c^σ v^{σ 1}_1 ⋯ v^{σ k}_k`, which is the `Q` used here (the two
-differ by `σ ↦ σ⁻¹`, which does not affect the argument).
+`c^σ = ∑_τ c̃_{τ(α), (τ ∘ σ)(β)}`.
 -/
 
 @[expose] public section
@@ -317,8 +317,8 @@ private lemma minors_hom_eq_zero {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : 
   exact Eq.trans (Finset.sum_congr rfl fun S _ => if_congr eq_comm rfl rfl) hk'
 
 /-- A matrix of rank `r` is a sum of `r` rank-one matrices ([CDKM], proof of (6.2)): with a basis
-`b_1, …, b_r` of the column space, `F = ∑_l b_l ⊗ w_l`, `w_l` the coordinates of the columns of
-`F` along `b_l`. -/
+`a_1, …, a_r` of the column space, `F = ∑_l a_l ⊗ b_l`, `b_l` the coordinates of the columns of
+`F` along `a_l`. -/
 private lemma minors_exists_sum_vecMulVec (F : Matrix (Fin d) (Fin m) ℝ) :
     ∃ (r : ℕ) (a : Fin r → Fin d → ℝ) (b : Fin r → Fin m → ℝ), r ≤ F.rank ∧
       F = ∑ l, vecMulVec (a l) (b l) := by
@@ -361,8 +361,8 @@ private lemma minors_hom_eq_zero_of_rank_lt {f : Matrix (Fin d) (Fin m) ℝ → 
     rw [Finset.card_univ, Fintype.card_fin]; omega)
 
 /-- **The degree bound and (6.3).** `f = ∑_{k ≤ min (d, m)} P_k`: `f = ∑_k P_k` (Step 2a), and
-`P_k = 0` for `k > min (d, m)` by Step 2b, since `rank F ≤ min (d, m)` ([CDKM] apply (6.2) with
-`k = min (m, n) + 1`). -/
+`P_k = 0` for every `k > min (d, m)` by Step 2b, since `rank F ≤ min (d, m)` ([CDKM] apply (6.2)
+with `k = min (d, m) + 1`, and then their Proposition 6.2). -/
 private lemma minors_eq_sum_hom {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : MinorsRA f)
     {c : Finset (Fin d × Fin m) → ℝ} (hc : ∀ F, f F = ∑ S, c S * minorsMono S F)
     (F : Matrix (Fin d) (Fin m) ℝ) :
@@ -642,8 +642,8 @@ private lemma minors_block_eq_perm (c : Finset (Fin d × Fin m) → ℝ) {k : �
 
 /-- **Step 4** ([CDKM]: "regrouping terms which are obtained by permutation within a fixed index
 set"). `P_k = ∑_{α,β} P_{α,β}` over the increasing `α : Fin k ↪o Fin d`, `β : Fin k ↪o Fin m`:
-by Step 3 only the `S_{I,J}` with `|I| = |J| = k` remain, and `S_{I,J} = P_{α,β}` for the
-increasing enumerations `α`, `β` of `I`, `J`. -/
+the `S_{I,J}` with `|I| < k` or `|J| < k` vanish by Step 3, those with `|I| > k` or `|J| > k`
+are empty sums, and `S_{I,J} = P_{α,β}` for the increasing enumerations `α`, `β` of `I`, `J`. -/
 private lemma minors_hom_eq_sum_perm {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : MinorsRA f)
     {c : Finset (Fin d × Fin m) → ℝ} (hc : ∀ F, f F = ∑ S, c S * minorsMono S F) (k : ℕ)
     (F : Matrix (Fin d) (Fin m) ℝ) :
@@ -748,9 +748,8 @@ private lemma minors_Fv_eq_sum_erase {k : ℕ} (r : Fin k ↪o Fin d) (c : Fin k
   rw [e, Finset.sum_erase_add _ _ (Finset.mem_univ q)]
   rfl
 
-/-- [CDKM]'s form `Q (v¹, …, v^k) = ∑_σ c^σ v^{σ 1}_1 ⋯ v^{σ k}_k` on `(ℝ^k)^k` (the form
-`P_{α,β} (F_v)`; [CDKM] print the product as `v^1_{σ 1} ⋯ v^k_{σ k}`, which is the same up to
-`σ ↦ σ⁻¹`), multilinear: a sum of products of one coordinate of each `v^j`. -/
+/-- [CDKM]'s form `Q (v¹, …, v^k) = ∑_σ c^σ v^{σ 1}_1 ⋯ v^{σ k}_k` on `(ℝ^k)^k`, multilinear: a sum
+of products of one coordinate of each `v^j`. -/
 private noncomputable def minorsQ (c : Finset (Fin d × Fin m) → ℝ) {k : ℕ} (α : Fin k ↪o Fin d)
     (β : Fin k ↪o Fin m) : MultilinearMap ℝ (fun _ : Fin k => Fin k → ℝ) ℝ :=
   ∑ σ : Equiv.Perm (Fin k), c (minorsGraph α β σ) •
