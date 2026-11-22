@@ -281,8 +281,12 @@ Leipzig, 1998, Theorem 4.5 (iii), §4.8, with the unit cube `Q` as Müller's dom
   of Lemma 4.3 the two-point inequality along `a ⊗ e_j` (`cubeInf_le_two_point`);
 * (e) hence `Qf` is convex in each entry and, when finite, locally Lipschitz, by Müller's Remark 3
   (`cubeInfReal_convexOn`, `cubeInfReal_continuous`);
-* (f) "`Qf` is quasiconvex by (4.28) and density arguments": (4.28) for the Kuhn–Freudenthal
-  interpolants of a test map and dominated convergence (`cubeInfReal_quasiconvex`);
+* (f) "`Qf` is quasiconvex by (4.28) and density arguments", with the density argument of
+  Müller's proof of Theorem 4.4 (i) (`cubeInfReal_quasiconvex`): the test map is shrunk into
+  `(¼, ¾)^m` (scaling, `env_integral_rescale_sub`), mollified, and the smooth maps interpolated on
+  Kuhn–Freudenthal triangulations chosen diagonally (`kuhnInterpolation_grad_uniform`); (4.28) for
+  these piecewise affine test maps, whose gradients are bounded and converge almost everywhere,
+  and dominated convergence;
 * (g) if `Qf` takes the value `−∞`, the two-point inequality propagates it along the matrix units,
   and `Qf ≡ −∞` (`cubeInf_bot_line`, `cubeInf_bot_all`).
 

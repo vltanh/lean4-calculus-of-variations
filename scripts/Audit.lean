@@ -79,7 +79,7 @@ meta def mainResults : List Name :=
    ``CalculusOfVariations.ae_tendsto_grad_mollifyPi,
    ``CalculusOfVariations.kuhnInterpolation_lipschitz,
    ``CalculusOfVariations.kuhnInterpolation_piecewiseAffineOn,
-   ``CalculusOfVariations.ae_tendsto_grad_kuhnInterpolation,
+   ``CalculusOfVariations.kuhnInterpolation_grad_uniform,
    ``CalculusOfVariations.cubeInf_le_sum_of_piecewiseAffine,
    ``CalculusOfVariations.cubeInf_le_two_point,
    ``CalculusOfVariations.qcEnvelope_eq_iInf]

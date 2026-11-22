@@ -7,6 +7,7 @@ module
 
 public import CalculusOfVariations.Envelope.Glue
 public import CalculusOfVariations.Convex.SeparatelyConvex
+public import CalculusOfVariations.Lipschitz.Mollify
 
 /-!
 # Convexity, continuity and quasiconvexity of the infimum formula
@@ -24,12 +25,16 @@ quasiconvex:
   `A + t E_{ij}` (`cubeInfReal_convexOn`, from `cubeInf_le_two_point`), hence locally Lipschitz
   (Müller's Remark 3 after Definition 4.2, `Matrix.locallyLipschitz_of_convexOn_single`) and
   continuous (`cubeInfReal_continuous`);
-* `cubeInfReal_quasiconvex`: for a test map `φ` on `Q`, the Kuhn–Freudenthal interpolants `I_k φ`
-  are piecewise affine test maps; (4.28) (`cubeInf_le_sum_of_piecewiseAffine`) for them reads
-  `cubeInf f (A) ≤ ∑ i |P i| cubeInf f (A + ∇ (L i)) = ∫_Q cubeInf f (A + ∇ I_k φ)`
-  (`env_integral_piecewiseAffine`); dominated convergence, with `cubeInfReal f` continuous,
-  `|∇ I_k φ| ≤ m K` and `∇ I_k φ → ∇φ` almost everywhere, gives
-  `cubeInf f (A) ≤ ∫_Q cubeInf f (A + ∇φ)` (Müller's "density arguments");
+* `cubeInfReal_quasiconvex`: "(4.28) and density arguments", the density argument being that of
+  Müller's proof of Theorem 4.4 (i). A test map `φ` on `Q` is first shrunk to a test map `φ'`
+  supported in `(¼, ¾)^m`, which changes `∫_Q Qf (A + ∇φ) − Qf (A)` by the factor `2^{−m}`
+  (scaling, `env_integral_rescale_sub`); `φ'` is approximated by its mollifications `ψ_n`
+  (smooth, vanishing off `Q`), and `ψ_n` by its Kuhn–Freudenthal interpolant `v_n` on a grid fine
+  enough that `|∇v_n − ∇ψ_n| ≤ 1/(n+1)` (`kuhnInterpolation_grad_uniform`, a diagonal choice of
+  the triangulation). The `v_n` are piecewise affine test maps with `|∇v_n| ≤ m K` and
+  `∇v_n → ∇φ'` almost everywhere, hence in measure; (4.28) (`cubeInf_le_sum_of_piecewiseAffine`)
+  reads `Qf (A) ≤ ∑ i |P i| Qf (A + ∇ (L i)) = ∫_Q Qf (A + ∇v_n)`
+  (`env_integral_piecewiseAffine`), and dominated convergence gives `Qf (A) ≤ ∫_Q Qf (A + ∇φ')`;
 * `cubeInf_le_qcEnvelope`: `cubeInf f ≤ qcEnvelope f`, since `cubeInf f` is either `≡ −∞` or a
   continuous quasiconvex minorant of `f`.
 -/
@@ -197,12 +202,72 @@ theorem env_integral_piecewiseAffine (g : Matrix (Fin d) (Fin m) ℝ → ℝ)
   rw [setIntegral_congr_fun (hPo i).measurableSet (fun x hx => by rw [hgrad i x hx]),
     setIntegral_const, smul_eq_mul, Measure.real]
 
-/-- In the finite case, `cubeInf f` is quasiconvex. For a test map `φ`, (4.28)
-(`cubeInf_le_sum_of_piecewiseAffine`) for the piecewise affine Kuhn–Freudenthal interpolants
-`I_k φ` gives `cubeInf f (A) ≤ ∫_Q cubeInf f (A + ∇ I_k φ)` (`env_integral_piecewiseAffine`);
-the integrands are continuous functions of `∇ I_k φ`, bounded since `|∇ I_k φ| ≤ m K`, and converge
-almost everywhere since `∇ I_k φ → ∇φ`, so dominated convergence gives
-`cubeInf f (A) ≤ ∫_Q cubeInf f (A + ∇φ)`. -/
+/-- A point `x` with `2 (x − ¼ 𝟙) ∈ Q`, moved by less than `1/4` (sup norm), stays in `Q`. -/
+private lemma env_add_mem_unitCube {x b : Fin m → ℝ}
+    (hx : (1 / 2 : ℝ)⁻¹ • (x - fun _ => (1 / 4 : ℝ)) ∈ unitCube m) (hb : ‖b‖ < 1 / 4) :
+    b + x ∈ unitCube m := by
+  intro i _
+  have h := hx i (mem_univ i)
+  simp only [Pi.smul_apply, Pi.sub_apply, smul_eq_mul, mem_Ioo] at h
+  norm_num at h
+  have hbi : |b i| < 1 / 4 := by
+    rw [← Real.norm_eq_abs]; exact (norm_le_pi_norm b i).trans_lt hb
+  rw [abs_lt] at hbi
+  simp only [Pi.add_apply, mem_Ioo]
+  constructor <;> linarith [h.1, h.2, hbi.1, hbi.2]
+
+/-- **Scaling.** For a continuous `g` and a test map `φ` on the unit cube, the copy
+`φ' (x) = ½ φ (2 (x − ¼ 𝟙))` (`rescaleMap φ (¼ 𝟙) ½`), a test map supported in `(¼, ¾)^m`,
+satisfies `∫_Q g (A + ∇φ') − g (A) = 2^{−m} (∫_Q g (A + ∇φ) − g (A))`: the gradients of both
+vanish almost everywhere off the cube (`rd_ae_grad_eq_zero`), so both sides are integrals over
+`ℝ^m` of `g (A + ∇ ·) − g (A)`, and `∇φ' (x) = ∇φ (2 (x − ¼ 𝟙))`. -/
+theorem env_integral_rescale_sub {g : Matrix (Fin d) (Fin m) ℝ → ℝ} (hg : Continuous g)
+    (A : Matrix (Fin d) (Fin m) ℝ) {φ : (Fin m → ℝ) → Fin d → ℝ} {K : NNReal}
+    (hφ : LipschitzWith K φ) (hφQ : ∀ x ∉ unitCube m, φ x = 0) :
+    (∫ x in unitCube m, g (A + grad (rescaleMap φ (fun _ => 1 / 4) (1 / 2)) x)) - g A =
+      (1 / 2) ^ m * ((∫ x in unitCube m, g (A + grad φ x)) - g A) := by
+  have hQfin : volume (unitCube m) ≠ ⊤ := by rw [cv_volume_unitCube]; exact ENNReal.one_ne_top
+  have hQ1 : volume.real (unitCube m) = 1 := by
+    rw [measureReal_def, cv_volume_unitCube, ENNReal.toReal_one]
+  -- `∫_Q g (A + ∇ψ) − g (A) = ∫ (g (A + ∇ψ) − g (A))` for a test map `ψ` on the cube
+  have hext : ∀ {ψ : (Fin m → ℝ) → Fin d → ℝ} {L : NNReal}, LipschitzWith L ψ →
+      (∀ x ∉ unitCube m, ψ x = 0) →
+      (∫ x in unitCube m, g (A + grad ψ x)) - g A = ∫ x, (g (A + grad ψ x) - g A) := by
+    intro ψ L hψ hψQ
+    have h1 : ∫ x in unitCube m, (g (A + grad ψ x) - g A) = ∫ x, (g (A + grad ψ x) - g A) := by
+      refine setIntegral_eq_integral_of_ae_compl_eq_zero ?_
+      filter_upwards [rd_ae_grad_eq_zero hψ] with x hx hxQ
+      rw [hx (hψQ x hxQ), add_zero, sub_self]
+    rw [← h1, integral_sub (cv_integrableOn hg A hψ hQfin) (integrableOn_const hQfin),
+      setIntegral_const, smul_eq_mul, hQ1, one_mul]
+  have hφ'Q : ∀ x ∉ unitCube m, rescaleMap φ (fun _ => 1 / 4) (1 / 2) x = 0 := fun x hx =>
+    rescaleMap_eq_zero hφQ _ (1 / 2) fun h => hx (by
+      simpa using env_add_mem_unitCube (b := 0) h (by simp))
+  rw [hext (rescaleMap_lipschitz hφ _ (by norm_num)) hφ'Q, hext hφ hφQ]
+  have e : ∀ x, g (A + grad (rescaleMap φ (fun _ => 1 / 4) (1 / 2)) x) - g A =
+      (fun y => g (A + grad φ y) - g A) ((1 / 2 : ℝ)⁻¹ • (x - fun _ => 1 / 4)) := fun x => by
+    rw [rescaleMap_grad φ _ (by norm_num : (1 / 2 : ℝ) ≠ 0)]
+  exact (integral_congr_ae (ae_of_all _ e)).trans (cv_integral_comp_affine
+    (fun y => g (A + grad φ y) - g A) (fun _ => 1 / 4) (by norm_num : (0 : ℝ) < 1 / 2))
+
+/-- In the finite case, `cubeInf f` is quasiconvex: Müller's "(4.28) and density arguments", the
+density argument being the one of his proof of Theorem 4.4 (i) (piecewise affine maps `v_n` with
+`|∇v_n| ≤ C` and `∇v_n → ∇u` in measure, obtained by approximating `u` first by a smooth map and
+then by piecewise linear maps on a fine regular triangulation). For a test map `φ` on `Q`:
+
+* (scaling) `φ' = rescaleMap φ (¼ 𝟙) ½` is supported in `(¼, ¾)^m`, and
+  `∫_Q Qf (A + ∇φ') − Qf (A) = 2^{−m} (∫_Q Qf (A + ∇φ) − Qf (A))` (`env_integral_rescale_sub`),
+  so it suffices to show `Qf (A) ≤ ∫_Q Qf (A + ∇φ')`;
+* (smooth approximation) the mollifications `ψ_n = mollifyPi (n + 7) φ'` are smooth, `K`-Lipschitz,
+  vanish off `Q` (the mollifier has radius `2 / (n + 9) < 1/4`), and `∇ψ_n → ∇φ'` almost
+  everywhere (`ae_tendsto_grad_mollifyPi`);
+* (piecewise affine approximation, diagonal choice of the triangulation) by
+  `kuhnInterpolation_grad_uniform`, there is `k_n ≥ 1` with `|∇ I_{k_n} ψ_n − ∇ψ_n| ≤ 1/(n+1)`
+  almost everywhere; `v_n = I_{k_n} ψ_n` is a piecewise affine test map on `Q` with
+  `|∇v_n| ≤ m K`, and `∇v_n → ∇φ'` almost everywhere, hence in measure;
+* ((4.28) and the limit) `Qf (A) ≤ ∑ i |P i| Qf (A + ∇ (L i)) = ∫_Q Qf (A + ∇v_n)`
+  (`cubeInf_le_sum_of_piecewiseAffine`, `env_integral_piecewiseAffine`), and dominated convergence
+  (`Qf` continuous, the gradients bounded) gives `Qf (A) ≤ ∫_Q Qf (A + ∇φ')`. -/
 theorem cubeInfReal_quasiconvex {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : Continuous f)
     (hfin : ∀ A, cubeInf f A ≠ ⊥) : Quasiconvex (cubeInfReal f) := by
   intro A φ K hφ hφQ _
@@ -210,31 +275,76 @@ theorem cubeInfReal_quasiconvex {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : C
   have hX : ∀ X, cubeInf f X = (cubeInfReal f X : EReal) := fun X =>
     cubeInf_eq_cubeInfReal (hfin X)
   rw [cv_volume_unitCube, ENNReal.toReal_one, one_mul]
-  -- (4.28) for the Kuhn–Freudenthal interpolants
-  have hstep : ∀ k, 0 < k →
-      cubeInfReal f A ≤ ∫ x in unitCube m, cubeInfReal f (A + grad (kuhnInterpolation k φ) x) := by
-    intro k hk
-    obtain ⟨n, P, L, hPo, hPd, hPQ, hcov, hPL⟩ := kuhnInterpolation_piecewiseAffineOn φ hk
-    have h := cubeInf_le_sum_of_piecewiseAffine hf A P L hPo hPd hPQ hcov
-      ⟨_, kuhnInterpolation_lipschitz hφ k⟩ (kuhnInterpolation_eq_zero hφQ k) hPL
+  -- scaling: it suffices to treat the copy `φ'` supported in `(1/4, 3/4)^m`
+  have hs := env_integral_rescale_sub hc A hφ hφQ
+  set φ' := rescaleMap φ (fun _ => (1 / 4 : ℝ)) (1 / 2) with hφ'
+  have hφ'L : LipschitzWith K φ' := rescaleMap_lipschitz hφ _ (by norm_num)
+  have hφ'S : ∀ x ∉ {y : Fin m → ℝ | (1 / 2 : ℝ)⁻¹ • (y - fun _ => (1 / 4 : ℝ)) ∈ unitCube m},
+      φ' x = 0 := fun x hx => rescaleMap_eq_zero hφQ _ (1 / 2) hx
+  suffices h : cubeInfReal f A ≤ ∫ x in unitCube m, cubeInfReal f (A + grad φ' x) by
+    have hpos : (0 : ℝ) < (1 / 2) ^ m := by positivity
+    nlinarith
+  -- smooth approximation: the mollifications of `φ'`, vanishing off the cube
+  set ψ : ℕ → (Fin m → ℝ) → Fin d → ℝ := fun n => mollifyPi (n + 7) φ' with hψdef
+  have hψL : ∀ n, LipschitzWith K (ψ n) := fun n => mollifyPi_lipschitzWith hφ'L (n + 7)
+  have hψQ : ∀ n, ∀ x ∉ unitCube m, ψ n x = 0 := by
+    intro n x hx
+    refine mollifyPi_eq_zero hφ'S (n + 7) fun h => hx ?_
+    obtain ⟨b, hb, y, hy, rfl⟩ := Set.mem_add.1 h
+    refine env_add_mem_unitCube hy ((mem_closedBall_zero_iff.1 hb).trans_lt ?_)
+    rw [div_lt_iff₀ (by positivity)]
+    push_cast
+    linarith
+  have hψd : ∀ n, ContDiff ℝ 1 (ψ n) := fun n =>
+    (mollifyPi_contDiff hφ'L.continuous (n + 7)).of_le (by exact_mod_cast le_top)
+  have hψc : ∀ n, HasCompactSupport (ψ n) := fun n =>
+    HasCompactSupport.intro (isCompact_closedBall (fun _ => (1 / 2 : ℝ)) (1 / 2)) fun x hx =>
+      hψQ n x fun h => hx (cv_unitCube_subset_closedBall h)
+  -- piecewise affine approximation on a Kuhn–Freudenthal triangulation chosen diagonally
+  choose k₀ hk₀ using fun n : ℕ =>
+    kuhnInterpolation_grad_uniform (hψd n) (hψc n) (ε := 1 / ((n : ℝ) + 1)) (by positivity)
+  set k : ℕ → ℕ := fun n => max (k₀ n) 1 with hkdef
+  set v : ℕ → (Fin m → ℝ) → Fin d → ℝ := fun n => kuhnInterpolation (k n) (ψ n) with hvdef
+  have hvL : ∀ n, LipschitzWith (m * K) (v n) := fun n =>
+    kuhnInterpolation_lipschitz (hψL n) (k n)
+  have hvQ : ∀ n, ∀ x ∉ unitCube m, v n x = 0 := fun n =>
+    kuhnInterpolation_eq_zero (hψQ n) (k n)
+  have hv : ∀ᵐ x, Tendsto (fun n => grad (v n) x) atTop (𝓝 (grad φ' x)) := by
+    have h1 : ∀ᵐ x, ∀ n : ℕ, ∀ i j, |grad (v n) x i j - grad (ψ n) x i j| ≤ 1 / ((n : ℝ) + 1) :=
+      ae_all_iff.2 fun n => hk₀ n (k n) (le_max_left _ _)
+    filter_upwards [h1, ae_tendsto_grad_mollifyPi hφ'L] with x hx hx'
+    have hx'' : Tendsto (fun n => grad (ψ n) x) atTop (𝓝 (grad φ' x)) :=
+      hx'.comp (tendsto_add_atTop_nat 7)
+    refine tendsto_pi_nhds.2 fun i => tendsto_pi_nhds.2 fun j => ?_
+    have e1 : Tendsto (fun n => grad (ψ n) x i j) atTop (𝓝 (grad φ' x i j)) :=
+      tendsto_pi_nhds.1 (tendsto_pi_nhds.1 hx'' i) j
+    have e2 : Tendsto (fun n => grad (v n) x i j - grad (ψ n) x i j) atTop (𝓝 0) :=
+      squeeze_zero_norm (fun n => by rw [Real.norm_eq_abs]; exact hx n i j)
+        tendsto_one_div_add_atTop_nhds_zero_nat
+    simpa using e2.add e1
+  -- (4.28) for the `v n`
+  have hstep : ∀ n, cubeInfReal f A ≤ ∫ x in unitCube m, cubeInfReal f (A + grad (v n) x) := by
+    intro n
+    obtain ⟨N, P, L, hPo, hPd, hPQ, hcov, hPL⟩ :=
+      kuhnInterpolation_piecewiseAffineOn (ψ n) (lt_of_lt_of_le one_pos (le_max_right _ _) :
+        0 < k n)
+    have h := cubeInf_le_sum_of_piecewiseAffine hf A P L hPo hPd hPQ hcov ⟨_, hvL n⟩ (hvQ n) hPL
     simp only [hX, ← EReal.coe_mul, ← env_coe_sum, EReal.coe_le_coe_iff] at h
     rw [env_integral_piecewiseAffine _ A P L hPo hPd hPQ hcov hPL]
     exact h
   -- dominated convergence
   obtain ⟨M, -, hM⟩ := cv_bdd hc A ((m * K : NNReal) : ℝ)
-  have hlim : Tendsto (fun k => ∫ x in unitCube m,
-      cubeInfReal f (A + grad (kuhnInterpolation k φ) x)) atTop
-      (𝓝 (∫ x in unitCube m, cubeInfReal f (A + grad φ x))) := by
-    refine tendsto_integral_of_dominated_convergence (fun _ => M) (fun k => ?_)
-      (integrableOn_const (by rw [cv_volume_unitCube]; exact ENNReal.one_ne_top)) (fun k => ?_) ?_
-    · exact (cv_measurable_comp_grad (cv_continuous_of hc).measurable A
-        (kuhnInterpolation k φ)).aestronglyMeasurable
+  have hlim : Tendsto (fun n => ∫ x in unitCube m, cubeInfReal f (A + grad (v n) x)) atTop
+      (𝓝 (∫ x in unitCube m, cubeInfReal f (A + grad φ' x))) := by
+    refine tendsto_integral_of_dominated_convergence (fun _ => M) (fun n => ?_)
+      (integrableOn_const (by rw [cv_volume_unitCube]; exact ENNReal.one_ne_top)) (fun n => ?_) ?_
+    · exact (cv_measurable_comp_grad (cv_continuous_of hc).measurable A (v n)).aestronglyMeasurable
     · exact Eventually.of_forall fun x => by
         rw [Real.norm_eq_abs]
-        exact hM _ (cv_grad_abs_le (kuhnInterpolation_lipschitz hφ k) x)
-    · filter_upwards [ae_restrict_of_ae (ae_tendsto_grad_kuhnInterpolation hφ)] with x hx
+        exact hM _ (cv_grad_abs_le (hvL n) x)
+    · filter_upwards [ae_restrict_of_ae hv] with x hx
       exact (hc.tendsto _).comp (tendsto_const_nhds.add hx)
-  exact ge_of_tendsto hlim (eventually_atTop.2 ⟨1, fun k hk => hstep k hk⟩)
+  exact ge_of_tendsto' hlim hstep
 
 /-! ### The infimum formula is below the envelope -/
 

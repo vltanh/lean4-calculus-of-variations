@@ -28,7 +28,9 @@ Moreover the mollification of a `K`-Lipschitz function is `K`-Lipschitz
 (`plancherelMollify_lipschitzWith`), the mollification of a `ℤ^m`-periodic function is periodic
 (`plancherelMollify_periodic`), and the componentwise mollification `mollifyPi n φ` of a
 Lipschitz `ℤ^m`-periodic map `φ : ℝ^m → ℝ^d` is smooth, periodic, Lipschitz with the constant of
-`φ`, and `∇ (mollifyPi n φ) → ∇φ` almost everywhere (`ae_tendsto_grad_mollifyPi`).
+`φ`, vanishes outside the `2 / (n + 2)`-neighbourhood of a set outside which `φ` vanishes
+(`mollifyPi_eq_zero`), and `∇ (mollifyPi n φ) → ∇φ` almost everywhere
+(`ae_tendsto_grad_mollifyPi`).
 -/
 
 @[expose] public section
@@ -144,6 +146,22 @@ theorem plancherelMollify_eq_zero (ρ : ContDiffBump (0 : E)) (hρ : ρ.rOut ≤
       exact ht
     simp [this]
 
+/-- The mollification vanishes outside the `rOut`-neighbourhood of a set outside which the
+function vanishes. -/
+theorem plancherelMollify_eq_zero_of_notMem (ρ : ContDiffBump (0 : E)) {g : E → ℝ}
+    {S : Set E} (hg : ∀ y ∉ S, g y = 0) {x : E}
+    (hx : x ∉ Metric.closedBall (0 : E) ρ.rOut + S) : plancherelMollify μ ρ g x = 0 := by
+  rw [plancherelMollify, convolution_lsmul]
+  refine (integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)).trans (integral_zero _ _)
+  by_cases ht : t ∈ Metric.ball (0 : E) ρ.rOut
+  · have : x - t ∉ S := fun h => hx ⟨t, Metric.ball_subset_closedBall ht, x - t, h,
+      add_sub_cancel t x⟩
+    simp [hg _ this]
+  · have : ρ.normed μ t = 0 := by
+      rw [← Function.notMem_support, ρ.support_normed_eq]
+      exact ht
+    simp [this]
+
 /-- The integral of a partial derivative of a compactly supported Lipschitz function vanishes:
 the difference quotients `t⁻¹ (φ (x + t v) - φ x)` have integral `0` by translation invariance and
 converge to `∂_v φ` by dominated convergence. -/
@@ -247,6 +265,17 @@ theorem plancherelMollify_periodic {m : ℕ} (ρ : ContDiffBump (0 : Fin m → �
 noncomputable def mollifyPi {d m : ℕ} (n : ℕ) (φ : (Fin m → ℝ) → Fin d → ℝ) :
     (Fin m → ℝ) → Fin d → ℝ :=
   fun x i => plancherelMollify volume (plancherelBump m n) (fun y => φ y i) x
+
+/-- The mollifications of a map vanishing off `S` vanish outside the `2 / (n + 2)`-neighbourhood
+of `S`. -/
+theorem mollifyPi_eq_zero {d m : ℕ} {φ : (Fin m → ℝ) → Fin d → ℝ} {S : Set (Fin m → ℝ)}
+    (hφ : ∀ y ∉ S, φ y = 0) (n : ℕ) {x : Fin m → ℝ}
+    (hx : x ∉ Metric.closedBall (0 : Fin m → ℝ) (2 / ((n : ℝ) + 2)) + S) :
+    mollifyPi n φ x = 0 := by
+  ext i
+  change plancherelMollify volume (plancherelBump m n) (fun y => φ y i) x = 0
+  exact plancherelMollify_eq_zero_of_notMem (plancherelBump m n)
+    (fun y hy => by rw [hφ y hy]; rfl) hx
 
 /-- A component of a `K`-Lipschitz map (sup norm) is `K`-Lipschitz. -/
 private theorem mollifyPi_component_lipschitz {d m : ℕ} {φ : (Fin m → ℝ) → Fin d → ℝ}

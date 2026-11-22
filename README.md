@@ -53,11 +53,11 @@ semicontinuous, locally bounded minorants, in `EReal`).
 | `∫_Q minor (A + ∇φ) = minor A` for `3 × 3` minors, `φ` a test map on `Q` | `nl_minor3_quasiaffine` | |
 | `f^{qc} (A) = inf_φ ⨍_Ω f (A + ∇φ)`, `Ω` nonempty, bounded, open, `f` continuous; `Ω` the unit ball | `qcEnvelope_eq_iInf`, `qcEnvelope_eq_iInf_unitBall` | [KP, Prop. 8.1], [Da82]; proof of [M, Thm 4.5 (iii)] |
 | `⨍_Q Qf (F + ∇ψ) ≥ Qf (F)` for piecewise affine test maps `ψ`; the two-point inequality of `Qf` | `cubeInf_le_sum_of_piecewiseAffine`, `cubeInf_le_two_point` | [M, (4.28)] |
-| Kuhn–Freudenthal interpolation: Lipschitz, piecewise affine, `∇ I_k ψ → ∇ψ` a.e. | `kuhnInterpolation_lipschitz`, `kuhnInterpolation_piecewiseAffineOn`, `ae_tendsto_grad_kuhnInterpolation` | [F], [Ku] (the triangulation) |
+| Kuhn–Freudenthal interpolation: Lipschitz, piecewise affine; for `C¹` maps with compact support, `∇ I_k ψ → ∇ψ` uniformly | `kuhnInterpolation_lipschitz`, `kuhnInterpolation_piecewiseAffineOn`, `kuhnInterpolation_grad_uniform` | [F], [Ku] (the triangulation) |
 | `⟨(ofFun g)'', ψ⟩ = ∫ g ψ''`; `(ofFun f)' = ofFun f'` for locally Lipschitz `f`; Leibniz for `(h f)''` | `lineDerivOp_lineDerivOp_ofFun_apply`, `lineDerivOp_ofFun_eq_ofFun_deriv`, `integral_deriv_deriv_mul_mul`, `lineDerivOp_lineDerivOp_ofFun_mul_apply` | |
 | on `ℝ`: `f` convex ⇒ `(ofFun f)'' ≥ 0`; `g` continuous with `(ofFun g)'' ≥ 0` ⇒ `g` convex | `ConvexOn.distribNonneg_lineDerivOp_lineDerivOp_ofFun`, `convexOn_of_distribNonneg` | |
 | mollification: Lipschitz with the same constant; of `ℤ^m`-periodic maps, periodic | `plancherelMollify_lipschitzWith`, `plancherelMollify_periodic` | |
-| mollification of Lipschitz `ℤ^m`-periodic maps: smooth, periodic, Lipschitz, `∇ → ∇φ` a.e. | `mollifyPi_contDiff`, `mollifyPi_periodic`, `mollifyPi_lipschitzWith`, `ae_tendsto_grad_mollifyPi` | |
+| componentwise mollification of Lipschitz maps: smooth, periodic for periodic maps, Lipschitz, supported near the support, `∇ → ∇φ` a.e. | `mollifyPi_contDiff`, `mollifyPi_periodic`, `mollifyPi_lipschitzWith`, `mollifyPi_eq_zero`, `ae_tendsto_grad_mollifyPi` | |
 | smoothing of a rank-one convex `p` not quasiconvex at `0` | `Smoothing.exists_smoothing` | [K, proof of Prop. 2] |
 
 `Qf = cubeInf f` is the infimum formula on the unit cube.
@@ -103,9 +103,13 @@ theorem CalculusOfVariations.qcEnvelope_eq_iInf {f : Matrix (Fin d) (Fin m) ℝ 
   cubes filling `Ω` (Besicovitch); and `Qf` is `≡ −∞` or a continuous quasiconvex minorant of `f`:
   the inequality [M, (4.28)] for piecewise affine test maps, by gluing almost minimisers on the
   pieces, gives with the laminates of [M, Lemma 4.3] the two-point inequality of `Qf`, hence the
-  dichotomy, convexity in each entry and continuity ([M, Def. 4.2, Remark 3]); (4.28) for the
-  Kuhn–Freudenthal interpolants of a test map and dominated convergence (the "density
-  arguments" of [M]) give quasiconvexity. Müller assumes `|∂Ω| = 0`; the independence of the
+  dichotomy, convexity in each entry and continuity ([M, Def. 4.2, Remark 3]); and (4.28) with
+  the "density arguments" of [M] gives quasiconvexity. The density argument is the one of the
+  proof of [M, Thm 4.4 (i)]: a test map, shrunk into a smaller cube by scaling, is approximated
+  by smooth maps (mollification), each of them by piecewise affine maps on a fine
+  Kuhn–Freudenthal triangulation (whose gradients converge uniformly), with the triangulation
+  chosen diagonally; the gradients stay bounded and converge almost everywhere, and dominated
+  convergence passes (4.28) to the limit. Müller assumes `|∂Ω| = 0`; the independence of the
   domain used here does not need it.
 - **Distributions on `ℝ`.** Integration by parts for locally Lipschitz functions (absolute
   continuity); a convex function has a nonnegative second distributional derivative, by second
@@ -114,7 +118,8 @@ theorem CalculusOfVariations.qcEnvelope_eq_iInf {f : Matrix (Fin d) (Fin m) ℝ 
 - **Kuhn–Freudenthal interpolation** is the closed form
   `I_k ψ (x) = ∫_0^1 ψ (k⁻¹ ⌈k x − t 𝟙⌉) dt`: on each open simplex of the triangulation of
   `k⁻¹ ℤ^m` it is the affine interpolant of the values at the vertices, and its gradient there is a
-  vector of difference quotients of `ψ` along edges of length `k⁻¹`.
+  vector of difference quotients of `ψ` along edges of length `k⁻¹`; for a `C¹` map these
+  converge uniformly (mean value theorem, uniform continuity of the derivative).
 - **Smoothing** follows the first step of [K, proof of Prop. 2], with cut-offs that are functions
   of `|X|²` (module docstring of `Smoothing/RankOneConvex.lean`).
 
@@ -126,7 +131,6 @@ theorem CalculusOfVariations.qcEnvelope_eq_iInf {f : Matrix (Fin d) (Fin m) ℝ 
 - Mathlib-style names for the helper lemmas (prefixes `rd_`, `cv_`, `env_`, `glue_`, `lam_`,
   `distrib_`, `nl_`, and `plancherel` for the mollification lemmas), and one family of lemmas on
   gradients of Lipschitz maps in `Lipschitz/Gradient.lean` instead of two.
-- `cubeLaminate_eq_zero` without its hypotheses `0 ≤ λ ≤ 1`, which it does not use.
 - The gluing lemma `cv_glue_on` for maps that are affine on the cubes, without the tangent maps
   and cut-offs it allows for (every use in the package is of that kind).
 

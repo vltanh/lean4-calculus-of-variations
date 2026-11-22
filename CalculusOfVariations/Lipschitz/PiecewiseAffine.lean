@@ -14,6 +14,9 @@ public import Mathlib.Data.Fin.Tuple.Sort
 public import Mathlib.MeasureTheory.Function.Floor
 public import Mathlib.Topology.Algebra.Module.FiniteDimension
 public import Mathlib.Analysis.Calculus.FDeriv.Prod
+public import Mathlib.Analysis.Calculus.ContDiff.Defs
+public import Mathlib.Analysis.Calculus.Deriv.MeanValue
+public import Mathlib.Topology.UniformSpace.HeineCantor
 
 /-!
 # Piecewise affine maps and Kuhn–Freudenthal interpolation
@@ -45,11 +48,15 @@ All proved, along the closed form of the Kuhn–Freudenthal triangulation. Write
   `kuhnSimplex k a σ` (`a ∈ {0, …, k − 1}^m`), pairwise disjoint since `a = ⌊k x⌋` and `σ` sorts
   `r`; the rest of the cube lies in the null hyperplanes `{x_i = q}`, `{x_i − x_{i'} = q}`
   (`q ∈ ℚ`, `i ≠ i'`);
-* `ae_tendsto_grad_kuhnInterpolation`: `∇ I_k ψ → ∇ψ` almost everywhere: at a point `x` of
-  differentiability of `ψ` (Rademacher) off these hyperplanes, `x` lies for every `k ≥ 1` in an
-  open Kuhn simplex, where the column `σ s` of `∇ I_k ψ` is the difference quotient
+* `kuhnInterpolation_grad_uniform`: for a `C¹` map `ψ` with compact support the gradients converge
+  uniformly, `|∇ I_k ψ − ∇ψ| ≤ ε` entrywise almost everywhere for `k` large: this is the piecewise
+  affine approximation of a smooth map on a fine regular triangulation (S. Müller, lecture notes,
+  MPI MiS Leipzig 1998, proof of Theorem 4.4 (i)). Off the null hyperplanes, `x` lies for every
+  `k ≥ 1` in an open Kuhn simplex, where the column `σ s` of `∇ I_k ψ` is the difference quotient
   `k (ψ (v_s) − ψ (v_{s + 1}))` along an edge of length `k⁻¹` with ends within `k⁻¹` of `x`
-  (`kuhnInterpolation_grad`); these tend to `∂_{σ s} ψ (x)` uniformly in the edge.
+  (`kuhnInterpolation_grad`). By the mean value theorem its entry `i` is `∂_{σ s} ψ_i (ξ)` at a
+  point `ξ` of the edge, and the uniform continuity of `Dψ` (continuous with compact support)
+  makes it `ε`-close to `∂_{σ s} ψ_i (x)` once `k⁻¹` is small.
 -/
 
 @[expose] public section
@@ -638,79 +645,85 @@ theorem kuhnInterpolation_piecewiseAffineOn (ψ : (Fin m → ℝ) → Fin d → 
 
 /-! ### Convergence of the gradients -/
 
-/-- Difference quotients along edges of length `k⁻¹` near a point of differentiability, uniformly:
-for `k ≥ N`, if `u` and `u + k⁻¹ e` are within `k⁻¹` of `x`, then `k (ψ (u + k⁻¹ e) − ψ u)` is
-within `ε` of `Dψ (x) e`. -/
-private lemma kuhn_diffQuot {ψ : (Fin m → ℝ) → Fin d → ℝ} {A : (Fin m → ℝ) →L[ℝ] (Fin d → ℝ)}
-    {x : Fin m → ℝ} (hA : HasFDerivAt ψ A x) {ε : ℝ} (hε : 0 < ε) :
-    ∃ N : ℕ, ∀ k ≥ N, ∀ u e : Fin m → ℝ, ‖u - x‖ ≤ (k : ℝ)⁻¹ →
-      ‖u + (k : ℝ)⁻¹ • e - x‖ ≤ (k : ℝ)⁻¹ →
-        ‖(k : ℝ) • (ψ (u + (k : ℝ)⁻¹ • e) - ψ u) - A e‖ ≤ ε := by
-  obtain ⟨δ, hδ, hball⟩ := Metric.eventually_nhds_iff.1 (hA.isLittleO.def (half_pos hε))
+/-- **Interpolation of a `C¹` map** (the piecewise linear approximation of a smooth map on a fine
+regular triangulation): for a `C¹` map `ψ` with compact support, the gradients of the
+Kuhn–Freudenthal interpolants converge to `∇ψ` uniformly: for every `ε > 0` there is `k₀` such
+that for `k ≥ k₀`, almost everywhere, every entry of `∇ I_k ψ − ∇ψ` is at most `ε`. -/
+theorem kuhnInterpolation_grad_uniform {ψ : (Fin m → ℝ) → Fin d → ℝ} (hψ : ContDiff ℝ 1 ψ)
+    (hψc : HasCompactSupport ψ) {ε : ℝ} (hε : 0 < ε) :
+    ∃ k₀ : ℕ, ∀ k ≥ k₀, ∀ᵐ x, ∀ i j,
+      |grad (kuhnInterpolation k ψ) x i j - grad ψ x i j| ≤ ε := by
+  have hdiff : Differentiable ℝ ψ := hψ.differentiable one_ne_zero
+  have huc : UniformContinuous (fderiv ℝ ψ) :=
+    (hψc.fderiv ℝ).uniformContinuous_of_continuous (hψ.continuous_fderiv one_ne_zero)
+  obtain ⟨δ, hδ, hδε⟩ := Metric.uniformContinuous_iff.1 huc ε hε
   obtain ⟨N, hN⟩ := exists_nat_gt δ⁻¹
-  refine ⟨N, fun k hk u e hu hv => ?_⟩
-  have hNk : (N : ℝ) ≤ k := by exact_mod_cast hk
-  have hkpos : (0 : ℝ) < k := lt_of_lt_of_le (lt_trans (inv_pos.2 hδ) hN) hNk
-  have hkδ : (k : ℝ)⁻¹ < δ := by
-    rw [inv_lt_comm₀ hkpos hδ]
-    exact lt_of_lt_of_le hN hNk
-  set v := u + (k : ℝ)⁻¹ • e with hv_def
-  have h1 := hball (show dist v x < δ by rw [dist_eq_norm]; linarith)
-  have h2 := hball (show dist u x < δ by rw [dist_eq_norm]; linarith)
-  have hAe : A e = (k : ℝ) • (A (v - x) - A (u - x)) := by
-    rw [← map_sub, sub_sub_sub_cancel_right, ← map_smul]
-    congr 1
-    simp [v, smul_smul, mul_inv_cancel₀ hkpos.ne']
-  have hrw : (k : ℝ) • (ψ v - ψ u) - A e =
-      (k : ℝ) • ((ψ v - ψ x - A (v - x)) - (ψ u - ψ x - A (u - x))) := by
-    rw [hAe, ← smul_sub]
-    congr 1
-    abel
-  rw [hrw, norm_smul, Real.norm_of_nonneg hkpos.le]
-  calc (k : ℝ) * ‖(ψ v - ψ x - A (v - x)) - (ψ u - ψ x - A (u - x))‖
-      ≤ k * (ε / 2 * ‖v - x‖ + ε / 2 * ‖u - x‖) := by
-        gcongr
-        exact (norm_sub_le _ _).trans (add_le_add h1 h2)
-    _ ≤ k * (ε / 2 * (k : ℝ)⁻¹ + ε / 2 * (k : ℝ)⁻¹) := by gcongr
-    _ = ε := by field_simp; ring
-
-/-- For a Lipschitz `ψ`, `∇ I_k ψ → ∇ψ` almost everywhere as `k → ∞`. -/
-theorem ae_tendsto_grad_kuhnInterpolation {ψ : (Fin m → ℝ) → Fin d → ℝ} {K : NNReal}
-    (hψ : LipschitzWith K ψ) :
-    ∀ᵐ x, Tendsto (fun k => grad (kuhnInterpolation k ψ) x) atTop (𝓝 (grad ψ x)) := by
-  filter_upwards [hψ.ae_differentiableAt, measure_eq_zero_iff_ae_notMem.1 (kuhn_volume_bad m)]
-    with x hdx hxb
-  have hA := hdx.hasFDerivAt
-  have hgψ : ∀ i c, grad ψ x i c = fderiv ℝ ψ x (Pi.single c 1) i := fun i c => by
-    simp only [grad, Matrix.of_apply]
-    rw [((hasFDerivAt_pi'.1 hA) i).fderiv]
-    rfl
-  refine tendsto_pi_nhds.2 fun i => tendsto_pi_nhds.2 fun c => ?_
-  rw [Metric.tendsto_atTop]
-  intro ε hε
-  obtain ⟨N, hN⟩ := kuhn_diffQuot hA (half_pos hε)
   refine ⟨max N 1, fun k hk => ?_⟩
-  have hkN : N ≤ k := le_of_max_le_left hk
   have hkpos : 0 < k := le_of_max_le_right hk
+  have hk' : (0 : ℝ) < k := Nat.cast_pos.2 hkpos
+  have hkδ : (k : ℝ)⁻¹ < δ := by
+    rw [inv_lt_comm₀ hk' hδ]
+    exact lt_of_lt_of_le hN (by exact_mod_cast le_of_max_le_left hk)
+  have hpi : ∀ y (i : Fin d), HasFDerivAt (fun z => ψ z i)
+      ((ContinuousLinearMap.proj i).comp (fderiv ℝ ψ y)) y :=
+    fun y i => (hasFDerivAt_pi'.1 (hdiff y).hasFDerivAt) i
+  filter_upwards [measure_eq_zero_iff_ae_notMem.1 (kuhn_volume_bad m)] with x hxb
+  intro i c
   set a : Fin m → ℤ := fun i => ⌊(k : ℝ) * x i⌋ with ha
   set σ := Tuple.sort fun i => (k : ℝ) * x i - ⌊(k : ℝ) * x i⌋ with hσ
   have hmem : x ∈ kuhnSimplex k a σ := kuhn_mem_simplex hkpos hxb
   obtain ⟨s, rfl⟩ : ∃ s, σ s = c := ⟨σ.symm c, by simp⟩
-  rw [kuhnInterpolation_grad k ψ a σ hmem i s, hgψ, dist_eq_norm, Real.norm_eq_abs]
-  have hw := kuhn_norm_vertex_sub_le hkpos σ x ((s : ℕ) + 1)
-  have hv : ‖kuhnVertex k a σ ((s : ℕ) + 1) + (k : ℝ)⁻¹ • Pi.single (σ s) 1 - x‖ ≤ (k : ℝ)⁻¹ := by
-    rw [← kuhnVertex_eq_add]
+  have hgrad : grad ψ x i (σ s) = fderiv ℝ ψ x (Pi.single (σ s) 1) i := by
+    simp only [grad, Matrix.of_apply]
+    rw [(hpi x i).fderiv]
+    rfl
+  rw [kuhnInterpolation_grad k ψ a σ hmem i s, hgrad]
+  set w := kuhnVertex k a σ ((s : ℕ) + 1) with hw_def
+  set e : Fin m → ℝ := Pi.single (σ s) 1 with he_def
+  have hw : ‖w - x‖ ≤ (k : ℝ)⁻¹ := kuhn_norm_vertex_sub_le hkpos σ x ((s : ℕ) + 1)
+  have hv : ‖w + (k : ℝ)⁻¹ • e - x‖ ≤ (k : ℝ)⁻¹ := by
+    rw [hw_def, he_def, ← kuhnVertex_eq_add]
     exact kuhn_norm_vertex_sub_le hkpos σ x s
-  have hq := hN k hkN _ _ hw hv
-  calc |(k : ℝ) * (ψ (kuhnVertex k a σ ((s : ℕ) + 1) + (k : ℝ)⁻¹ • Pi.single (σ s) 1) i -
-        ψ (kuhnVertex k a σ ((s : ℕ) + 1)) i) - fderiv ℝ ψ x (Pi.single (σ s) 1) i|
-      = ‖((k : ℝ) • (ψ (kuhnVertex k a σ ((s : ℕ) + 1) + (k : ℝ)⁻¹ • Pi.single (σ s) 1) -
-        ψ (kuhnVertex k a σ ((s : ℕ) + 1))) - fderiv ℝ ψ x (Pi.single (σ s) 1)) i‖ := by
-        simp [Real.norm_eq_abs]
-    _ ≤ ‖(k : ℝ) • (ψ (kuhnVertex k a σ ((s : ℕ) + 1) + (k : ℝ)⁻¹ • Pi.single (σ s) 1) -
-        ψ (kuhnVertex k a σ ((s : ℕ) + 1))) - fderiv ℝ ψ x (Pi.single (σ s) 1)‖ :=
-        norm_le_pi_norm _ i
-    _ ≤ ε / 2 := hq
-    _ < ε := half_lt_self hε
+  -- the mean value theorem on the edge `[w, w + k⁻¹ e]`
+  have hderiv : ∀ τ : ℝ,
+      HasDerivAt (fun τ => ψ (w + τ • e) i) (fderiv ℝ ψ (w + τ • e) e i) τ := by
+    intro τ
+    have h1 : HasDerivAt (fun τ : ℝ => w + τ • e) e τ := by
+      simpa using ((hasDerivAt_id τ).smul_const e).const_add w
+    exact (hpi (w + τ • e) i).comp_hasDerivAt τ h1
+  obtain ⟨τ, hτ, hτeq⟩ := exists_hasDerivAt_eq_slope (fun τ => ψ (w + τ • e) i)
+    (fun τ => fderiv ℝ ψ (w + τ • e) e i) (inv_pos.2 hk')
+    (fun τ _ => (hderiv τ).continuousAt.continuousWithinAt) (fun τ _ => hderiv τ)
+  have hξ : ‖w + τ • e - x‖ ≤ (k : ℝ)⁻¹ := by
+    have hmemξ : w + ((k : ℝ) * τ) • ((w + (k : ℝ)⁻¹ • e) - w) ∈
+        Metric.closedBall x (k : ℝ)⁻¹ :=
+      (convex_closedBall x _).add_smul_sub_mem (mem_closedBall_iff_norm.2 hw)
+        (mem_closedBall_iff_norm.2 hv)
+        ⟨by nlinarith [hτ.1], by
+          have := hτ.2
+          rw [← mul_inv_cancel₀ hk'.ne']
+          exact mul_le_mul_of_nonneg_left this.le hk'.le⟩
+    have heq : w + ((k : ℝ) * τ) • ((w + (k : ℝ)⁻¹ • e) - w) = w + τ • e := by
+      rw [add_sub_cancel_left, smul_smul, mul_comm (k : ℝ) τ, mul_assoc,
+        mul_inv_cancel₀ hk'.ne', mul_one]
+    rw [heq] at hmemξ
+    exact mem_closedBall_iff_norm.1 hmemξ
+  have hdq : (k : ℝ) * (ψ (w + (k : ℝ)⁻¹ • e) i - ψ w i) = fderiv ℝ ψ (w + τ • e) e i := by
+    rw [hτeq]
+    simp only [zero_smul, add_zero, sub_zero]
+    field_simp
+  rw [hdq]
+  have hdist : dist (fderiv ℝ ψ (w + τ • e)) (fderiv ℝ ψ x) < ε :=
+    hδε (by rw [dist_eq_norm]; linarith)
+  calc |fderiv ℝ ψ (w + τ • e) e i - fderiv ℝ ψ x e i|
+      = ‖((fderiv ℝ ψ (w + τ • e) - fderiv ℝ ψ x) e) i‖ := by simp [Real.norm_eq_abs]
+    _ ≤ ‖(fderiv ℝ ψ (w + τ • e) - fderiv ℝ ψ x) e‖ := norm_le_pi_norm _ i
+    _ ≤ ‖fderiv ℝ ψ (w + τ • e) - fderiv ℝ ψ x‖ * ‖e‖ := ContinuousLinearMap.le_opNorm _ _
+    _ ≤ ε * 1 := by
+        gcongr
+        · rw [← dist_eq_norm]
+          exact hdist.le
+        · simp [e, Pi.norm_single]
+    _ = ε := mul_one ε
 
 end CalculusOfVariations
