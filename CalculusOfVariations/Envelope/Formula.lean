@@ -13,10 +13,11 @@ public import CalculusOfVariations.Envelope.Domain
 
 For a continuous `f : ℝ^{d×m} → ℝ`, every nonempty bounded open `Ω ⊆ ℝ^m` and every `A`,
 `f^{qc} (A) = inf_φ ⨍_Ω f (A + ∇φ)` over the Lipschitz `φ` vanishing outside `Ω`, with values in
-`EReal` (`qcEnvelope_eq_iInf`); in particular over the Euclidean unit ball
-(`qcEnvelope_eq_iInf_unitBall`). The formula was first proved by B. Dacorogna, *Quasiconvexity and
-relaxation of nonconvex problems in the calculus of variations*, J. Funct. Anal. 46 (1982), 102–118
-([D82], Theorem 5), on a hypercube and for continuous integrands with `a ≤ f ≤ b + c |F|^p`; for
+`EReal` (`qcEnvelope_eq_iInf`, and `quasiconvexEnvelope_eq_domainInf` for the envelope over the
+Borel minorants); in particular over the Euclidean unit ball (`qcEnvelope_eq_iInf_unitBall`). The
+formula was first proved by B. Dacorogna, *Quasiconvexity and relaxation of nonconvex problems in
+the calculus of variations*, J. Funct. Anal. 46 (1982), 102–118 ([D82], Theorem 5), on a hypercube
+and for continuous integrands with `a ≤ f ≤ b + c |F|^p`; for
 every bounded open set it is Theorem 6.9 of B. Dacorogna, *Direct Methods in the Calculus of
 Variations*, 2nd ed., Springer, 2008 (p. 271; `f` Borel and locally bounded, with a quasiconvex
 minorant). For continuous integrands that need not be bounded below it follows from Proposition 8.1
@@ -36,6 +37,9 @@ of [KP]: (i) is `domainInf_le_domainInf` (`Envelope.Domain`), (ii) is
 * `ψ^# ≤ f^{qc}`: by (i) it is enough to treat `Ω = Q`, the unit cube; `cubeInf f ≤ f`, and
   `cubeInf f` is either `≡ −∞` or, by (iii) and (iv), a continuous quasiconvex minorant of `f`
   (`cubeInf_le_qcEnvelope`).
+
+The properties (i)–(iv) are also stated for the formula over an arbitrary nonempty bounded open set:
+`domainInf_eq_of_isBounded`, `domainInf_le_of_rank_le_one`, `exists_domainInf_eq_coe`.
 
 ([D82]'s proof of the continuity of the right-hand side, `Q'f` there, Theorem 5, Step 1, p. 108–109,
 chooses a near minimiser for `F + H` and then `H` small depending on it ((1.15)); it is not used
@@ -116,11 +120,11 @@ variable {d m : ℕ}
 
 open Metric Set Filter Topology
 
-/-- **A quasiconvex minorant is below the averages over `Ω`.** For an admissible `g` (lower
-semicontinuous, locally bounded, quasiconvex on the unit cube, `g ≤ f`), a nonempty bounded open
-`Ω` and a test map `ψ` on `Ω`: `g` is quasiconvex on `Ω` (`quasiconvexAtOn_iff`), so
+/-- **A quasiconvex minorant is below the averages over `Ω`.** For a Borel, locally bounded `g ≤ f`,
+quasiconvex on the unit cube, a nonempty bounded open `Ω` and a test map `ψ` on `Ω`: `g` is
+quasiconvex on `Ω` (`quasiconvexAtOn_iff_of_measurable`), so
 `|Ω| g (A) ≤ ∫_Ω g (A + ∇ψ) ≤ ∫_Ω f (A + ∇ψ)`. -/
-theorem env_le_average {f g : Matrix (Fin d) (Fin m) ℝ → ℝ} (hlsc : LowerSemicontinuous g)
+theorem env_le_average {f g : Matrix (Fin d) (Fin m) ℝ → ℝ} (hg : Measurable g)
     (hbdd : IsLocallyBounded g) (hqc : Quasiconvex g) (hgf : ∀ B, g B ≤ f B)
     (hf : Continuous f) {Ω : Set (Fin m → ℝ)} (hΩ : IsOpen Ω) (hb : Bornology.IsBounded Ω)
     (hne : Ω.Nonempty) (A : Matrix (Fin d) (Fin m) ℝ) {ψ : (Fin m → ℝ) → Fin d → ℝ}
@@ -130,8 +134,8 @@ theorem env_le_average {f g : Matrix (Fin d) (Fin m) ℝ → ℝ} (hlsc : LowerS
   have hfin : volume Ω < ⊤ := hb.measure_lt_top
   have hpos : 0 < (volume Ω).toReal :=
     ENNReal.toReal_pos (hΩ.measure_pos volume hne).ne' hfin.ne
-  have hint := rd_integrableOn hlsc hbdd A hK hfin
-  have h1 := (quasiconvexAtOn_iff hlsc hbdd A hΩ hb hne).1 (hqc A) ψ K hK hψΩ hint
+  have hint := rd_integrableOn hg hbdd A hK hfin
+  have h1 := (quasiconvexAtOn_iff_of_measurable hg hbdd A hΩ hb hne).1 (hqc A) ψ K hK hψΩ hint
   have h2 : ∫ x in Ω, g (A + grad ψ x) ≤ ∫ x in Ω, f (A + grad ψ x) :=
     setIntegral_mono_on hint (cv_integrableOn hf A hK hfin.ne) hΩ.measurableSet
       fun y _ => hgf _
@@ -167,7 +171,7 @@ theorem qcEnvelope_eq_iInf {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : Contin
   refine le_antisymm ?_ (hle.trans (cubeInf_le_qcEnvelope hf A))
   refine iSup₂_le fun g hg => le_iInf₂ fun φ hφ => ?_
   obtain ⟨hlsc, hbdd, hqc, hgf⟩ := hg
-  exact EReal.coe_le_coe_iff.2 (env_le_average hlsc hbdd hqc hgf hf hΩ hb hne A hφ)
+  exact EReal.coe_le_coe_iff.2 (env_le_average hlsc.measurable hbdd hqc hgf hf hΩ hb hne A hφ)
 
 /-- **Dacorogna's formula on the unit ball**: for a continuous `f : ℝ^{d×m} → ℝ` and every `A`,
 `f^{qc} (A) = inf_φ ⨍_{B} f (A + ∇φ)` over the Lipschitz `φ` vanishing outside the Euclidean unit
@@ -180,6 +184,80 @@ theorem qcEnvelope_eq_iInf_unitBall {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf
         (((volume (unitBall m)).toReal⁻¹ * ∫ x in unitBall m, f (A + grad φ x) : ℝ) : EReal) :=
   qcEnvelope_eq_iInf hf cv_unitBall_isOpen (isBounded_closedBall.subset cv_unitBall_subset)
     ⟨0, by simp [unitBall]⟩ A
+
+/-- The two forms of the quasiconvex envelope agree, for every `f`: a Borel, locally bounded,
+quasiconvex function is rank-one convex (`rankOneConvex_of_quasiconvex_of_measurable`), so it is
+continuous (`RankOneConvex.locallyLipschitz`). -/
+theorem quasiconvexEnvelope_eq_qcEnvelope (f : Matrix (Fin d) (Fin m) ℝ → ℝ)
+    (A : Matrix (Fin d) (Fin m) ℝ) : quasiconvexEnvelope f A = qcEnvelope f A := by
+  refine iSup_congr fun g => iSup_congr_Prop ?_ fun _ => rfl
+  refine ⟨fun ⟨hm, hb, hq, hg⟩ => ⟨?_, hb, hq, hg⟩, fun ⟨hl, hb, hq, hg⟩ =>
+    ⟨hl.measurable, hb, hq, hg⟩⟩
+  exact Continuous.lowerSemicontinuous
+    (rankOneConvex_of_quasiconvex_of_measurable hm hb hq).locallyLipschitz.continuous
+
+/-- **Dacorogna's formula** (`qcEnvelope_eq_iInf`), for the envelope over the Borel, locally
+bounded, quasiconvex minorants. -/
+theorem quasiconvexEnvelope_eq_domainInf {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : Continuous f)
+    {Ω : Set (Fin m → ℝ)} (hΩ : IsOpen Ω) (hb : Bornology.IsBounded Ω) (hne : Ω.Nonempty)
+    (A : Matrix (Fin d) (Fin m) ℝ) : quasiconvexEnvelope f A = domainInf Ω f A :=
+  (quasiconvexEnvelope_eq_qcEnvelope f A).trans (qcEnvelope_eq_iInf hf hΩ hb hne A)
+
+/-! ### The infimum formula over a bounded open set: properties -/
+
+/-- The infimum formula does not depend on the nonempty bounded open set (no condition on the
+boundary): by Dacorogna's formula it is the quasiconvex envelope. -/
+theorem domainInf_eq_of_isBounded {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : Continuous f)
+    {Ω D : Set (Fin m → ℝ)} (hΩ : IsOpen Ω) (hΩb : Bornology.IsBounded Ω) (hΩne : Ω.Nonempty)
+    (hD : IsOpen D) (hDb : Bornology.IsBounded D) (hDne : D.Nonempty)
+    (A : Matrix (Fin d) (Fin m) ℝ) : domainInf Ω f A = domainInf D f A :=
+  (quasiconvexEnvelope_eq_domainInf hf hΩ hΩb hΩne A).symm.trans
+    (quasiconvexEnvelope_eq_domainInf hf hD hDb hDne A)
+
+/-- The infimum formula on a nonempty bounded open set is the one on the unit cube. -/
+theorem domainInf_eq_cubeInf {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : Continuous f)
+    {Ω : Set (Fin m → ℝ)} (hΩ : IsOpen Ω) (hb : Bornology.IsBounded Ω) (hne : Ω.Nonempty)
+    (A : Matrix (Fin d) (Fin m) ℝ) : domainInf Ω f A = cubeInf f A :=
+  (domainInf_eq_of_isBounded hf hΩ hb hne cv_isOpen_unitCube
+    (isBounded_closedBall.subset cv_unitCube_subset_closedBall)
+    ⟨fun _ => 1 / 2, fun _ _ => ⟨by norm_num, by norm_num⟩⟩ A).trans (domainInf_unitCube f A)
+
+private lemma env_eq_zero_of_rank_eq_zero {A : Matrix (Fin d) (Fin m) ℝ} (h : A.rank = 0) :
+    A = 0 := by
+  rw [Matrix.rank, Submodule.finrank_eq_zero, LinearMap.range_eq_bot] at h
+  ext i j
+  have := congrArg (fun F => F (Pi.single j 1) i) h
+  simpa [Matrix.mulVecLin_apply] using this
+
+/-- **The infimum formula is rank-one convex** ([KP], Proposition 8.1 (ii)), with values in
+`EReal`. -/
+theorem domainInf_le_of_rank_le_one {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : Continuous f)
+    {Ω : Set (Fin m → ℝ)} (hΩ : IsOpen Ω) (hb : Bornology.IsBounded Ω) (hne : Ω.Nonempty)
+    {A B : Matrix (Fin d) (Fin m) ℝ} (hAB : (A - B).rank ≤ 1) {l : ℝ} (hl0 : 0 < l) (hl1 : l < 1) :
+    domainInf Ω f (l • A + (1 - l) • B) ≤
+      (l : EReal) * domainInf Ω f A + ((1 - l : ℝ) : EReal) * domainInf Ω f B := by
+  obtain ⟨a, n, han⟩ : ∃ (a : Fin d → ℝ) (n : Fin m → ℝ), A - B = Matrix.vecMulVec a n := by
+    rcases Nat.le_one_iff_eq_zero_or_eq_one.1 hAB with h | h
+    · refine ⟨0, 0, ?_⟩
+      rw [Matrix.zero_vecMulVec]
+      exact env_eq_zero_of_rank_eq_zero h
+    · exact exists_eq_vecMulVec_of_rank_eq_one h
+  have h := cubeInf_le_two_point_vecMulVec hf (l • A + (1 - l) • B) a n hl0 hl1
+  rw [← han, show l • A + (1 - l) • B + (1 - l) • (A - B) = A by module,
+    show l • A + (1 - l) • B - l • (A - B) = B by module] at h
+  simpa only [domainInf_eq_cubeInf hf hΩ hb hne] using h
+
+/-- **The infimum formula is continuous and quasiconvex, if it is finite at some matrix** ([KP],
+Proposition 8.1 (iii), (iv)). -/
+theorem exists_domainInf_eq_coe {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : Continuous f)
+    {Ω : Set (Fin m → ℝ)} (hΩ : IsOpen Ω) (hb : Bornology.IsBounded Ω) (hne : Ω.Nonempty)
+    {A₀ : Matrix (Fin d) (Fin m) ℝ} (h : domainInf Ω f A₀ ≠ ⊥) :
+    ∃ g : Matrix (Fin d) (Fin m) ℝ → ℝ, Continuous g ∧ Quasiconvex g ∧
+      ∀ A, domainInf Ω f A = (g A : EReal) := by
+  have hfin : ∀ A, cubeInf f A ≠ ⊥ := fun A hA =>
+    h ((domainInf_eq_cubeInf hf hΩ hb hne A₀).trans (cubeInf_bot_all hf hA A₀))
+  exact ⟨cubeInfReal f, cubeInfReal_continuous hf hfin, cubeInfReal_quasiconvex hf hfin, fun A =>
+    (domainInf_eq_cubeInf hf hΩ hb hne A).trans (cubeInf_eq_cubeInfReal (hfin A))⟩
 
 end Domain
 

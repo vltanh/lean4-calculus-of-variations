@@ -13,7 +13,8 @@ public import Mathlib.MeasureTheory.Covering.Vitali
 # The infimum formula does not depend on the domain
 
 For a continuous `f : ℝ^{d×m} → ℝ` and a domain `Ω ⊆ ℝ^m`, `domainInf Ω f A = inf_φ ⨍_Ω f (A + ∇φ)`
-over the Lipschitz `φ` vanishing outside `Ω`, with values in `EReal`. For bounded open sets with
+over the Lipschitz `φ` vanishing outside `Ω`, with values in `EReal` ([KP], (8.1), where it is
+`ψ^#`, and `ψ^#_Ω` in the proof of (i); `ψ = f`). For bounded open sets with
 null boundary it does not depend on `Ω` (`domainInf_eq`); more precisely,
 `domainInf Ω f A ≤ domainInf D f A` for every nonempty open `Ω` of finite measure and every nonempty
 bounded open `D` with `|∂D| = 0` (`domainInf_le_domainInf`).
@@ -38,13 +39,6 @@ open MeasureTheory Metric Set Filter Topology
 namespace CalculusOfVariations
 
 variable {d m : ℕ}
-
-/-- The infimum formula on `Ω`: `inf_φ ⨍_Ω f (A + ∇φ)` over the Lipschitz `φ` vanishing outside `Ω`
-([KP], (8.1), where it is `ψ^#`, and `ψ^#_Ω` in the proof of (i); `ψ = f`). -/
-noncomputable def domainInf (Ω : Set (Fin m → ℝ)) (f : Matrix (Fin d) (Fin m) ℝ → ℝ)
-    (A : Matrix (Fin d) (Fin m) ℝ) : EReal :=
-  ⨅ (φ : (Fin m → ℝ) → Fin d → ℝ) (_ : (∃ K, LipschitzWith K φ) ∧ ∀ x ∉ Ω, φ x = 0),
-    (((volume Ω).toReal⁻¹ * ∫ x in Ω, f (A + grad φ x) : ℝ) : EReal)
 
 /-- The infimum formula on the unit cube is `cubeInf`. -/
 theorem domainInf_unitCube (f : Matrix (Fin d) (Fin m) ℝ → ℝ) (A : Matrix (Fin d) (Fin m) ℝ) :

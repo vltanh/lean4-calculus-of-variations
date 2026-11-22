@@ -15,7 +15,7 @@ On the unit cube the two-point inequality
 quasiconvex at `F`, without any regularity of `f` (`le_of_quasiconvexAtOn_unitCube`), and likewise
 on a rotated cube `R Q`, in the direction `a ⊗ R e_j` (`le_of_quasiconvexAtOn_orthogonal`).
 (`le_of_quasiconvexAtOn_vecMulVec` of `Quasiconvex.Laminate`, which cuts the laminates off by
-multiplication, needs `f` lower semicontinuous and locally bounded: its test maps have infinitely
+multiplication, needs `f` Borel and locally bounded: its test maps have infinitely
 many gradients.)
 
 The argument is the proof of S. Müller, *Variational models for microstructure and phase

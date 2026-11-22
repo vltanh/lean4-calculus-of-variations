@@ -32,7 +32,7 @@ public import Mathlib.MeasureTheory.Constructions.BorelSpace.Order
 For a `K`-Lipschitz `φ : ℝ^m → ℝ^d` (sup norms): the entries of `grad φ` are bounded by `K`,
 `grad φ` is measurable, it depends only on the germ of `φ`, it is additive at points of
 differentiability, and `x ↦ f (A + ∇φ (x))` is bounded and integrable on sets of finite measure
-for a lower semicontinuous, locally bounded `f`.
+for a Borel, locally bounded `f`.
 
 Two families of lemmas cover the same ground (prefixes `rd_` and `cv_`); they are kept apart for
 now.
@@ -103,15 +103,23 @@ lemma rd_bound_near {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hbdd : IsLocallyBo
   refine ⟨max C 0, le_max_right _ _, fun G hG => (hC _ fun i k => ?_).trans (le_max_left _ _)⟩
   simpa using hG i k
 
-/-- For a lower semicontinuous, locally bounded `f` and a Lipschitz `φ`, `x ↦ f (A + ∇φ (x))` is
-integrable on sets of finite measure (it is measurable and bounded). -/
-lemma rd_integrableOn {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hlsc : LowerSemicontinuous f)
+/-- A continuous function is locally bounded. -/
+lemma isLocallyBounded_of_continuous {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : Continuous f) :
+    IsLocallyBounded f := fun A => by
+  refine ⟨f ⁻¹' Metric.ball (f A) 1, hf.continuousAt.preimage_mem_nhds
+    (Metric.ball_mem_nhds _ one_pos), |f A| + 1, fun B hB => ?_⟩
+  rw [Set.mem_preimage, Metric.mem_ball, Real.dist_eq] at hB
+  linarith [abs_sub_abs_le_abs_sub (f B) (f A)]
+
+/-- For a Borel, locally bounded `f` and a Lipschitz `φ`, `x ↦ f (A + ∇φ (x))` is integrable on
+sets of finite measure (it is measurable and bounded). -/
+lemma rd_integrableOn {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : Measurable f)
     (hbdd : IsLocallyBounded f) (A : Matrix (Fin d) (Fin m) ℝ) {φ : (Fin m → ℝ) → Fin d → ℝ}
     {K : NNReal} (hφ : LipschitzWith K φ) {s : Set (Fin m → ℝ)} (hs : volume s < ⊤) :
     IntegrableOn (fun x => f (A + grad φ x)) s := by
   obtain ⟨C, -, hC⟩ := rd_bound_near hbdd A K
   refine IntegrableOn.of_bound hs
-    (hlsc.measurable.comp (rd_measurable_add_grad A φ)).aestronglyMeasurable C
+    (hf.comp (rd_measurable_add_grad A φ)).aestronglyMeasurable C
     (Eventually.of_forall fun x => ?_)
   rw [Real.norm_eq_abs]
   exact hC _ (rd_grad_abs_le hφ x)

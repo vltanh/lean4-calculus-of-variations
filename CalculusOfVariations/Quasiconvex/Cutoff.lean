@@ -10,10 +10,9 @@ public import CalculusOfVariations.Lipschitz.Cutoff
 /-!
 # Cut-offs near the boundary of the cube
 
-`le_of_quasiconvexAtOn_of_tendsto`: let `f` be lower semicontinuous and locally bounded, and
-quasiconvex at `F` on the unit cube `Q`. If the maps `u_k` are Lipschitz with the same constant,
-`u_k → 0` uniformly and `∫_Q f (F + ∇u_k) → E`, then `f (F) ≤ E`, although the `u_k` need not vanish
-on `∂Q`.
+`le_of_quasiconvexAtOn_of_tendsto`: let `f` be Borel and locally bounded, and quasiconvex at `F` on
+the unit cube `Q`. If the maps `u_k` are Lipschitz with the same constant, `u_k → 0` uniformly and
+`∫_Q f (F + ∇u_k) → E`, then `f (F) ≤ E`, although the `u_k` need not vanish on `∂Q`.
 
 This is the cut-off argument of F. Rindler, *Calculus of Variations*, 2nd ed., Graduate Texts in
 Mathematics 310, Springer, 2026 ([R2]), proof of Proposition 5.6, Step 2 (p. 112–113), and of
@@ -29,9 +28,7 @@ gradients `∇v_j`, `v_j = v_{j,k (j)}`, are bounded independently of `j`. As `f
 Here `ρ_j = rd_eta (1/j)` (Lipschitz cut-offs, equal to `1` on `[1/j, 1 − 1/j]^m`, with
 `|∇ρ_j| ≤ m j`), and `k (j)` is chosen with `|u_{k (j)}| ≤ 1/j`, so that `v_j` is Lipschitz with a
 constant independent of `j`, and with `k (j) ≥ j`, so that `∫_Q f (F + ∇u_{k (j)}) → E` (for the
-laminates of [R2] this integral does not depend on `k`, so `k (j) → ∞` is not needed there). The
-sources assume `f` Borel and locally bounded; of the lower semicontinuity only the measurability is
-used.
+laminates of [R2] this integral does not depend on `k`, so `k (j) → ∞` is not needed there).
 -/
 
 @[expose] public section
@@ -89,11 +86,10 @@ lemma rd_volume_real_layer {δ : ℝ} (hδ : 0 ≤ δ) (hδ2 : 2 * δ ≤ 1) :
   ring
 
 /-- **Cut-off near the boundary** ([R2], proof of Proposition 5.6, Step 2; see the module docstring
-for the proof). Let `f` be lower semicontinuous, locally bounded and quasiconvex at `F` on the unit
-cube `Q`. If the `u_k` are `K`-Lipschitz, `u_k → 0` uniformly and `∫_Q f (F + ∇u_k) → E`, then
-`f (F) ≤ E`. -/
+for the proof). Let `f` be Borel, locally bounded and quasiconvex at `F` on the unit cube `Q`. If
+the `u_k` are `K`-Lipschitz, `u_k → 0` uniformly and `∫_Q f (F + ∇u_k) → E`, then `f (F) ≤ E`. -/
 theorem le_of_quasiconvexAtOn_of_tendsto {f : Matrix (Fin d) (Fin m) ℝ → ℝ}
-    (hlsc : LowerSemicontinuous f) (hbdd : IsLocallyBounded f) {F : Matrix (Fin d) (Fin m) ℝ}
+    (hf : Measurable f) (hbdd : IsLocallyBounded f) {F : Matrix (Fin d) (Fin m) ℝ}
     (hq : QuasiconvexAtOn (unitCube m) f F) {u : ℕ → (Fin m → ℝ) → Fin d → ℝ} {K : NNReal}
     (hu : ∀ k, LipschitzWith K (u k)) (hu0 : TendstoUniformly u 0 atTop) {E : ℝ}
     (hE : Tendsto (fun k => ∫ x in unitCube m, f (F + grad (u k) x)) atTop (𝓝 E)) : f F ≤ E := by
@@ -124,7 +120,7 @@ theorem le_of_quasiconvexAtOn_of_tendsto {f : Matrix (Fin d) (Fin m) ℝ → ℝ
       fun x => by rw [NNReal.coe_one, one_mul]; exact hkb j (by omega) x
     have hv0 : ∀ x ∉ unitCube m, v x = 0 := fun x hx => by
       simp only [hvdef, rd_eta_zero hδ hx, zero_smul]
-    have hq' := hq v _ hv hv0 (rd_integrableOn hlsc hbdd F hv hQfin)
+    have hq' := hq v _ hv hv0 (rd_integrableOn hf hbdd F hv hQfin)
     rw [rd_volume_unitCube, ENNReal.toReal_one, one_mul] at hq'
     -- the two integrands agree on `G_j`
     have hagree : ∀ x ∈ rd_inner δ, grad v x = grad (u (k j)) x := fun x hx => by
@@ -138,8 +134,8 @@ theorem le_of_quasiconvexAtOn_of_tendsto {f : Matrix (Fin d) (Fin m) ℝ → ℝ
       rw [Real.norm_eq_abs]
       refine hC _ fun i l => (rd_grad_abs_le (hu _) x i l).trans ?_
       linarith [(Nat.cast_nonneg m : (0 : ℝ) ≤ m)]
-    have hint1 := rd_integrableOn hlsc hbdd F hv hQfin
-    have hint2 := rd_integrableOn hlsc hbdd F (hu (k j)) hQfin
+    have hint1 := rd_integrableOn hf hbdd F hv hQfin
+    have hint2 := rd_integrableOn hf hbdd F (hu (k j)) hQfin
     have hsub := rd_inner_subset (m := m) hδ.le
     have hdiff : ∫ x in unitCube m, (f (F + grad v x) - f (F + grad (u (k j)) x)) =
         ∫ x in unitCube m \ rd_inner δ, (f (F + grad v x) - f (F + grad (u (k j)) x)) := by

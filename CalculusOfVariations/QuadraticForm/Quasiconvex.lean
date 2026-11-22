@@ -6,16 +6,18 @@ Authors: The-Anh Vu-Le
 module
 
 public import CalculusOfVariations.QuadraticForm.Plancherel
+public import CalculusOfVariations.Quasiconvex.RankOneConvex
 public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 
 /-!
 # A rank-one convex quadratic form is quasiconvex
 
 `quadraticForm_quasiconvex`: if `Q` is a bilinear form on `ℝ^{d×m}` and `A ↦ Q (A, A)` is rank-one
-convex, then `A ↦ Q (A, A)` is quasiconvex. This is the implication "rank one convex ⇒ quasiconvex"
-of Theorem 5.25 (i) of B. Dacorogna, *Direct Methods in the Calculus of Variations*, 2nd ed.,
-Springer, 2008 ([D08], p. 191–194; there for a symmetric matrix `M` and `f (ξ) = ⟨M ξ; ξ⟩`), with
-its proof by Plancherel's formula. [D08] (Remark 5.26) attributes the result to Van Hove; see also
+convex, then `A ↦ Q (A, A)` is quasiconvex (and conversely, `quadraticForm_quasiconvex_iff`, by
+`Quasiconvex.RankOneConvex`). This is the implication "rank one convex ⇒ quasiconvex" of Theorem
+5.25 (i) of B. Dacorogna, *Direct Methods in the Calculus of Variations*, 2nd ed., Springer, 2008
+([D08], p. 191–194; there for a symmetric matrix `M` and `f (ξ) = ⟨M ξ; ξ⟩`), with its proof by
+Plancherel's formula. [D08] (Remark 5.26) attributes the result to Van Hove; see also
 C. B. Morrey, *Quasi-convexity and the lower semicontinuity of multiple integrals*, Pacific J. Math.
 2 (1952), 25–53, Theorem 5.2.
 -/
@@ -78,7 +80,7 @@ private lemma minors_legendreHadamard (Q : LinearMap.BilinForm ℝ (Matrix (Fin 
   linarith
 
 /-- **A rank-one convex quadratic form is quasiconvex** ([D08], Theorem 5.25 (i); the converse holds
-for every lower semicontinuous, locally bounded integrand, `rankOneConvex_of_quasiconvex`).
+for every Borel, locally bounded integrand, `rankOneConvex_of_quasiconvex_of_measurable`).
 
 Proof ([D08], p. 192–194). Since `Q` is quadratic,
 `Q (A + ∇φ) = Q (A) + [Q (A, ∇φ) + Q (∇φ, A)] + Q (∇φ)`; the linear term integrates to `0`
@@ -232,5 +234,19 @@ theorem quadraticForm_quasiconvex
   rw [hcube, hlin]
   simp only [hzero, mul_zero, Finset.sum_const_zero, zero_add]
   linarith
+
+/-- **[D08], Theorem 5.25 (i)**: a quadratic form is quasiconvex if and only if it is rank-one
+convex. -/
+theorem quadraticForm_quasiconvex_iff (Q : LinearMap.BilinForm ℝ (Matrix (Fin d) (Fin m) ℝ)) :
+    (Quasiconvex fun A => Q A A) ↔ RankOneConvex fun A => Q A A := by
+  refine ⟨fun h => ?_, quadraticForm_quasiconvex Q⟩
+  have hc : Continuous fun A : Matrix (Fin d) (Fin m) ℝ => Q A A := by
+    have e : (fun A : Matrix (Fin d) (Fin m) ℝ => Q A A) = fun A => ∑ i, ∑ k, ∑ j, ∑ l,
+        Q (Matrix.single i k 1) (Matrix.single j l 1) * (A i k * A j l) :=
+      funext fun A => minors_bilin_expand Q A A
+    rw [e]
+    fun_prop
+  exact rankOneConvex_of_quasiconvex_of_measurable hc.measurable
+    (isLocallyBounded_of_continuous hc) h
 
 end CalculusOfVariations

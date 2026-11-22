@@ -10,10 +10,10 @@ public import CalculusOfVariations.Lipschitz.ZeroSet
 /-!
 # Quasiconvexity does not depend on the domain
 
-For a lower semicontinuous, locally bounded `f`, quasiconvexity at `A` on the unit cube is
-equivalent to quasiconvexity at `A` on any nonempty bounded open set (`quasiconvexAtOn_iff`); the
-direction from the cube holds on every bounded measurable set
-(`quasiconvexAtOn_of_unitCube`).
+For a Borel, locally bounded `f`, quasiconvexity at `A` on the unit cube is equivalent to
+quasiconvexity at `A` on any nonempty bounded open set (`quasiconvexAtOn_iff_of_measurable`, and
+`quasiconvexAtOn_iff` for lower semicontinuous `f`); the direction from the cube holds on every
+bounded measurable set (`quasiconvexAtOn_of_unitCube`).
 
 This is Proposition 5.11 of B. Dacorogna, *Direct Methods in the Calculus of Variations*, 2nd ed.,
 Springer, 2008 ([D08], pp. 172–173), and Lemma 5.2 (i) of F. Rindler, *Calculus of Variations*, 2nd
@@ -31,9 +31,6 @@ Lipschitz, respectively `|∂U| = 0`. For the test maps of this package (Lipschi
 the domain) on an arbitrary bounded open set it is the vanishing of the gradient of a Lipschitz map
 almost everywhere on its zero set (`Lipschitz.ZeroSet`). [D08] does not say that the first domain is
 nonempty; for the empty set the proposition is false (its hypothesis is void).
-
-[D08] and [R2] assume `f` Borel and locally bounded; here `f` is lower semicontinuous and locally
-bounded (only the measurability is used).
 -/
 
 @[expose] public section
@@ -51,7 +48,7 @@ every bounded measurable `Ω` (in particular on every bounded open set). Put `Ω
 `R^m f (A) ≤ ∫_{Q_R} f (A + ∇φ)`; on `Q_R ∖ Ω` the map vanishes, so its gradient vanishes almost
 everywhere (`rd_ae_grad_eq_zero`), and the inequality becomes `|Ω| f (A) ≤ ∫_Ω f (A + ∇φ)`. -/
 theorem quasiconvexAtOn_of_unitCube {f : Matrix (Fin d) (Fin m) ℝ → ℝ}
-    (hlsc : LowerSemicontinuous f) (hbdd : IsLocallyBounded f) {A : Matrix (Fin d) (Fin m) ℝ}
+    (hf : Measurable f) (hbdd : IsLocallyBounded f) {A : Matrix (Fin d) (Fin m) ℝ}
     {Ω : Set (Fin m → ℝ)} (hb : Bornology.IsBounded Ω) (hΩm : MeasurableSet Ω)
     (h : QuasiconvexAtOn (unitCube m) f A) : QuasiconvexAtOn Ω f A := by
   intro φ K hφ h0 _
@@ -95,7 +92,7 @@ theorem quasiconvexAtOn_of_unitCube {f : Matrix (Fin d) (Fin m) ℝ → ℝ}
     simp only [smul_apply, smul_eq_mul]
     rw [← mul_assoc, inv_mul_cancel₀ hR.ne', one_mul]
   have hvolQ : volume (unitCube m) < ⊤ := by rw [rd_volume_unitCube]; exact ENNReal.one_lt_top
-  have hq := h ψ _ hψ hψ0 (rd_integrableOn hlsc hbdd A hψ hvolQ)
+  have hq := h ψ _ hψ hψ0 (rd_integrableOn hf hbdd A hψ hvolQ)
   rw [rd_volume_unitCube, ENNReal.toReal_one, one_mul] at hq
   simp only [hgrad] at hq
   -- change of variables `x = x₀ + R y`
@@ -126,7 +123,7 @@ theorem quasiconvexAtOn_of_unitCube {f : Matrix (Fin d) (Fin m) ℝ → ℝ}
     have := abs_le.1 (hent x hx i)
     exact ⟨by linarith, by linarith⟩
   have hΩfin : volume Ω < ⊤ := (measure_mono hΩQR).trans_lt hQRfin
-  have hint : IntegrableOn G QR := rd_integrableOn hlsc hbdd A hφ hQRfin
+  have hint : IntegrableOn G QR := rd_integrableOn hf hbdd A hφ hQRfin
   have hsplit := integral_inter_add_sdiff hΩm hint
   rw [Set.inter_eq_right.2 hΩQR] at hsplit
   -- on `Q_R ∖ Ω` the gradient vanishes almost everywhere
@@ -149,12 +146,12 @@ theorem quasiconvexAtOn_of_unitCube {f : Matrix (Fin d) (Fin m) ℝ → ℝ}
 /-- Quasiconvexity on `Ω₁` gives it on every measurable `Ω₂ ⊆ Ω₁`: a test map on `Ω₂` is one on
 `Ω₁`, and its gradient vanishes almost everywhere on `Ω₁ ∖ Ω₂`. -/
 private lemma rd_quasiconvexAtOn_mono {f : Matrix (Fin d) (Fin m) ℝ → ℝ}
-    (hlsc : LowerSemicontinuous f) (hbdd : IsLocallyBounded f) {A : Matrix (Fin d) (Fin m) ℝ}
+    (hf : Measurable f) (hbdd : IsLocallyBounded f) {A : Matrix (Fin d) (Fin m) ℝ}
     {Ω₁ Ω₂ : Set (Fin m → ℝ)} (hsub : Ω₂ ⊆ Ω₁) (h₁ : MeasurableSet Ω₁) (h₂ : MeasurableSet Ω₂)
     (hfin : volume Ω₁ < ⊤) (h : QuasiconvexAtOn Ω₁ f A) : QuasiconvexAtOn Ω₂ f A := by
   intro φ K hφ h0 _
-  have hq := h φ K hφ (fun x hx => h0 x fun h => hx (hsub h)) (rd_integrableOn hlsc hbdd A hφ hfin)
-  have hint : IntegrableOn (fun x => f (A + grad φ x)) Ω₁ := rd_integrableOn hlsc hbdd A hφ hfin
+  have hq := h φ K hφ (fun x hx => h0 x fun h => hx (hsub h)) (rd_integrableOn hf hbdd A hφ hfin)
+  have hint : IntegrableOn (fun x => f (A + grad φ x)) Ω₁ := rd_integrableOn hf hbdd A hφ hfin
   have hsplit := integral_inter_add_sdiff h₂ hint
   rw [Set.inter_eq_right.2 hsub] at hsplit
   have hout : ∫ x in Ω₁ \ Ω₂, f (A + grad φ x) = volume.real (Ω₁ \ Ω₂) * f A := by
@@ -174,7 +171,7 @@ private lemma rd_quasiconvexAtOn_mono {f : Matrix (Fin d) (Fin m) ℝ → ℝ}
 `Q' = x₀ + R (0, 1)^m`, on which `f` is quasiconvex at `A` (`rd_quasiconvexAtOn_mono`); a test map
 on the unit cube, rescaled to `Q'`, gives the inequality. -/
 private lemma rd_unitCube_of_quasiconvexAtOn {f : Matrix (Fin d) (Fin m) ℝ → ℝ}
-    (hlsc : LowerSemicontinuous f) (hbdd : IsLocallyBounded f) {A : Matrix (Fin d) (Fin m) ℝ}
+    (hf : Measurable f) (hbdd : IsLocallyBounded f) {A : Matrix (Fin d) (Fin m) ℝ}
     {Ω : Set (Fin m → ℝ)} (hΩ : IsOpen Ω) (hb : Bornology.IsBounded Ω) (hne : Ω.Nonempty)
     (h : QuasiconvexAtOn Ω f A) : QuasiconvexAtOn (unitCube m) f A := by
   obtain ⟨x₁, hx₁⟩ := hne
@@ -192,7 +189,7 @@ private lemma rd_unitCube_of_quasiconvexAtOn {f : Matrix (Fin d) (Fin m) ℝ →
     rw [Real.dist_eq, abs_lt]
     constructor <;> linarith
   have hΩfin : volume Ω < ⊤ := hb.measure_lt_top
-  have hQ' : QuasiconvexAtOn Q' f A := rd_quasiconvexAtOn_mono hlsc hbdd hQ'Ω hΩ.measurableSet
+  have hQ' : QuasiconvexAtOn Q' f A := rd_quasiconvexAtOn_mono hf hbdd hQ'Ω hΩ.measurableSet
     (MeasurableSet.univ_pi fun _ => measurableSet_Ioo) hΩfin h
   intro φ K hφ h0 _
   have hR : 0 < R := hε
@@ -227,7 +224,7 @@ private lemma rd_unitCube_of_quasiconvexAtOn {f : Matrix (Fin d) (Fin m) ℝ →
     simp only [smul_apply, smul_eq_mul]
     rw [← mul_assoc, mul_inv_cancel₀ hR.ne', one_mul]
   have hQ'fin : volume Q' < ⊤ := (measure_mono hQ'Ω).trans_lt hΩfin
-  have hq := hQ' ψ _ hψ hψ0 (rd_integrableOn hlsc hbdd A hψ hQ'fin)
+  have hq := hQ' ψ _ hψ hψ0 (rd_integrableOn hf hbdd A hψ hQ'fin)
   simp only [hgrad] at hq
   -- change of variables `y = R⁻¹ (x − x₀)`
   set G : (Fin m → ℝ) → ℝ := fun y => f (A + grad φ y)
@@ -256,9 +253,9 @@ private lemma rd_unitCube_of_quasiconvexAtOn {f : Matrix (Fin d) (Fin m) ℝ →
   have hRm : 0 < R ^ m := by positivity
   exact le_of_mul_le_mul_left hq hRm
 
-/-- **Quasiconvexity does not depend on the domain**: for a lower semicontinuous, locally
-bounded `f`, quasiconvexity at `A` on the unit cube is equivalent to quasiconvexity at `A` on any
-nonempty bounded open `Ω`. (For `Ω = ∅` the condition holds for every `f`: the only test map is
+/-- **Quasiconvexity does not depend on the domain**: for a Borel, locally bounded `f`,
+quasiconvexity at `A` on the unit cube is equivalent to quasiconvexity at `A` on any nonempty
+bounded open `Ω`. (For `Ω = ∅` the condition holds for every `f`: the only test map is
 `0`, and both sides vanish.)
 
 Proof: the argument of [D08], Proposition 5.11, and [R2], Lemma 5.2 (i), with the unit cube as the
@@ -269,11 +266,18 @@ vanishes almost everywhere there (`rd_quasiconvexAtOn_mono`, from `rd_ae_fderiv_
 density point of the zero set of a Lipschitz map, its derivative is `0`; no condition on the
 boundary is needed). "⇒": `Ω` lies in a large cube (`quasiconvexAtOn_of_unitCube`); "⇐": `Ω`
 contains a small cube (`rd_unitCube_of_quasiconvexAtOn`). -/
+theorem quasiconvexAtOn_iff_of_measurable {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : Measurable f)
+    (hbdd : IsLocallyBounded f) (A : Matrix (Fin d) (Fin m) ℝ) {Ω : Set (Fin m → ℝ)}
+    (hΩ : IsOpen Ω) (hb : Bornology.IsBounded Ω) (hne : Ω.Nonempty) :
+    QuasiconvexAtOn (unitCube m) f A ↔ QuasiconvexAtOn Ω f A :=
+  ⟨quasiconvexAtOn_of_unitCube hf hbdd hb hΩ.measurableSet,
+    rd_unitCube_of_quasiconvexAtOn hf hbdd hΩ hb hne⟩
+
+/-- `quasiconvexAtOn_iff_of_measurable` for a lower semicontinuous `f`. -/
 theorem quasiconvexAtOn_iff {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hlsc : LowerSemicontinuous f)
     (hbdd : IsLocallyBounded f) (A : Matrix (Fin d) (Fin m) ℝ) {Ω : Set (Fin m → ℝ)}
     (hΩ : IsOpen Ω) (hb : Bornology.IsBounded Ω) (hne : Ω.Nonempty) :
     QuasiconvexAtOn (unitCube m) f A ↔ QuasiconvexAtOn Ω f A :=
-  ⟨quasiconvexAtOn_of_unitCube hlsc hbdd hb hΩ.measurableSet,
-    rd_unitCube_of_quasiconvexAtOn hlsc hbdd hΩ hb hne⟩
+  quasiconvexAtOn_iff_of_measurable hlsc.measurable hbdd A hΩ hb hne
 
 end CalculusOfVariations

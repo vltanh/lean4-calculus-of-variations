@@ -358,15 +358,11 @@ theorem cubeInf_le_qcEnvelope {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : Con
   have hadm : LowerSemicontinuous (cubeInfReal f) ∧ IsLocallyBounded (cubeInfReal f) ∧ Quasiconvex
       (cubeInfReal f) ∧
       ∀ B, cubeInfReal f B ≤ f B := by
-    refine ⟨hc.lowerSemicontinuous, fun B => ?_, cubeInfReal_quasiconvex hf hfin, fun B => ?_⟩
-    · refine ⟨cubeInfReal f ⁻¹' Metric.ball (cubeInfReal f B) 1, hc.continuousAt.preimage_mem_nhds
-        (Metric.ball_mem_nhds _ one_pos), |cubeInfReal f B| + 1, fun C hC => ?_⟩
-      rw [mem_preimage, Metric.mem_ball, Real.dist_eq] at hC
-      have := abs_sub_abs_le_abs_sub (cubeInfReal f C) (cubeInfReal f B)
-      linarith
-    · have := cubeInf_le (f := f) B
-      rw [cubeInf_eq_cubeInfReal (hfin B), EReal.coe_le_coe_iff] at this
-      exact this
+    refine ⟨hc.lowerSemicontinuous, isLocallyBounded_of_continuous hc,
+      cubeInfReal_quasiconvex hf hfin, fun B => ?_⟩
+    have := cubeInf_le (f := f) B
+    rw [cubeInf_eq_cubeInfReal (hfin B), EReal.coe_le_coe_iff] at this
+    exact this
   rw [cubeInf_eq_cubeInfReal hA]
   exact le_iSup₂ (f := fun g (_ : LowerSemicontinuous g ∧ IsLocallyBounded g ∧ Quasiconvex g ∧
     ∀ B, g B ≤ f B) => (g A : EReal)) (cubeInfReal f) hadm

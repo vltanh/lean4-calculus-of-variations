@@ -12,14 +12,12 @@ public import Mathlib.Order.Hom.Basic
 /-!
 # Rank-one affine functions are affine combinations of minors
 
-`minor A r c`: the `k × k` minor of `A` with the rows `r` and the columns `c`.
-
 `RankOneAffine.exists_eq_sum_minor`: a rank-one affine `f : ℝ^{N×n} → ℝ` is an affine combination
 of the minors of its argument, of orders `k ≤ min (N, n)`. This is the implication (ii) ⇒ (iii′) of
 Theorem 5.20 (p. 179) of B. Dacorogna, *Direct Methods in the Calculus of Variations*, 2nd ed.,
 Springer, 2008 ([D08]). As in [D08], `f` is not assumed continuous. Only this implication of the
 theorem is proved here, by the proof of [D08], pp. 181–191 (induction on the number of rows, and
-Lemma 5.24), with the repairs listed at the end.
+Lemma 5.24), with the repairs listed at the end; the equivalence is in `Minors.Characterization`.
 
 ## The proof of [D08], step by step
 
@@ -113,11 +111,6 @@ minors up to signs.
 namespace CalculusOfVariations
 
 variable {d m : ℕ}
-
-/-- The `k × k` minor of `A` with the rows `r` and the columns `c` (strictly increasing). -/
-noncomputable def minor (A : Matrix (Fin d) (Fin m) ℝ) {k : ℕ} (r : Fin k ↪o Fin d)
-    (c : Fin k ↪o Fin m) : ℝ :=
-  (A.submatrix r c).det
 
 private lemma minors_rank_eq_zero_imp {A : Matrix (Fin d) (Fin m) ℝ} (h : A.rank = 0) :
     A = 0 := by
