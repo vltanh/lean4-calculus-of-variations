@@ -6,6 +6,7 @@ Authors: The-Anh Vu-Le
 module
 
 public import CalculusOfVariations.Basic
+public import CalculusOfVariations.Calculus.IteratedFDeriv
 public import CalculusOfVariations.Convex.SeparatelyConvex
 public import CalculusOfVariations.Covering.Cubes
 public import CalculusOfVariations.Distribution.Convex
@@ -25,6 +26,7 @@ public import CalculusOfVariations.Lipschitz.ZeroSet
 public import CalculusOfVariations.Minors.NullLagrangian
 public import CalculusOfVariations.Minors.Quasiaffine
 public import CalculusOfVariations.Minors.RankOneAffine
+public import CalculusOfVariations.Minors.RankOneAffineContinuous
 public import CalculusOfVariations.QuadraticForm.Plancherel
 public import CalculusOfVariations.QuadraticForm.Quasiconvex
 public import CalculusOfVariations.Quasiconvex.Domain

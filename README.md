@@ -48,7 +48,10 @@ semicontinuous, locally bounded minorants, in `EReal`).
 | quasiconvexity on the cube ⇔ on any nonempty bounded open `Ω` | `quasiconvexAtOn_iff`, `quasiconvexAtOn_of_unitCube` | [M, Def. 4.2, Remark 2] |
 | quasiconvexity on the cube ⇔ with periodic test maps | `quasiconvexAtOn_iff_periodic` | [M, Prop. 4.19] |
 | `Q` bilinear, `A ↦ Q (A, A)` rank-one convex ⇒ quasiconvex | `quadraticForm_quasiconvex` | [Da08, Thm 5.25 (i)]; [Mo, Thm 5.2] |
-| rank-one affine ⇒ affine combination of minors | `RankOneAffine.exists_eq_sum_minor` | [Da08, Thm 5.20, (iii) ⇒ (iv)]; proof of [CDKM, Thm 6.1] |
+| continuous, rank-one affine ⇒ affine combination of minors | `RankOneAffine.exists_eq_sum_minor_of_continuous` | [Da08, Thm 5.20, (iii) ⇒ (iv)]; proof of [CDKM, Thm 6.1] |
+| rank-one affine ⇒ affine combination of minors (no continuity) | `RankOneAffine.exists_eq_sum_minor` | generalizes [Da08, Thm 5.20, (iii) ⇒ (iv)]; second half of the proof of [CDKM, Thm 6.1] |
+| a homogeneous polynomial of degree `k` vanishing on the matrices of rank `< k` is a combination of `k × k` minors | `exists_eq_sum_minor_of_rank_lt` | proof of [CDKM, Thm 6.1] |
+| `D^k h` of a smooth `h` is symmetric; a symmetric multilinear form vanishing on the diagonal vanishes; Taylor's formula when `D^{n+1} h = 0` | `iteratedFDeriv_comp_perm_of_contDiff`, `eq_zero_of_symmetric_of_apply_diag_eq_zero`, `eq_sum_iteratedFDeriv_of_iteratedFDeriv_eq_zero` | [CDKM, Prop. 6.2] (the second) |
 | `∫ minor (∇φ) = 0` for `2 × 2`, `3 × 3` minors, `φ` Lipschitz with compact support | `nl_null2`, `nl_null3` | [Mo, Lemma 5.1] |
 | `∫_Q minor (A + ∇φ) = minor A` for `3 × 3` minors, `φ` a test map on `Q` | `nl_minor3_quasiaffine` | |
 | `f^{qc} (A) = inf_φ ⨍_Ω f (A + ∇φ)`, `Ω` nonempty, bounded, open, `f` continuous; `Ω` the unit ball | `qcEnvelope_eq_iInf`, `qcEnvelope_eq_iInf_unitBall` | [KP, Prop. 8.1], [Da82]; proof of [M, Thm 4.5 (iii)] |
@@ -90,15 +93,22 @@ theorem CalculusOfVariations.qcEnvelope_eq_iInf {f : Matrix (Fin d) (Fin m) ℝ 
   mollification).
 - **Null Lagrangians** follow [Mo, Lemma 5.1]: divergence identities for smooth maps, then
   mollification.
-- **Rank-one affine functions** follow the proof of [CDKM, Thm 6.1]: the proof of [Da08,
-  Thm 5.20] was not accessible. The homogeneous part `P_k` of degree `k` vanishes on matrices of
-  rank `< k`, so `P_k = 0` for `k > min (d, m)`; the terms of `P_k` whose rows `I` or columns `J`
-  number fewer than `k` cancel (induction on `|I| + |J|`); and for `|I| = |J| = k` they are a sum
-  over the permutations, which is an alternating multilinear form in the columns, a multiple of the
-  minor. [CDKM] obtain `P_k` and its vanishing from the continuity of the function (distributional
-  derivatives); without continuity, here: the function is affine in each entry, hence a sum of
-  products of distinct entries, and `t ↦ f (t F)` has degree `< k` when `F` is a sum of fewer than
-  `k` rank-one matrices (module docstring of `Minors/RankOneAffine.lean`).
+- **Rank-one affine functions.** The continuous case follows the proof of [CDKM, Thm 6.1]: the
+  proof of [Da08, Thm 5.20] was not accessible. The function is affine along the rank-one lines,
+  so its second derivative in a rank-one direction vanishes, and its `k`-th derivative vanishes on
+  `(F, …, F)` when `rank F < k`; with [CDKM, Prop. 6.2], `D^{min (d, m) + 1}` vanishes, so the
+  function is a polynomial of degree at most `min (d, m)`, `∑_k P_k` by Taylor's formula, with
+  `P_k = 0` on the matrices of rank `< k`. [CDKM] take these derivatives in the sense of
+  distributions; here they are classical derivatives of the mollifications, which are polynomials
+  of degree at most `min (d, m)`, and so is their pointwise limit (a finite-dimensional space is
+  closed). Then, as in [CDKM]: the terms of `P_k` whose rows `I` or columns `J` number fewer than
+  `k` cancel (induction on `|I| + |J|`), the others are regrouped by permutations, and each group
+  is an alternating multilinear form in the columns, a multiple of a minor. Without continuity,
+  `RankOneAffine.exists_eq_sum_minor` uses a simpler argument of our own in place of the first
+  half of [CDKM]: the function is affine in each entry, hence a sum of products of distinct
+  entries, and `t ↦ f (t F)` has degree `< k` when `F` is a sum of fewer than `k` rank-one
+  matrices (module docstrings of `Minors/RankOneAffine.lean` and
+  `Minors/RankOneAffineContinuous.lean`).
 - **Quasiconvex ⇒ rank-one convex** follows [M, Lemma 4.3]: quasiconvexity on the unit cube,
   tested with the laminates `v_k = min (k⁻¹ h (k x_j), dist_∞ (x, ∂Q)) a`, gives the two-point
   inequality along `a ⊗ e_j`, since `∇v_k` differs from the gradient of the sawtooth laminate only
@@ -179,7 +189,8 @@ lake env lean scripts/Audit.lean   # axioms; fails on any `sorry`
 | [`CalculusOfVariations/Covering/`](CalculusOfVariations/Covering) | `Cubes` (finite Besicovitch coverings) |
 | [`CalculusOfVariations/Quasiconvex/`](CalculusOfVariations/Quasiconvex) | `Domain`, `Periodic`, `Laminate`, `RankOneConvex` |
 | [`CalculusOfVariations/QuadraticForm/`](CalculusOfVariations/QuadraticForm) | `Plancherel`, `Quasiconvex` |
-| [`CalculusOfVariations/Minors/`](CalculusOfVariations/Minors) | `RankOneAffine`, `NullLagrangian`, `Quasiaffine` |
+| [`CalculusOfVariations/Calculus/`](CalculusOfVariations/Calculus) | `IteratedFDeriv` (symmetry of the derivatives of smooth functions, polarization, Taylor) |
+| [`CalculusOfVariations/Minors/`](CalculusOfVariations/Minors) | `RankOneAffine`, `RankOneAffineContinuous`, `NullLagrangian`, `Quasiaffine` |
 | [`CalculusOfVariations/Envelope/`](CalculusOfVariations/Envelope) | `Cube` (the infimum formula on the cube), `Tangent` (gluing rescaled copies into cubes), `Glue` ((4.28)), `Convexity`, `Formula` |
 | [`CalculusOfVariations/Smoothing/`](CalculusOfVariations/Smoothing) | `RankOneConvex` |
 | [`CalculusOfVariations/Distribution/`](CalculusOfVariations/Distribution) | `SecondDerivative`, `Convex` |
@@ -202,7 +213,7 @@ lake env lean scripts/Audit.lean   # axioms; fails on any `sorry`
   Theorems 5.20 and 5.25 (statements).
 - [CDKM] S. Conti, G. Dolzmann, B. Kirchheim, S. Müller, *Sufficient conditions for the validity
   of the Cauchy–Born rule close to SO(n)*, J. Eur. Math. Soc. 8 (2006), 515–530: Appendix,
-  Theorem 6.1 and its proof.
+  Theorem 6.1 and its proof, Proposition 6.2.
 - [K] J. Kristensen, *On the non-locality of quasiconvexity*, Ann. Inst. H. Poincaré Anal. Non
   Linéaire 16 (1999), 1–13: proof of Proposition 2.
 - [F] H. Freudenthal, *Simplizialzerlegungen von beschränkter Flachheit*, Ann. of Math. 43 (1942),
