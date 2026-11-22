@@ -33,6 +33,7 @@ import all CalculusOfVariations.Quasiconvex.Laminate
 import all CalculusOfVariations.Quasiconvex.Periodic
 import all CalculusOfVariations.Quasiconvex.RankOneConvex
 import all CalculusOfVariations.RankOneConvex.LocallyLipschitz
+import all CalculusOfVariations.RankOneConvex.SingularValues
 import all CalculusOfVariations.Smoothing.RankOneConvex
 
 /-!
@@ -55,7 +56,10 @@ namespace Audit
 
 /-- The main theorems of the library. -/
 meta def mainResults : List Name :=
-  [``Matrix.locallyLipschitz_of_convexOn_single,
+  [``Matrix.exists_abs_le_of_convexOn_single,
+   ``Matrix.locallyLipschitz_of_convexOn_single,
+   ``Matrix.exists_singularValueDecomposition,
+   ``CalculusOfVariations.RankOneConvex.abs_sub_le_of_osc,
    ``CalculusOfVariations.RankOneConvex.locallyLipschitz,
    ``CalculusOfVariations.rankOneConvex_of_quasiconvex,
    ``CalculusOfVariations.quasiconvexAtOn_of_unitCube,

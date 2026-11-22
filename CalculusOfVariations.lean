@@ -34,4 +34,5 @@ public import CalculusOfVariations.Quasiconvex.Laminate
 public import CalculusOfVariations.Quasiconvex.Periodic
 public import CalculusOfVariations.Quasiconvex.RankOneConvex
 public import CalculusOfVariations.RankOneConvex.LocallyLipschitz
+public import CalculusOfVariations.RankOneConvex.SingularValues
 public import CalculusOfVariations.Smoothing.RankOneConvex

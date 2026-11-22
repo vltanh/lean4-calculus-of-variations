@@ -5,8 +5,9 @@
 Lean 4 with Mathlib `v4.36.0-rc2`, for integrands `f : ℝ^{d×m} → ℝ` and Lipschitz maps
 `φ : ℝ^m → ℝ^d` (sup norms):
 
-- **Rank-one convexity and quasiconvexity.** A separately convex function is locally Lipschitz, so
-  a rank-one convex function is locally Lipschitz; a quasiconvex integrand is rank-one convex, by
+- **Rank-one convexity and quasiconvexity.** A rank-one convex function is locally Lipschitz, with
+  a bound by its oscillation (and so is a separately convex function); a quasiconvex integrand is
+  rank-one convex, by
   laminates on a cube with faces orthogonal to the rank-one direction; quasiconvexity does not
   depend on the bounded open domain, and may be tested with periodic maps.
 - **Quadratic forms and minors.** A rank-one convex quadratic form is quasiconvex; a rank-one
@@ -41,8 +42,9 @@ semicontinuous, locally bounded minorants, in `EReal`).
 
 | Statement | Lean | Source |
 | --- | --- | --- |
-| separately convex ⇒ locally Lipschitz | `Matrix.locallyLipschitz_of_convexOn_single` | [M, Def. 4.2, Remark 3] |
-| rank-one convex ⇒ locally Lipschitz | `RankOneConvex.locallyLipschitz` | [M, Def. 4.2, Remark 3] |
+| separately convex ⇒ bounded on cubes, locally Lipschitz | `Matrix.exists_abs_le_of_convexOn_single`, `Matrix.locallyLipschitz_of_convexOn_single` | [M, Def. 4.2, Remark 3] |
+| rank-one convex ⇒ locally Lipschitz; in the Frobenius norm, `lip (f; B_r (F)) ≤ √(min d m) osc (f; B̄_{6r} (F)) / (3r)` | `RankOneConvex.locallyLipschitz`, `RankOneConvex.abs_sub_le_of_osc` | [R, Lemma 5.9] |
+| `M = ∑_{i < min d m} σ_i p_i ⊗ q_i`, `σ_0 ≥ σ_1 ≥ … ≥ 0`, `p_i`, `q_i` orthonormal (singular value decomposition) | `Matrix.exists_singularValueDecomposition` | [R, Appendix A.1] |
 | quasiconvex at `F` on the unit cube ⇒ `f (F) ≤ λ f (F + (1−λ) a ⊗ e_j) + (1−λ) f (F − λ a ⊗ e_j)`, by laminates; on a rotated cube, in the direction `a ⊗ R e_j`; for `f` lsc and locally bounded, in every direction `a ⊗ n` | `le_of_quasiconvexAtOn_unitCube`, `le_of_quasiconvexAtOn_orthogonal`, `le_of_quasiconvexAtOn_vecMulVec`, with `cubeLaminate` | [M, Lemma 4.3] |
 | `f` lsc, locally bounded, quasiconvex ⇒ rank-one convex | `rankOneConvex_of_quasiconvex` | [M, Lemma 4.3] |
 | quasiconvexity on the cube ⇔ on any nonempty bounded open `Ω` | `quasiconvexAtOn_iff`, `quasiconvexAtOn_of_unitCube` | [M, Def. 4.2, Remark 2] |
@@ -65,8 +67,8 @@ semicontinuous, locally bounded minorants, in `EReal`).
 
 `Qf = cubeInf f` is the infimum formula on the unit cube.
 
-All names are in the namespace `CalculusOfVariations` except
-`Matrix.locallyLipschitz_of_convexOn_single`. Two of them in Lean:
+All names are in the namespace `CalculusOfVariations` except those that begin with `Matrix`. Two of
+them in Lean:
 
 ```lean
 theorem CalculusOfVariations.quasiconvexAtOn_iff {f : Matrix (Fin d) (Fin m) ℝ → ℝ}
@@ -84,6 +86,12 @@ theorem CalculusOfVariations.qcEnvelope_eq_iInf {f : Matrix (Fin d) (Fin m) ℝ 
 
 ## Method
 
+- **Rank-one convex functions** are locally Lipschitz by the proof of [R, Lemma 5.9]: convexity along
+  the rank-one ray from `B` through `A` up to the sphere `∂B_{2r} (F)`, then a path from `A` to `B`
+  along the terms of the singular value decomposition of `B − A`, which are orthogonal for the
+  Frobenius inner product. Two gaps are filled or repaired: local boundedness (part of the definition
+  in [R]) is proved by convexity in each entry, and the slope bound [R, (5.10)] is one-sided (exchange
+  `A` and `B`).
 - **Domain independence** follows [M, Def. 4.2, Remark 2]: extend the test map by zero and
   translate and scale the domain (one large cube, one small cube). Instead of `|∂Ω| = 0`, the
   gradient of a Lipschitz map vanishes almost everywhere on its zero set (Lebesgue density).
@@ -178,7 +186,7 @@ lake env lean scripts/Audit.lean   # axioms; fails on any `sorry`
 | --- | --- |
 | [`CalculusOfVariations/Basic.lean`](CalculusOfVariations/Basic.lean) | the definitions |
 | [`CalculusOfVariations/Convex/`](CalculusOfVariations/Convex) | `SeparatelyConvex` |
-| [`CalculusOfVariations/RankOneConvex/`](CalculusOfVariations/RankOneConvex) | `LocallyLipschitz` |
+| [`CalculusOfVariations/RankOneConvex/`](CalculusOfVariations/RankOneConvex) | `SingularValues`, `LocallyLipschitz` |
 | [`CalculusOfVariations/Lipschitz/`](CalculusOfVariations/Lipschitz) | `Gradient`, `Rescale`, `Periodic`, `Cutoff`, `ZeroSet`, `Mollify`, `PiecewiseAffine` |
 | [`CalculusOfVariations/Covering/`](CalculusOfVariations/Covering) | `Cubes` (finite Besicovitch coverings) |
 | [`CalculusOfVariations/Quasiconvex/`](CalculusOfVariations/Quasiconvex) | `Domain`, `Periodic`, `Laminate`, `RankOneConvex` |
@@ -197,6 +205,9 @@ lake env lean scripts/Audit.lean   # axioms; fails on any `sorry`
   für Mathematik in den Naturwissenschaften, Leipzig, Lecture notes no. 2, 1998 (C.I.M.E. summer
   school, Cetraro, 1996): Definition 4.2 and Remarks 2, 3; Lemma 4.3; Theorem 4.5 (ii), (iii) and
   its proof in §4.8, with (4.28); Proposition 4.19.
+- [R] F. Rindler, *Calculus of Variations*, 2nd ed., Graduate Texts in Mathematics 310, Springer,
+  2026: Lemma 5.9 (by content, Lemma 5.6 of the first edition, 2018, which was not consulted),
+  Appendix A.1.
 - [Mo] C. B. Morrey, *Quasi-convexity and the lower semicontinuity of multiple integrals*, Pacific
   J. Math. 2 (1952), 25–53: Lemma 5.1, Theorem 5.2.
 - [Da82] B. Dacorogna, *Quasiconvexity and relaxation of nonconvex problems in the calculus of

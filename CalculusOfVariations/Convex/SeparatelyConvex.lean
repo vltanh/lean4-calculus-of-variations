@@ -9,11 +9,12 @@ public import Mathlib.Analysis.Convex.Continuous
 public import Mathlib.Data.Matrix.Basis
 
 /-!
-# Functions on matrices that are convex in each entry are locally Lipschitz
+# Functions on matrices that are convex in each entry
 
 A function `f` on the real `d × m` matrices that is convex along every line in the direction of a
-matrix unit `single i j 1` (separately convex) is locally Lipschitz, for the product metric on
-`Fin d → Fin m → ℝ` (`Matrix.locallyLipschitz_of_convexOn_single`).
+matrix unit `single i j 1` (separately convex) is bounded on every cube
+(`Matrix.exists_abs_le_of_convexOn_single`) and locally Lipschitz
+(`Matrix.locallyLipschitz_of_convexOn_single`), for the product metric on `Fin d → Fin m → ℝ`.
 
 The standard argument: on a cube `x + [−r, r]^{d×m}` (a closed ball of the product metric) `f` is
 bounded above by its values at the vertices (convexity in one entry at a time) and below by
@@ -50,6 +51,15 @@ private lemma of_add_smul_E (y : Fin d → Fin m → ℝ) (t : ℝ) (i : Fin d) 
   simp only [Matrix.of_apply, Matrix.add_apply, Matrix.smul_apply, Matrix.single_apply,
     add_smul_E_apply, smul_eq_mul]
   split_ifs <;> ring
+
+/-- Convexity along the lines in the direction of a matrix unit, in the coordinates of
+`Fin d → Fin m → ℝ`. -/
+private lemma convexOn_add_smul_E {f : Matrix (Fin d) (Fin m) ℝ → ℝ}
+    (hf : ∀ (A : Matrix (Fin d) (Fin m) ℝ) (i : Fin d) (j : Fin m),
+      ConvexOn ℝ univ fun t : ℝ => f (A + t • single i j 1))
+    (y : Fin d → Fin m → ℝ) (i : Fin d) (j : Fin m) :
+    ConvexOn ℝ univ (fun t : ℝ => f (Matrix.of (y + t • E i j))) := by
+  simpa only [of_add_smul_E] using hf (Matrix.of y) i j
 
 private lemma mem_closedBall_iff_entries {x y : Fin d → Fin m → ℝ} {r : ℝ} (hr : 0 ≤ r) :
     y ∈ closedBall x r ↔ ∀ a b, |y a b - x a b| ≤ r := by
@@ -200,26 +210,36 @@ private lemma lower_bound {f : Matrix (Fin d) (Fin m) ℝ → ℝ}
     rw [ey] at hconv
     linarith
 
+/-- A function on the real `d × m` matrices that is convex along every line in the direction of a
+matrix unit `single i j 1` is bounded on every cube (closed ball of the product metric on
+`Fin d → Fin m → ℝ`, through `Matrix.of`): above by its values at the vertices, by convexity in one
+entry at a time, and below by reflection in one entry at a time. -/
+theorem exists_abs_le_of_convexOn_single {f : Matrix (Fin d) (Fin m) ℝ → ℝ}
+    (hf : ∀ (A : Matrix (Fin d) (Fin m) ℝ) (i : Fin d) (j : Fin m),
+      ConvexOn ℝ univ fun t : ℝ => f (A + t • single i j 1))
+    (x : Fin d → Fin m → ℝ) (r : ℝ) : ∃ K, ∀ y ∈ closedBall x r, |f (Matrix.of y)| ≤ K := by
+  rcases lt_or_ge r 0 with hr | hr
+  · exact ⟨0, by simp [closedBall_eq_empty.2 hr]⟩
+  obtain ⟨M, hM⟩ := upper_bound (convexOn_add_smul_E hf) x hr
+  obtain ⟨L, hL⟩ := lower_bound (convexOn_add_smul_E hf) x hr
+  exact ⟨max M (-L), fun y hy => abs_le.2 ⟨by linarith [hL y hy, le_max_right M (-L)],
+    (hM y hy).trans (le_max_left _ _)⟩⟩
+
 /-- The Lipschitz bound along a coordinate line, from the convexity of the restriction and the
 bound on a larger cube. -/
 private lemma line_lipschitz {f : Matrix (Fin d) (Fin m) ℝ → ℝ}
-    (hsep : ∀ (y : Fin d → Fin m → ℝ) (i : Fin d) (j : Fin m),
-      ConvexOn ℝ univ (fun t : ℝ => f (Matrix.of (y + t • E i j))))
+    (hf : ∀ (A : Matrix (Fin d) (Fin m) ℝ) (i : Fin d) (j : Fin m),
+      ConvexOn ℝ univ fun t : ℝ => f (A + t • single i j 1))
     (x : Fin d → Fin m → ℝ) {r : ℝ} (hr : 0 < r) :
     ∃ C, 0 ≤ C ∧ ∀ y ∈ closedBall x r, ∀ (i : Fin d) (j : Fin m) (t : ℝ),
       y + t • E i j ∈ closedBall x r →
         |f (Matrix.of (y + t • E i j)) - f (Matrix.of y)| ≤ C * |t| := by
-  obtain ⟨M, hM⟩ := upper_bound hsep x (r := 5 * r) (by linarith)
-  obtain ⟨L, hL⟩ := lower_bound hsep x (r := 5 * r) (by linarith)
-  set K := max M (-L)
-  have hK : ∀ y ∈ closedBall x (5 * r), |f (Matrix.of y)| ≤ K := fun y hy =>
-    abs_le.2 ⟨by have := hL y hy; linarith [le_max_right M (-L)],
-      (hM y hy).trans (le_max_left _ _)⟩
+  obtain ⟨K, hK⟩ := exists_abs_le_of_convexOn_single hf x (5 * r)
   have hK0 : 0 ≤ K := (abs_nonneg _).trans (hK x (mem_closedBall_self (by linarith)))
   refine ⟨2 * K / r, by positivity, fun y hy i j t hyt => ?_⟩
   set g : ℝ → ℝ := fun s => f (Matrix.of (y + s • E i j))
   have hg : ConvexOn ℝ (ball 0 (4 * r)) g :=
-    (hsep y i j).subset (subset_univ _) (convex_ball _ _)
+    (convexOn_add_smul_E hf y i j).subset (subset_univ _) (convex_ball _ _)
   have hgb : ∀ s, dist s 0 < 4 * r → |g s| ≤ K := by
     intro s hs
     apply hK
@@ -315,11 +335,8 @@ theorem locallyLipschitz_of_convexOn_single {f : Matrix (Fin d) (Fin m) ℝ → 
     (hf : ∀ (A : Matrix (Fin d) (Fin m) ℝ) (i : Fin d) (j : Fin m),
       ConvexOn ℝ univ fun t : ℝ => f (A + t • single i j 1)) :
     LocallyLipschitz fun X : Fin d → Fin m → ℝ => f (Matrix.of X) := by
-  have hsep : ∀ (y : Fin d → Fin m → ℝ) (i : Fin d) (j : Fin m),
-      ConvexOn ℝ univ (fun t : ℝ => f (Matrix.of (y + t • E i j))) := fun y i j => by
-    simpa only [of_add_smul_E] using hf (Matrix.of y) i j
   intro x
-  obtain ⟨C, hC, hline⟩ := line_lipschitz hsep x one_pos
+  obtain ⟨C, hC, hline⟩ := line_lipschitz hf x one_pos
   refine ⟨(Fintype.card (Fin d × Fin m) * C).toNNReal, closedBall x 1,
     closedBall_mem_nhds x one_pos, ?_⟩
   refine LipschitzOnWith.of_dist_le_mul fun y hy z hz => ?_
