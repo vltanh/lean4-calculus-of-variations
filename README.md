@@ -27,8 +27,8 @@ Lean 4 with Mathlib `v4.36.0-rc2`, for integrands `f : ℝ^{d×m} → ℝ` and L
   cubes, piecewise affine maps and Kuhn–Freudenthal interpolation.
 
 **Status: proved.** Every statement is proved; the [audit](scripts/Audit.lean) checks that every
-declaration of the library (and of the Solutions in [`palomar/`](palomar)) depends only on `propext`, `Classical.choice` and `Quot.sound` (no
-`sorry`, no `axiom`, no `native_decide`).
+declaration of the library, and of the Solutions in [`palomar/`](palomar), depends only on
+`propext`, `Classical.choice` and `Quot.sound` (no `sorry`, no `axiom`, no `native_decide`).
 
 ## Main statements
 
@@ -45,7 +45,7 @@ quasiconvex minorants, in `EReal`; equal to `qcEnvelope`, over the lower semicon
 | Statement | Lean | Source |
 | --- | --- | --- |
 | separately convex ⇒ bounded on cubes, locally Lipschitz | `Matrix.exists_abs_le_of_convexOn_single`, `Matrix.locallyLipschitz_of_convexOn_single` | [M, Def. 4.2, Remark 3] |
-| rank-one convex ⇒ locally Lipschitz; in the Frobenius norm, `lip (f; B_r (F)) ≤ √(min d m) osc (f; B̄_{6r} (F)) / (3r)` | `RankOneConvex.locallyLipschitz`, `RankOneConvex.abs_sub_le_of_osc` | [R, Lemma 5.9] (without (5.8)) |
+| rank-one convex ⇒ locally Lipschitz; in the Frobenius norm, `lip (f; B_r (F)) ≤ √(min d m) osc (f; B̄_{6r} (F)) / (3r)` | `RankOneConvex.locallyLipschitz`, `RankOneConvex.abs_sub_le_of_osc` | [R, Lemma 5.9] (without (5.8)), [Da08, Thm 5.3 (iv)] |
 | `M = ∑_{i < min d m} σ_i p_i ⊗ q_i`, `σ_0 ≥ σ_1 ≥ … ≥ 0`, `p_i`, `q_i` orthonormal (singular value decomposition) | `Matrix.exists_singularValueDecomposition` | [R, Appendix A.1] |
 | `f` Borel, locally bounded, quasiconvex at `F` on the unit cube ⇒ `f (F) ≤ λ f (F + (1−λ) a ⊗ n) + (1−λ) f (F − λ a ⊗ n)`, by laminates with cut-offs | `le_of_quasiconvexAtOn_vecMulVec`, with `sawLaminate`, `setIntegral_sawLaminate`, `le_of_quasiconvexAtOn_of_tendsto` (the cut-off), `le_of_quasiconvexAtOn_unitCube_of_measurable` (`n = e_j`) | [R, Prop. 5.6] |
 | `f` Borel, locally bounded, quasiconvex ⇒ rank-one convex | `rankOneConvex_of_quasiconvex` | [R, Prop. 5.6] |
@@ -305,8 +305,8 @@ made by [`scripts/sync_challenge_defs.py`](scripts/sync_challenge_defs.py).
   Arch. Rational Mech. Anal. 115 (1991), 329–365: Proposition 8.1, with Step 6 of the proof of
   Proposition 7.2.
 - [Da08] B. Dacorogna, *Direct methods in the calculus of variations*, 2nd ed., Springer, 2008:
-  Propositions 5.11, 5.13, Theorem 5.20 with Lemma 5.24, Theorem 5.25 (i), Proposition 5.67,
-  Theorem 6.9 (statement), Theorems 8.33, 8.35.
+  Theorem 5.3 (i), (iv) (statements), Propositions 5.11, 5.13, Theorem 5.20 with Lemma 5.24, Theorem
+  5.25 (i), Proposition 5.67, Theorem 6.9 (statement), Theorems 8.33, 8.35.
 - [K] J. Kristensen, *On the non-locality of quasiconvexity*, Ann. Inst. H. Poincaré Anal. Non
   Linéaire 16 (1999), 1–13: proof of Proposition 2.
 - [F] H. Freudenthal, *Simplizialzerlegungen von beschränkter Flachheit*, Ann. of Math. 43 (1942),
