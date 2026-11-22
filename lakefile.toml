@@ -1,0 +1,24 @@
+name = "CalculusOfVariations"
+version = "0.1.0"
+keywords = ["math"]
+defaultTargets = ["CalculusOfVariations"]
+
+[leanOptions]
+pp.unicode.fun = true
+autoImplicit = false
+relaxedAutoImplicit = false
+maxSynthPendingDepth = 3
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.36.0-rc2"
+
+# Developed alongside it; to be pinned by `git` and `rev` once it is published.
+[[require]]
+name = "HarmonicAnalysis"
+path = "../lean4-harmonic-analysis"
+
+[[lean_lib]]
+name = "CalculusOfVariations"
+globs = ["CalculusOfVariations.*"]
