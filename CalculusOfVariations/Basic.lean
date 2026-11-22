@@ -20,9 +20,11 @@ public import Mathlib.Order.CompleteLattice.Basic
 /-!
 # Rank-one convexity and quasiconvexity
 
-The standard notions of the vectorial calculus of variations, in the form of the textbooks
-(Dacorogna, *Direct methods in the calculus of variations*, 2008, Chapter 5; Rindler, *Calculus of
-variations*, 2018, Chapter 5), for integrands `f : ℝ^{d×m} → ℝ`:
+The standard notions of the vectorial calculus of variations (see S. Müller, *Variational models
+for microstructure and phase transitions*, lecture notes, MPI MiS Leipzig, 1998, Definition 4.2,
+and Theorem 4.5 (ii) for the quasiconvex envelope), for integrands `f : ℝ^{d×m} → ℝ`, with the
+conventions of this package: test maps are Lipschitz, quasiconvexity is tested on the unit cube,
+and the minorants in the envelope are lower semicontinuous and locally bounded.
 
 * `grad φ x`: the derivative matrix of `φ : ℝ^m → ℝ^d` (rows are the components);
 * `RankOneConvex f`: `t ↦ f (A + t B)` is convex for every `A` and every `B` of rank one;

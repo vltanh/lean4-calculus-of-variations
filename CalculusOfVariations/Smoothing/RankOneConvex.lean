@@ -29,7 +29,7 @@ non-locality of quasiconvexity*, Ann. Inst. H. Poincaré Anal. Non Linéaire 16 
 origin, and add `ε |X|²` and a constant:
 
 * *not quasiconvex*: `p` fails quasiconvexity at `0` with a `K`-Lipschitz `φ`, so
-  `|∇φ|² ≤ B := 2 m K²` everywhere. The radii are chosen beyond `B`, so `h = p + ε |·|² + K₀` on
+  `|∇φ|² ≤ B := d m K²` everywhere. The radii are chosen beyond `B`, so `h = p + ε |·|² + K₀` on
   the range of `∇φ`, and `ε := δ / (2 (∫_Q |∇φ|² + 1))`, `δ := p (0) − ∫_Q p (∇φ) > 0`, keeps the
   strict inequality;
 * *Legendre–Hadamard*: with `r = |A|²`, `D²h (A) [H, H] = D²(p ζ) (A) [H, H] + Φ'' (r) 4 ⟨A, H⟩² +
@@ -275,7 +275,7 @@ theorem exists_smoothing (p : Matrix (Fin d) (Fin m) ℝ → ℝ)
     have h1 : R ^ 2 < ‖X‖ ^ 2 := pow_lt_pow_left₀ hXR (by linarith) (by norm_num)
     have h2 := norm_sq_le_sqNorm X
     nlinarith
-  -- the truncated polynomial `q = p ζ (|·|²)` and the bounds on the compact ball
+  -- the truncated integrand `q = p ζ (|·|²)` and the bounds on the compact ball
   set pE : (Fin d → Fin m → ℝ) → ℝ := fun X => p (Matrix.of X) with hpE_def
   set q : (Fin d → Fin m → ℝ) → ℝ := fun X => pE X * cutoff b (sqNorm X) with hq_def
   have hq : ContDiff ℝ ∞ q := hp.mul ((contDiff_cutoff b).comp contDiff_sqNorm)

@@ -126,8 +126,8 @@ theorem quadraticForm_quasiconvex
   have hGb : ∀ x i k, |grad φ x i k| ≤ K := by
     intro x i k
     rw [hG]
-    calc |fderiv ℝ (φc i) x (Pi.single k 1)| ≤ ‖fderiv ℝ (φc i) x‖
-        * ‖(Pi.single k 1 : Fin m → ℝ)‖ :=
+    calc |fderiv ℝ (φc i) x (Pi.single k 1)|
+        ≤ ‖fderiv ℝ (φc i) x‖ * ‖(Pi.single k 1 : Fin m → ℝ)‖ :=
           (fderiv ℝ (φc i) x).le_opNorm _
       _ ≤ K * 1 := by
           gcongr

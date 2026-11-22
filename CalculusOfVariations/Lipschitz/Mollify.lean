@@ -23,6 +23,12 @@ For a normalised bump `ρ` and `φ : E → ℝ` (`E` finite-dimensional, `μ` an
 * `∫ ∂_v φ = 0` for compactly supported Lipschitz `φ`;
 * on `ℝ^m`, for the bumps `plancherelBump m n` of radii `→ 0`, `D (ρ_n ⋆ φ) v → ∂_v φ` almost
   everywhere (`plancherel_ae_tendsto`).
+
+Stated, with `sorry` proofs to be given: the mollification of a `K`-Lipschitz function is
+`K`-Lipschitz, the mollification of a `ℤ^m`-periodic function is periodic, and for the
+componentwise mollification `mollifyPi n φ` of a Lipschitz `ℤ^m`-periodic map `φ : ℝ^m → ℝ^d`:
+smooth, periodic, Lipschitz with the constant of `φ`, and `∇ (mollifyPi n φ) → ∇φ` almost
+everywhere.
 -/
 
 @[expose] public section

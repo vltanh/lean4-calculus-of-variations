@@ -18,10 +18,11 @@ For a continuous `f`, with `cubeInf f` the infimum formula on the unit cube:
   affine on the pieces `P i` of a finite partition of `Q` up to a null set,
   `cubeInf f (F) ≤ ∑ i |P i| cubeInf f (F + ∇ (L i))`, that is,
   `⨍_Q cubeInf f (F + ∇ψ) ≥ cubeInf f (F)`. This is (4.28) of S. Müller, *Variational models for
-  microstructure and phase transitions*, lecture notes, MPI MiS Leipzig, 1998, §4.8: on each piece,
-  finitely many disjoint small cubes fill the piece up to `ε` (`cv_exists_finite_cover`), and
-  rescaled almost minimisers for `cubeInf f (F + ∇ (L i))` are inserted in them (`rescaleMap`); the
-  value `−∞` is allowed;
+  microstructure and phase transitions*, lecture notes, MPI MiS Leipzig, 1998, §4.8. Müller inserts
+  in each piece an almost minimiser of the infimum formula on that piece, which does not depend on
+  the domain; here the same step is done with the covering inline: finitely many disjoint small
+  cubes fill the piece up to `ε` (`cv_exists_finite_cover`), and rescaled almost minimisers for
+  `cubeInf f (F + ∇ (L i))` are inserted in them (`rescaleMap`). The value `−∞` is allowed;
 * `cubeLaminate_piecewiseAffineOn`: the laminates of `Quasiconvex.Laminate` are piecewise affine on
   the cube;
 * `cubeInf_le_two_point`: hence, with the laminates and `|{∇v_k ≠ ∇u_k}| → 0`, the two-point

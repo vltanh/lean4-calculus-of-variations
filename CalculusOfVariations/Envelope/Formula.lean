@@ -74,10 +74,10 @@ theorem cv_unitBall_convex : Convex ℝ (unitBall m) := by
       have hb' : b = 1 - a := by linarith
       subst hb'; ring
     nlinarith [mul_nonneg (mul_nonneg ha hb) (sq_nonneg (x i - y i))]
-  calc ∑ i, (a • x + b • y) i ^ 2 ≤ ∑ i,
-      (a * x i ^ 2 + b * y i ^ 2) := Finset.sum_le_sum fun i _ => h i
-    _ = a * ∑ i, x i ^ 2 + b
-        * ∑ i, y i ^ 2 := by rw [Finset.sum_add_distrib, Finset.mul_sum, Finset.mul_sum]
+  calc ∑ i, (a • x + b • y) i ^ 2 ≤ ∑ i, (a * x i ^ 2 + b * y i ^ 2) :=
+        Finset.sum_le_sum fun i _ => h i
+    _ = a * ∑ i, x i ^ 2 + b * ∑ i, y i ^ 2 := by
+        rw [Finset.sum_add_distrib, Finset.mul_sum, Finset.mul_sum]
     _ < 1 := by
         rcases ha.lt_or_eq with ha' | ha'
         · nlinarith
@@ -390,13 +390,17 @@ theorem qcEnvelope_eq_iInf_unitBall {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf
 below, Müller 1998, Theorem 4.5 (iii)): for a continuous `f : ℝ^{d×m} → ℝ`, every nonempty bounded
 open `Ω ⊆ ℝ^m` and every `A`, `f^{qc} (A) = inf_φ ⨍_Ω f (A + ∇φ)` over the Lipschitz `φ` vanishing
 outside `Ω` (that is, `φ ∈ W^{1,∞}_0 (Ω, ℝ^d)` extended by `0`), with values in `EReal`.
+Müller states it for domains with `|∂Ω| = 0`; for any bounded open domain the boundary is handled
+by the vanishing of the gradient of a Lipschitz map almost everywhere on its zero set
+(`Lipschitz.ZeroSet`), as in `quasiconvexAtOn_iff`.
 
 PLACEHOLDER: the route of the proof is pending its source. The proof of S. Müller (lecture notes,
 1998, Theorem 4.5 (iii) and §4.8) runs as follows: the infimum formula `Qf` does not depend on the
 domain; `Qf ≥ f^{qc}`; `⨍ Qf (F + ∇ψ) ≥ Qf (F)` for piecewise affine `ψ ∈ W^{1,∞}_0`
 (`cubeInf_le_sum_of_piecewiseAffine`), by gluing almost minimisers on the pieces; with the laminates
-of `Quasiconvex.Laminate` this makes `Qf` rank-one convex, hence locally Lipschitz; and piecewise
-affine approximation (`Lipschitz.PiecewiseAffine`) makes it quasiconvex. -/
+of `Quasiconvex.Laminate` this makes `Qf` rank-one convex, hence locally Lipschitz; and (4.28) with
+"density arguments" makes it quasiconvex (here: piecewise affine approximation by Kuhn–Freudenthal
+interpolation, `Lipschitz.PiecewiseAffine`). -/
 theorem qcEnvelope_eq_iInf {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : Continuous f)
     {Ω : Set (Fin m → ℝ)} (hΩ : IsOpen Ω) (hb : Bornology.IsBounded Ω) (hne : Ω.Nonempty)
     (A : Matrix (Fin d) (Fin m) ℝ) :

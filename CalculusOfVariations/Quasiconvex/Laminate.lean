@@ -14,7 +14,7 @@ public import CalculusOfVariations.Quasiconvex.Domain
 * the sawtooth `rd_saw λ`: `1`-periodic, `0` at the integers, slope `1 − λ` on `(k, k + λ)` and
   `−λ` on `(k + λ, k + 1)`, `1`-Lipschitz;
 * the laminate of S. Müller, *Variational models for microstructure and phase transitions*, lecture
-  notes, MPI MiS Leipzig, 1998, proof of Lemma 4.3 (after Fonseca 1988, Theorem 2.4): on the unit
+  notes, MPI MiS Leipzig, 1998, proof of Lemma 4.3: on the unit
   cube `Q = (0, 1)^m`, with `h = rd_saw λ`, `u_k (x) = k⁻¹ h (k x_j) a` (`sawLaminate`) and
   `v_k (x) = min (k⁻¹ h (k x_j), dist_∞ (x, ∂Q)) a` (`cubeLaminate`). Then `v_k` is Lipschitz and
   vanishes off `Q`, `∇v_k ∈ {(1 − λ) a ⊗ e_j, −λ a ⊗ e_j} ∪ {± a ⊗ e_i}` almost everywhere, and
@@ -30,6 +30,9 @@ public import CalculusOfVariations.Quasiconvex.Domain
   an orthogonal matrix (`exists_orthogonal_mulVec_single_eq`, a Householder reflection), and with
   the independence of the domain (`quasiconvexAtOn_iff`) this gives the inequality in every
   rank-one direction (`le_of_quasiconvexAtOn_vecMulVec`).
+
+`coordLaminate` (`Envelope.Convexity`) is the same construction in the coordinate directions,
+with `a = s e_i` and `n` layers, and `cv_layer_measure` bounds its boundary layer.
 
 The statements of the laminate argument are stated here with `sorry` proofs, to be proved.
 -/
@@ -222,14 +225,15 @@ semicontinuous, locally bounded `f` quasiconvex at `F` on the unit cube, and all
 `n ∈ ℝ^m` and `λ ∈ (0, 1)`, `f (F) ≤ λ f (F + (1 − λ) a ⊗ n) + (1 − λ) f (F − λ a ⊗ n)`. Write
 `a ⊗ n = (|n| a) ⊗ (n / |n|)`, take an orthogonal `R` with `R e_j = n / |n|`
 (`exists_orthogonal_mulVec_single_eq`), pass from the unit cube to `R Q` by the independence of
-the domain (`quasiconvexAtOn_iff`, which needs the regularity of `f`), and apply
-`le_of_quasiconvexAtOn_orthogonal`. -/
+the domain (`quasiconvexAtOn_iff`, whose statement here assumes `f` lower semicontinuous and
+locally bounded; Müller's Lemma 4.3 needs no regularity, and `le_of_quasiconvexAtOn_orthogonal`
+needs none), and apply `le_of_quasiconvexAtOn_orthogonal`. -/
 theorem le_of_quasiconvexAtOn_vecMulVec {f : Matrix (Fin d) (Fin m) ℝ → ℝ}
     (hlsc : LowerSemicontinuous f) (hbdd : IsLocallyBounded f) {F : Matrix (Fin d) (Fin m) ℝ}
     (hf : QuasiconvexAtOn (unitCube m) f F) (a : Fin d → ℝ) (n : Fin m → ℝ) {l : ℝ} (hl0 : 0 < l)
     (hl1 : l < 1) :
-    f F ≤ l * f (F + (1 - l) • Matrix.vecMulVec a n) + (1 - l) * f
-        (F - l • Matrix.vecMulVec a n) := by
+    f F ≤ l * f (F + (1 - l) • Matrix.vecMulVec a n) +
+      (1 - l) * f (F - l • Matrix.vecMulVec a n) := by
   sorry
 
 end CalculusOfVariations

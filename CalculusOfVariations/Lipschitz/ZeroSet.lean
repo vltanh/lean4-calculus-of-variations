@@ -29,8 +29,8 @@ variable {d m : ℕ}
 density point `x` of the zero set where `φ` is differentiable, a derivative `L` with `L v ≠ 0`
 would make `φ` nonzero on the ball `B (x + (r/2) v, ρ r/2)`, a fixed proportion of `B (x, r)`. -/
 lemma rd_ae_fderiv_eq_zero {φ : (Fin m → ℝ) → Fin d → ℝ} {K : NNReal}
-    (hφ : LipschitzWith K φ) : ∀ᵐ x ∂(volume : Measure (Fin m → ℝ)), φ x = 0 → fderiv ℝ φ x
-        = 0 := by
+    (hφ : LipschitzWith K φ) :
+    ∀ᵐ x ∂(volume : Measure (Fin m → ℝ)), φ x = 0 → fderiv ℝ φ x = 0 := by
   set E := {x | φ x = 0}
   have hE : MeasurableSet E := (isClosed_eq hφ.continuous continuous_const).measurableSet
   filter_upwards [Besicovitch.ae_tendsto_measure_inter_div_of_measurableSet volume hE,

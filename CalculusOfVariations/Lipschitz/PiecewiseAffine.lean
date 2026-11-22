@@ -23,8 +23,8 @@ public import Mathlib.Algebra.Order.Floor.Ring
   coordinates of `x`, so `I_k ψ` is the affine interpolant of the values of `ψ` at the vertices.
 
 Properties: `I_k ψ` is `m K`-Lipschitz for `K`-Lipschitz `ψ` (since
-`∫_0^1 |⌈u − t⌉ − ⌈u' − t⌉| dt = |u − u'|`), vanishes off the unit cube when `ψ` does
-(`k ≥ 1`), is piecewise affine on the unit cube, and `∇ I_k ψ → ∇ψ` almost everywhere: at a point
+`∫_0^1 |⌈u − t⌉ − ⌈u' − t⌉| dt = |u − u'|`), vanishes off the unit cube when `ψ` does,
+is piecewise affine on the unit cube (`k ≥ 1`), and `∇ I_k ψ → ∇ψ` almost everywhere: at a point
 of differentiability of `ψ` on no grid hyperplane, the gradient of `I_k ψ` is a vector of
 difference quotients of `ψ` along edges of length `k⁻¹` of a simplex containing the point.
 
@@ -59,7 +59,7 @@ theorem kuhnInterpolation_lipschitz {ψ : (Fin m → ℝ) → Fin d → ℝ} {K 
 
 /-- The interpolation of a map vanishing off the unit cube vanishes off the unit cube. -/
 theorem kuhnInterpolation_eq_zero {ψ : (Fin m → ℝ) → Fin d → ℝ}
-    (hψ : ∀ x ∉ unitCube m, ψ x = 0) {k : ℕ} (hk : 0 < k) :
+    (hψ : ∀ x ∉ unitCube m, ψ x = 0) (k : ℕ) :
     ∀ x ∉ unitCube m, kuhnInterpolation k ψ x = 0 := by
   sorry
 

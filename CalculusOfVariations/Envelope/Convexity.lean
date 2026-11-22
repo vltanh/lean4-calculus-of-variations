@@ -661,8 +661,8 @@ theorem cubeInfReal_convex_ineq {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : C
   have hl := cubeInf_laminate hf (A₀ + (a * x + b * y) • Matrix.single i j 1) i j (l := b)
     (s := y - x) hb (by linarith) (by linarith) N
   rw [cv_smul_single, cv_single_shift _ _ _
-      (show a * x + b * y + (1 - b) * (y - x)
-          = y by rw [show 1 - b = a by linarith]; linear_combination y * hab),
+      (show a * x + b * y + (1 - b) * (y - x) = y by
+        rw [show 1 - b = a by linarith]; linear_combination y * hab),
     cv_single_shift _ _ _ (show a * x + b * y + -b * (y - x) = x by linear_combination x * hab),
     ← cv_smul_single i j y, ← cv_smul_single i j x,
     cv_trunc_eq (hfin _) (min_le_right _ _), cv_trunc_eq (hfin _) (min_le_left _ _)] at hl
