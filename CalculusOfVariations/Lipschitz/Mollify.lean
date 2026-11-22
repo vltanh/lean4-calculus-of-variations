@@ -24,11 +24,11 @@ For a normalised bump `ρ` and `φ : E → ℝ` (`E` finite-dimensional, `μ` an
 * on `ℝ^m`, for the bumps `plancherelBump m n` of radii `→ 0`, `D (ρ_n ⋆ φ) v → ∂_v φ` almost
   everywhere (`plancherel_ae_tendsto`).
 
-Stated, with `sorry` proofs to be given: the mollification of a `K`-Lipschitz function is
-`K`-Lipschitz, the mollification of a `ℤ^m`-periodic function is periodic, and for the
-componentwise mollification `mollifyPi n φ` of a Lipschitz `ℤ^m`-periodic map `φ : ℝ^m → ℝ^d`:
-smooth, periodic, Lipschitz with the constant of `φ`, and `∇ (mollifyPi n φ) → ∇φ` almost
-everywhere.
+Moreover the mollification of a `K`-Lipschitz function is `K`-Lipschitz
+(`plancherelMollify_lipschitzWith`), the mollification of a `ℤ^m`-periodic function is periodic
+(`plancherelMollify_periodic`), and the componentwise mollification `mollifyPi n φ` of a
+Lipschitz `ℤ^m`-periodic map `φ : ℝ^m → ℝ^d` is smooth, periodic, Lipschitz with the constant of
+`φ`, and `∇ (mollifyPi n φ) → ∇φ` almost everywhere (`ae_tendsto_grad_mollifyPi`).
 -/
 
 @[expose] public section
@@ -205,52 +205,82 @@ theorem plancherel_ae_tendsto {m : ℕ} {φ : (Fin m → ℝ) → ℝ} {K : NNRe
   rw [← hd.lineDeriv_eq_fderiv]
   exact hx
 
-/-! ### Lipschitz and periodic maps
+/-! ### Lipschitz and periodic maps -/
 
-The statements below are stated with `sorry` proofs, to be proved. -/
-
-/-- The mollification of a `K`-Lipschitz function is `K`-Lipschitz. -/
+/-- The mollification of a `K`-Lipschitz function is `K`-Lipschitz:
+`|ρ ⋆ φ (x) - ρ ⋆ φ (y)| ≤ ∫ ρ (t) |φ (x - t) - φ (y - t)| dt ≤ K ‖x - y‖`. -/
 theorem plancherelMollify_lipschitzWith {E : Type*} [NormedAddCommGroup E] [NormedSpace ℝ E]
     [FiniteDimensional ℝ E] [MeasurableSpace E] [BorelSpace E] {μ : Measure E}
     [μ.IsAddHaarMeasure] (ρ : ContDiffBump (0 : E)) {φ : E → ℝ} {K : NNReal}
     (hφ : LipschitzWith K φ) : LipschitzWith K (plancherelMollify μ ρ φ) := by
-  sorry
+  refine LipschitzWith.of_dist_le_mul fun x y => ?_
+  have hi : ∀ z : E, Integrable (fun t => ρ.normed μ t * φ (z - t)) μ := fun z =>
+    (ρ.continuous_normed.mul (hφ.continuous.comp (continuous_const.sub continuous_id))
+      ).integrable_of_hasCompactSupport ρ.hasCompactSupport_normed.mul_right
+  have e : ∀ z, plancherelMollify μ ρ φ z = ∫ t, ρ.normed μ t * φ (z - t) ∂μ := fun z => by
+    rw [plancherelMollify, convolution_lsmul]; rfl
+  have hb : Integrable (fun t => ρ.normed μ t * (K * dist x y)) μ :=
+    (ρ.continuous_normed.integrable_of_hasCompactSupport ρ.hasCompactSupport_normed).mul_const _
+  rw [e, e, Real.dist_eq, ← integral_sub (hi x) (hi y), ← Real.norm_eq_abs]
+  calc ‖∫ t, (ρ.normed μ t * φ (x - t) - ρ.normed μ t * φ (y - t)) ∂μ‖
+      ≤ ∫ t, ρ.normed μ t * (K * dist x y) ∂μ := by
+        refine norm_integral_le_of_norm_le hb (Filter.Eventually.of_forall fun t => ?_)
+        rw [← mul_sub, norm_mul, Real.norm_of_nonneg (ρ.nonneg_normed t), ← dist_eq_norm]
+        refine mul_le_mul_of_nonneg_left ?_ (ρ.nonneg_normed t)
+        calc dist (φ (x - t)) (φ (y - t)) ≤ K * dist (x - t) (y - t) := hφ.dist_le_mul _ _
+          _ = K * dist x y := by rw [dist_sub_right]
+    _ = K * dist x y := by rw [integral_mul_const, ρ.integral_normed, one_mul]
 
-/-- The mollification of a `ℤ^m`-periodic function is `ℤ^m`-periodic. -/
+/-- The mollification of a `ℤ^m`-periodic function is `ℤ^m`-periodic:
+`ρ ⋆ φ (x + z) = ∫ ρ (t) φ (x - t + z) dt = ρ ⋆ φ (x)`. -/
 theorem plancherelMollify_periodic {m : ℕ} (ρ : ContDiffBump (0 : Fin m → ℝ))
     {φ : (Fin m → ℝ) → ℝ}
     (hper : ∀ (x : Fin m → ℝ) (z : Fin m → ℤ), φ (x + fun i => (z i : ℝ)) = φ x)
     (x : Fin m → ℝ) (z : Fin m → ℤ) :
     plancherelMollify volume ρ φ (x + fun i => (z i : ℝ)) = plancherelMollify volume ρ φ x := by
-  sorry
+  rw [plancherelMollify, convolution_lsmul, convolution_lsmul]
+  congr 1
+  ext t
+  rw [show x + (fun i => (z i : ℝ)) - t = (x - t) + fun i => (z i : ℝ) by abel, hper]
 
 /-- The componentwise mollification of `φ : ℝ^m → ℝ^d` by the bump `plancherelBump m n`. -/
 noncomputable def mollifyPi {d m : ℕ} (n : ℕ) (φ : (Fin m → ℝ) → Fin d → ℝ) :
     (Fin m → ℝ) → Fin d → ℝ :=
   fun x i => plancherelMollify volume (plancherelBump m n) (fun y => φ y i) x
 
+/-- A component of a `K`-Lipschitz map (sup norm) is `K`-Lipschitz. -/
+private theorem mollifyPi_component_lipschitz {d m : ℕ} {φ : (Fin m → ℝ) → Fin d → ℝ}
+    {K : NNReal} (hφ : LipschitzWith K φ) (i : Fin d) : LipschitzWith K fun y => φ y i :=
+  LipschitzWith.of_dist_le_mul fun x y => (dist_le_pi_dist _ _ i).trans (hφ.dist_le_mul x y)
+
 /-- The mollifications of a continuous map are smooth. -/
 theorem mollifyPi_contDiff {d m : ℕ} {φ : (Fin m → ℝ) → Fin d → ℝ} (hφ : Continuous φ) (n : ℕ) :
-    ContDiff ℝ ∞ (mollifyPi n φ) := by
-  sorry
+    ContDiff ℝ ∞ (mollifyPi n φ) :=
+  contDiff_pi.2 fun i => plancherelMollify_contDiff _ ((continuous_apply i).comp hφ)
 
 /-- The mollifications of a `ℤ^m`-periodic map are `ℤ^m`-periodic. -/
 theorem mollifyPi_periodic {d m : ℕ} {φ : (Fin m → ℝ) → Fin d → ℝ}
     (hper : ∀ (x : Fin m → ℝ) (z : Fin m → ℤ), φ (x + fun i => (z i : ℝ)) = φ x) (n : ℕ)
     (x : Fin m → ℝ) (z : Fin m → ℤ) :
     mollifyPi n φ (x + fun i => (z i : ℝ)) = mollifyPi n φ x := by
-  sorry
+  funext i
+  exact plancherelMollify_periodic (φ := fun y => φ y i) _ (fun y w => congrFun (hper y w) i) x z
 
 /-- The mollifications of a `K`-Lipschitz map are `K`-Lipschitz (sup norms), so their gradients
 are bounded by `K` uniformly in `n`. -/
 theorem mollifyPi_lipschitzWith {d m : ℕ} {φ : (Fin m → ℝ) → Fin d → ℝ} {K : NNReal}
-    (hφ : LipschitzWith K φ) (n : ℕ) : LipschitzWith K (mollifyPi n φ) := by
-  sorry
+    (hφ : LipschitzWith K φ) (n : ℕ) : LipschitzWith K (mollifyPi n φ) :=
+  LipschitzWith.of_dist_le_mul fun x y => (dist_pi_le_iff (by positivity)).2 fun i =>
+    (plancherelMollify_lipschitzWith _ (mollifyPi_component_lipschitz hφ i)).dist_le_mul x y
 
-/-- For a Lipschitz map, `∇ (ρ_n ⋆ φ) = ρ_n ⋆ ∇φ → ∇φ` almost everywhere. -/
+/-- For a Lipschitz map, `∇ (ρ_n ⋆ φ) = ρ_n ⋆ ∇φ → ∇φ` almost everywhere: entry by entry, by
+`plancherel_ae_tendsto`. -/
 theorem ae_tendsto_grad_mollifyPi {d m : ℕ} {φ : (Fin m → ℝ) → Fin d → ℝ} {K : NNReal}
     (hφ : LipschitzWith K φ) :
     ∀ᵐ x, Tendsto (fun n => grad (mollifyPi n φ) x) atTop (𝓝 (grad φ x)) := by
-  sorry
+  have h := ae_all_iff.2 fun i => ae_all_iff.2 fun k =>
+    plancherel_ae_tendsto (mollifyPi_component_lipschitz hφ i) (Pi.single k (1 : ℝ))
+  filter_upwards [h] with x hx
+  exact tendsto_pi_nhds.2 fun i => tendsto_pi_nhds.2 fun k => hx i k
 
 end CalculusOfVariations
