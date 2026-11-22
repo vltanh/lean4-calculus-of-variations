@@ -15,7 +15,8 @@ public import CalculusOfVariations.Quasiconvex.Cutoff
 For a lower semicontinuous, locally bounded `f`, quasiconvexity at `A` on the unit cube is
 equivalent to the inequality `f (A) ≤ ∫_{(0,1)^m} f (A + ∇φ)` for `ℤ^m`-periodic Lipschitz `φ`
 (`quasiconvexAtOn_iff_periodic`). This is Proposition 5.13 of B. Dacorogna, *Direct Methods in the
-Calculus of Variations*, 2nd ed., Springer, 2008 ([D08], p. 173–174), with its proof.
+Calculus of Variations*, 2nd ed., Springer, 2008 ([D08], p. 173–174; there for Borel, locally
+bounded `f`), with its proof.
 
 "⇒": for a periodic `φ`, the maps `ψ_ν (x) = ν⁻¹ φ (ν x)`, `ν ∈ ℕ`, satisfy
 `∫_Q f (A + ∇ψ_ν) = ∫_Q f (A + ∇φ)` by periodicity, and they converge to `0` uniformly with bounded

@@ -15,8 +15,9 @@ public import Mathlib.MeasureTheory.Function.Floor
 
 A lower semicontinuous, locally bounded `f` that is quasiconvex at `F` satisfies
 `f (F) ≤ λ f (F + (1 − λ) a ⊗ n) + (1 − λ) f (F − λ a ⊗ n)` for all `a`, `n` and `λ ∈ (0, 1)`
-(`le_of_quasiconvexAtOn_vecMulVec`). This is the proof of Proposition 5.6 of F. Rindler, *Calculus
-of Variations*, 2nd ed., Graduate Texts in Mathematics 310, Springer, 2026 ([R2]), p. 111–113, where
+(`le_of_quasiconvexAtOn_vecMulVec`). This is, for lower semicontinuous integrands ([R2]: Borel; only
+the measurability is used), the proof of Proposition 5.6 of F. Rindler, *Calculus of Variations*,
+2nd ed., Graduate Texts in Mathematics 310, Springer, 2026 ([R2]), p. 111–113, where
 `A = F + (1 − λ) a ⊗ n` and `B = F − λ a ⊗ n` (so `F = λ A + (1 − λ) B`; `a` here is `−a` there):
 
 * (Step 1, p. 111) The laminate `u_k (x) = F x + k⁻¹ h (k x · n) a` with the sawtooth `h = rd_saw λ`

@@ -135,7 +135,7 @@ lemma rd_ae_fderiv_eq_zero {φ : (Fin m → ℝ) → Fin d → ℝ} {K : NNReal}
   linarith
 
 
-/-- The gradient vanishes almost everywhere off the open set outside which `φ` vanishes. -/
+/-- The gradient of a Lipschitz map vanishes almost everywhere on its zero set. -/
 lemma rd_ae_grad_eq_zero {φ : (Fin m → ℝ) → Fin d → ℝ} {K : NNReal}
     (hφ : LipschitzWith K φ) :
     ∀ᵐ x ∂(volume : Measure (Fin m → ℝ)), φ x = 0 → grad φ x = 0 := by

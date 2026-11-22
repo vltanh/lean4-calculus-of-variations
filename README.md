@@ -44,7 +44,7 @@ semicontinuous, locally bounded minorants, in `EReal`).
 | Statement | Lean | Source |
 | --- | --- | --- |
 | separately convex ⇒ bounded on cubes, locally Lipschitz | `Matrix.exists_abs_le_of_convexOn_single`, `Matrix.locallyLipschitz_of_convexOn_single` | [M, Def. 4.2, Remark 3] |
-| rank-one convex ⇒ locally Lipschitz; in the Frobenius norm, `lip (f; B_r (F)) ≤ √(min d m) osc (f; B̄_{6r} (F)) / (3r)` | `RankOneConvex.locallyLipschitz`, `RankOneConvex.abs_sub_le_of_osc` | [R, Lemma 5.9] |
+| rank-one convex ⇒ locally Lipschitz; in the Frobenius norm, `lip (f; B_r (F)) ≤ √(min d m) osc (f; B̄_{6r} (F)) / (3r)` | `RankOneConvex.locallyLipschitz`, `RankOneConvex.abs_sub_le_of_osc` | [R, Lemma 5.9] (without (5.8)) |
 | `M = ∑_{i < min d m} σ_i p_i ⊗ q_i`, `σ_0 ≥ σ_1 ≥ … ≥ 0`, `p_i`, `q_i` orthonormal (singular value decomposition) | `Matrix.exists_singularValueDecomposition` | [R, Appendix A.1] |
 | `f` lsc, locally bounded, quasiconvex at `F` on the unit cube ⇒ `f (F) ≤ λ f (F + (1−λ) a ⊗ n) + (1−λ) f (F − λ a ⊗ n)`, by laminates with cut-offs | `le_of_quasiconvexAtOn_vecMulVec`, with `sawLaminate`, `setIntegral_sawLaminate`, `le_of_quasiconvexAtOn_of_tendsto` (the cut-off), `le_of_quasiconvexAtOn_unitCube_of_lsc` (`n = e_j`) | [R, Prop. 5.6] |
 | `f` lsc, locally bounded, quasiconvex ⇒ rank-one convex | `rankOneConvex_of_quasiconvex` | [R, Prop. 5.6] |
@@ -55,7 +55,7 @@ semicontinuous, locally bounded minorants, in `EReal`).
 | rank-one affine ⇒ affine combination of minors (continuity not assumed) | `RankOneAffine.exists_eq_sum_minor`; for continuous functions, `RankOneAffine.exists_eq_sum_minor_of_continuous` | [Da08, Thm 5.20, (ii) ⇒ (iii′)] |
 | `∫ minor (∇φ) = 0` for `2 × 2`, `3 × 3` minors, `φ` Lipschitz with compact support | `nl_null2`, `nl_null3` | [Da08, Thm 8.35], [Mo, Lemma 5.1] |
 | `∫_Q minor (A + ∇φ) = minor A` for `3 × 3` minors, `φ` a test map on `Q` | `nl_minor3_quasiaffine` | [Da08, Thm 8.35] |
-| `f^{qc} (A) = inf_φ ⨍_Ω f (A + ∇φ)`, `Ω` nonempty, bounded, open, `f` continuous; `Ω` the unit ball | `qcEnvelope_eq_iInf`, `qcEnvelope_eq_iInf_unitBall` | [KP, Prop. 8.1], [Da82, Thm 5] |
+| `f^{qc} (A) = inf_φ ⨍_Ω f (A + ∇φ)`, `Ω` nonempty, bounded, open, `f` continuous; `Ω` the unit ball | `qcEnvelope_eq_iInf`, `qcEnvelope_eq_iInf_unitBall` | from [KP, Prop. 8.1]; [Da82, Thm 5], [Da08, Thm 6.9] |
 | the infimum formula does not depend on the domain (null boundaries): copies of a test map by Vitali's theorem | `domainInf_eq`, `domainInf_le_domainInf`, `exists_testMap_setIntegral_eq` | [KP, Prop. 8.1 (i)] |
 | `Qf (F) ≤ λ Qf (F + (1−λ) a ⊗ n) + (1−λ) Qf (F − λ a ⊗ n)`, in `EReal`; `Qf` finite ⇒ rank-one convex, continuous | `cubeInf_le_two_point_vecMulVec`, `cubeInf_le_two_point` (`n = e_j`), `cubeInfReal_rankOneConvex`, `cubeInfReal_continuous` | [KP, Prop. 8.1 (ii), (iii)] |
 | `⨍_Q Qf (F + ∇ψ) ≥ Qf (F)` for piecewise affine test maps `ψ`; `Qf` finite ⇒ quasiconvex | `cubeInf_le_sum_of_piecewiseAffine`, `cubeInfReal_quasiconvex` | [KP, Prop. 8.1 (iv), Prop. 7.2, Step 6] |
@@ -94,9 +94,9 @@ theorem CalculusOfVariations.qcEnvelope_eq_iInf {f : Matrix (Fin d) (Fin m) ℝ 
   in [R]) is proved by convexity in each entry, and the slope bound [R, (5.10)] is one-sided (exchange
   `A` and `B`).
 - **Domain independence** follows [Da08, Prop. 5.11] and [R, Lemma 5.2 (i)]: extend the test map by
-  zero and translate and scale the domain (one large cube, one small cube). Where [Da08] uses it
-  without proof, the gradient of a Lipschitz map vanishes almost everywhere on its zero set
-  (Lebesgue density). The first domain must be nonempty.
+  zero and translate and scale the domain (one large cube, one small cube). For the test maps used here (Lipschitz, zero off the domain) on arbitrary bounded open sets, this
+  uses that the gradient of a Lipschitz map vanishes almost everywhere on its zero set (Lebesgue
+  density). The first domain must be nonempty.
 - **Periodic test maps** follow [Da08, Prop. 5.13]: rescaled copies `ν⁻¹ φ (ν x)` and cut-offs.
 - **Quadratic forms** follow [Da08, Thm 5.25 (i)]: the linear term integrates to zero, and the
   quadratic term is nonnegative under the Legendre–Hadamard condition, by Plancherel's formula,
@@ -110,8 +110,8 @@ theorem CalculusOfVariations.qcEnvelope_eq_iInf {f : Matrix (Fin d) (Fin m) ℝ 
   minors that contain the first row, by the vanishing of the `t²` coefficients along
   `(e_1 + e_2) ⊗ b`. Lemma 5.24, Part 2, is repaired: for `n > s + 1` the functions `X_β` of (5.47)
   are not rank-one affine and their sum is not `g`, so the columns are restricted to `β` first; the
-  matrices `ξ` are chosen with zero columns, since the displayed coefficients omit terms; and all
-  pairs of columns are used. That rank-one affine functions are `C¹` is neither justified in the
+  matrices `ξ` are chosen with zero columns, since the displayed coefficients omit terms, and then
+  the vectors `b` are arbitrary. That rank-one affine functions are `C¹` is neither justified in the
   source nor needed (module docstring of `Minors/RankOneAffine.lean`).
 - **Quasiconvex ⇒ rank-one convex** follows [R, Prop. 5.6]: the sawtooth laminates
   `u_k = k⁻¹ h (k x_j) a` have two gradients, with the volume fractions `λ`, `1 − λ`; multiplied by
@@ -146,21 +146,27 @@ theorem CalculusOfVariations.qcEnvelope_eq_iInf {f : Matrix (Fin d) (Fin m) ℝ 
 
 ## Simpler proofs
 
-The proofs follow the sources in the table. Shorter arguments noticed on the way:
+Arguments shorter or simpler than those of the sources, which the library follows:
 
-- Rank-one convex ⇒ locally Lipschitz: a separately convex function is locally Lipschitz
-  (`Matrix.locallyLipschitz_of_convexOn_single`); no singular values, no constant. In Lean.
-- The bound `√(min d m) osc (f; B̄_{6r} (F)) / (3r)`: the rows of `B − A` (or its columns) are
-  Frobenius-orthogonal matrices of rank at most one and replace the singular value decomposition. On
-  paper (the orthogonal sums also in Lean).
-- Quasiconvex ⇒ rank-one convex: the periodic sawtooth `h (x_j) a` in `quasiconvexAtOn_iff_periodic`
-  gives the two-point inequality along `a ⊗ e_j`, without a cut-off of its own. In Lean.
-- Rank-one affine ⇒ minors: the part `G_I` of `f` that is multilinear in the rows `I`,
-  `∑_{J ⊆ I} (−1)^{|I ∖ J|} f` (the rows outside `J` set to `0`), is alternating, by the `t²`
-  coefficient along `(e_i + e_j) ⊗ b`, hence a combination of minors with the rows `I`; no induction,
-  no transposition, no Lemma 5.24. On paper.
-- Dacorogna's formula: rank-one convexity of `Qf` is needed only along the `e_i ⊗ e_j`, with
-  separate convexity for the continuity, so without the rotated cubes. In Lean.
+- Rank-one convex ⇒ locally Lipschitz: a rank-one convex function is separately convex, and
+  `Matrix.locallyLipschitz_of_convexOn_single` applies; no singular values, no explicit constant.
+  Checked in Lean.
+- The bound `√(min d m) osc (f; B̄_{6r} (F)) / (3r)` of [R, (5.9)]: the rows of `B − A` (or its
+  columns) are Frobenius-orthogonal matrices of rank at most one and replace the singular value
+  decomposition. On paper (the orthogonality of the rows checked in Lean).
+- Quasiconvex ⇒ the two-point inequality along `a ⊗ e_j` ([R, Prop. 5.6] on the cube):
+  `quasiconvexAtOn_iff_periodic`, tested with the periodic sawtooth `sawLaminate a j l 1`; no further
+  cut-off. Checked in Lean.
+- Rank-one affine ⇒ minors ([Da08, Thm 5.20]): `f` is multi-affine in the rows; the part `G_I` of `f`
+  that is multilinear in the rows `I` (an alternating sum of `f` with rows set to zero) vanishes when
+  two of these rows are equal, by the `t²` coefficient along `(e_i + e_j) ⊗ b`, so it is an
+  alternating form, a combination of minors with the rows `I`; no induction, no transposition, no
+  Lemma 5.24. On paper.
+- Lemma 5.24 of [Da08]: the same argument shows that `g` is alternating in the rows `{1} ∪ I`. On
+  paper.
+- Dacorogna's formula: (ii) of [KP, Prop. 8.1] is needed only along the `e_i ⊗ e_j`
+  (`cubeInf_le_two_point`), with `Matrix.locallyLipschitz_of_convexOn_single` for the continuity; no
+  rotated cubes. Checked in Lean.
 
 ## Planned extensions
 
@@ -215,8 +221,7 @@ lake env lean scripts/Audit.lean   # axioms; fails on any `sorry`
   school, Cetraro, 1996): Definition 4.2 and Remark 3; Lemma 4.3; the density argument of Theorem 4.4
   (i).
 - [R] F. Rindler, *Calculus of Variations*, 2nd ed., Graduate Texts in Mathematics 310, Springer,
-  2026: Lemma 5.2 (i), Proposition 5.6, Lemma 5.9 (by content, Lemma 5.6 of the first edition, 2018,
-  which was not consulted), Appendix A.1.
+  2026: Lemma 5.2 (i), Proposition 5.6, Lemma 5.9 (cited in the literature as Lemma 5.6 of the first edition, 2018), Appendix A.1.
 - [Mo] C. B. Morrey, *Quasi-convexity and the lower semicontinuity of multiple integrals*, Pacific
   J. Math. 2 (1952), 25–53: Lemma 5.1.
 - [Da82] B. Dacorogna, *Quasiconvexity and relaxation of nonconvex problems in the calculus of
@@ -225,7 +230,7 @@ lake env lean scripts/Audit.lean   # axioms; fails on any `sorry`
   Arch. Rational Mech. Anal. 115 (1991), 329–365: Proposition 8.1, with Step 6 of the proof of
   Proposition 7.2.
 - [Da08] B. Dacorogna, *Direct methods in the calculus of variations*, 2nd ed., Springer, 2008:
-  Propositions 5.11, 5.13, Theorem 5.20 with Lemma 5.24, Theorem 5.25 (i), Theorem 8.35.
+  Propositions 5.11, 5.13, Theorem 5.20 with Lemma 5.24, Theorem 5.25 (i), Theorem 6.9 (statement), Theorem 8.35.
 - [K] J. Kristensen, *On the non-locality of quasiconvexity*, Ann. Inst. H. Poincaré Anal. Non
   Linéaire 16 (1999), 1–13: proof of Proposition 2.
 - [F] H. Freudenthal, *Simplizialzerlegungen von beschränkter Flachheit*, Ann. of Math. 43 (1942),

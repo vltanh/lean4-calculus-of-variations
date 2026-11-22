@@ -18,12 +18,12 @@ A real-valued rank-one convex `f : ℝ^{d×m} → ℝ` is locally Lipschitz
   `|f (A) − f (B)| ≤ √(min d m) · osc (f; B̄_{6r} (F)) / (3r) · |A − B|`  for `A, B ∈ B_r (F)`
 
 in the Frobenius norm `|·|` (`RankOneConvex.abs_sub_le_of_osc`). This is Lemma 5.9 of F. Rindler,
-*Calculus of Variations*, 2nd ed., Graduate Texts in Mathematics 310, Springer, 2026 ([R2]),
-pp. 114–115, the bound being its (5.9), with the proof given there. [R2] (Notes to Chapter 5,
-p. 124) attributes the result to Morrey and the proof to J. M. Ball, B. Kirchheim, J. Kristensen,
+*Calculus of Variations*, 2nd ed., Graduate Texts in Mathematics 310, Springer, 2026 ([R2]), pp.
+114–115, the bound being its (5.9), with the proof given there. [R2] (Notes to Chapter 5, p. 124)
+attributes the result to Morrey and the proof to J. M. Ball, B. Kirchheim, J. Kristensen,
 *Regularity of quasiconvex envelopes*, Calc. Var. Partial Differential Equations 11 (2000), 333–359,
-Lemma 2.2. Lemma 5.6 of the first edition (2018) is, by content, Lemma 5.9 of the second edition;
-the first edition was not consulted.
+Lemma 2.2. The result is cited in the literature as Lemma 5.6 of the first edition (Universitext,
+Springer, 2018), which was not consulted.
 
 The proof (in [R2] the matrices are `m × d`):
 

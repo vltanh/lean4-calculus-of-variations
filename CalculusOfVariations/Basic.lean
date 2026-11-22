@@ -30,8 +30,8 @@ and the minorants in the envelope are lower semicontinuous and locally bounded.
 * `RankOneConvex f`: `t ↦ f (A + t B)` is convex for every `A` and every `B` of rank one;
   `RankOneAffine f`: `f` and `−f` are rank-one convex;
 * `QuasiconvexAtOn Ω f A`: `|Ω| f (A) ≤ ∫_Ω f (A + ∇φ)` for every Lipschitz `φ` vanishing outside
-  `Ω` (that is, `φ ∈ W^{1,∞}_0 (Ω, ℝ^d)` extended by `0`) for which the integral exists;
-  `QuasiconvexAtPeriodic f A`: the same on the unit cube for `ℤ^m`-periodic Lipschitz `φ`
+  `Ω` (for a Lipschitz domain `Ω`, `φ ∈ W^{1,∞}_0 (Ω, ℝ^d)` extended by `0`) for which the integral
+  exists; `QuasiconvexAtPeriodic f A`: the same on the unit cube for `ℤ^m`-periodic Lipschitz `φ`
   (`φ ∈ W^{1,∞}_per (𝕋^m, ℝ^d)`);
 * `Quasiconvex f`: quasiconvexity on the unit cube at every matrix;
 * `IsLocallyBounded f`, and `qcEnvelope f`, the largest quasiconvex minorant (in `EReal`,

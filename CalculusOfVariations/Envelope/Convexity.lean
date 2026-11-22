@@ -17,21 +17,22 @@ public import CalculusOfVariations.RankOneConvex.LocallyLipschitz
 
 For a continuous `f` and the infimum formula `cubeInf f` on the unit cube `Q`, (iii) and (iv) of
 Proposition 8.1 of D. Kinderlehrer and P. Pedregal, *Characterizations of Young measures generated
-by gradients*, Arch. Rational Mech. Anal. 115 (1991), 329–365 ([KP], p. 361–362), where it is `φ^#`:
+by gradients*, Arch. Rational Mech. Anal. 115 (1991), 329–365 ([KP], p. 361–362), where the
+integrand is `ψ` and the infimum formula `ψ^#`:
 
-* (iii), "if `φ^# (A₀) > −∞` for some `A₀`, then `φ^#` is finite and continuous". By the two-point
-  inequality (ii), the value `−∞` at one end of a segment in a rank-one direction forces `−∞` at its
-  midpoint, hence along the whole rank-one line ([KP]: a convex function on a line that is finite at
-  some point is finite), and any two matrices are connected by a path of rank-one segments, here
-  along the matrix units (`env_two_point_single`, `cubeInf_bot_line`, `cubeInf_bot_all`). In the
-  finite case `cubeInfReal f`, the real-valued `cubeInf f`, is rank-one convex
+* (iii), "If `ψ^# (A₀) > −∞` for some `A₀ ∈ 𝕄`, then `ψ^# ∈ C (𝕄)`". By the two-point inequality
+  (ii), the value `−∞` at one end of a segment in a rank-one direction forces `−∞` at its midpoint,
+  hence along the whole rank-one line ([KP]: a convex function on a line that is finite at some
+  point is finite), and any two matrices are connected by a path of rank-one segments, here along
+  the matrix units (`env_two_point_single`, `cubeInf_bot_line`, `cubeInf_bot_all`). In the finite
+  case `cubeInfReal f`, the real-valued `cubeInf f`, is rank-one convex
   (`cubeInfReal_rankOneConvex`), hence locally Lipschitz (`RankOneConvex.locallyLipschitz`) and
   continuous (`cubeInfReal_continuous`). [KP] leave this to the reader ("it is easy to check that
-  `φ^#` is finite everywhere and continuous").
-* (iv), "if `φ^#` is continuous, then it is quasiconvex" (`cubeInfReal_quasiconvex`): [KP] refer to
+  `ψ^#` is finite everywhere and continuous").
+* (iv), "If `ψ^# ∈ C (𝕄)`, then it is quasiconvex" (`cubeInfReal_quasiconvex`): [KP] refer to
   B. Dacorogna's book (1989 edition) or to the technique of Step 6 of the proof of their Proposition
   7.2. The latter is followed here: a test map is approximated by piecewise affine ones, `ζ_ε`, with
-  `∫ |φ^# (A + ∇ζ) − φ^# (A + ∇ζ_ε)| < ε` ((7.14)), and for piecewise affine maps the inequality is
+  `∫ |ψ^# (A + ∇ζ) − ψ^# (A + ∇ζ_ε)| < ε` ((7.14)), and for piecewise affine maps the inequality is
   the gluing inequality `cubeInf_le_sum_of_piecewiseAffine`. [KP] do not prove the approximation;
   here: a test map `φ` on `Q` is first shrunk to a test map `φ'` supported in `(¼, ¾)^m`, which
   changes `∫_Q Qf (A + ∇φ) − Qf (A)` by the factor `2^{−m}` (scaling, `env_integral_rescale_sub`);

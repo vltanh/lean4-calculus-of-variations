@@ -12,11 +12,12 @@ public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 # A rank-one convex quadratic form is quasiconvex
 
 `quadraticForm_quasiconvex`: if `Q` is a bilinear form on `ℝ^{d×m}` and `A ↦ Q (A, A)` is rank-one
-convex, then `A ↦ Q (A, A)` is quasiconvex. This is Theorem 5.25 (i) of B. Dacorogna, *Direct
-Methods in the Calculus of Variations*, 2nd ed., Springer, 2008 ([D08], p. 191–194; there for a
-symmetric matrix `M` and `f (ξ) = ⟨M ξ; ξ⟩`), with its proof by Plancherel's formula. [D08] (Remark
-5.26) attributes the result to Van Hove; see also C. B. Morrey, *Quasi-convexity and the lower
-semicontinuity of multiple integrals*, Pacific J. Math. 2 (1952), 25–53, Theorem 5.2.
+convex, then `A ↦ Q (A, A)` is quasiconvex. This is the implication "rank one convex ⇒ quasiconvex"
+of Theorem 5.25 (i) of B. Dacorogna, *Direct Methods in the Calculus of Variations*, 2nd ed.,
+Springer, 2008 ([D08], p. 191–194; there for a symmetric matrix `M` and `f (ξ) = ⟨M ξ; ξ⟩`), with
+its proof by Plancherel's formula. [D08] (Remark 5.26) attributes the result to Van Hove; see also
+C. B. Morrey, *Quasi-convexity and the lower semicontinuity of multiple integrals*, Pacific J. Math.
+2 (1952), 25–53, Theorem 5.2.
 -/
 
 @[expose] public section
@@ -76,7 +77,8 @@ private lemma minors_legendreHadamard (Q : LinearMap.BilinForm ℝ (Matrix (Fin 
   norm_num at hc
   linarith
 
-/-- **A rank-one convex quadratic form is quasiconvex** ([D08], Theorem 5.25 (i)).
+/-- **A rank-one convex quadratic form is quasiconvex** ([D08], Theorem 5.25 (i); the converse holds
+for every integrand, `rankOneConvex_of_quasiconvex`).
 
 Proof ([D08], p. 192–194). Since `Q` is quadratic,
 `Q (A + ∇φ) = Q (A) + [Q (A, ∇φ) + Q (∇φ, A)] + Q (∇φ)`; the linear term integrates to `0`

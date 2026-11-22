@@ -38,7 +38,7 @@ minors up to signs.
 * **Induction on `N`, for all `n ≥ N`** (`minors_mem_span`). The induction starts at `N = 0` (`f` is
   constant). Step 1 of [D08] (`N = 1`, `f` is affine) is the case of the induction step where `ξ′`
   has no row; Step 2 (`N = 2`) is an illustration in [D08].
-* **Step `N`**, (5.42) to (5.44), p. 184: `f` is affine in `ξ¹`,
+* **Step `N`**, (5.42) to (5.44), pp. 184–185: `f` is affine in `ξ¹`,
   `f (ξ) = ⟨ψ (ξ′); ξ¹⟩ + χ (ξ′)` (5.42), with `χ (ξ′) = f (0; ξ′)` (`minorsChi`) and
   `ψ_l (ξ′) = f (e_l; ξ′) − f (0; ξ′)` (`minorsPsi`, `minors_rowAffine`). The functions `χ` and
   `ψ_l` are affine along the rank-one lines (`minors_rowCons_RA`), so by the induction hypothesis
@@ -59,17 +59,18 @@ minors up to signs.
     and the columns `B` (`minorsPlace`, `minors_place_RA`):
     `X_B (Y) = ∑_{q,l} κ_{l,q} Y¹_l det (Y without the row 1 and the column q)`,
     `κ_{l,q} = γ_{λ_l, B ∖ λ_q}` (`minorsX`, `minors_part_place`).
-  * The function `t ↦ X_B (ξ + t a ⊗ b)` is affine. For a pair `p ≠ q` of columns of `B`, take
-    `a = e_1 + e_2` and `ξ` with the rows `1` and `2` zero and the rows `3, …, s+1` the identity on
-    the columns other than `p` and `q`, so that `ξ_{λ_p} = ξ_{λ_q} = 0` ((5.49), (5.52);
-    `minorsTest`, `minors_test_add`). Then `X_B (ξ + t a ⊗ b) = t² X_B (ξ + a ⊗ b)`
-    (`minors_X_test_smul`), so "the coefficient of the term in `t²` must be `0`" (p. 189;
-    `minors_X_test_eq_zero`). This coefficient is the sum of the terms of the columns `q` and `p`
-    (`minors_coeff_eq`, with the minors of `minors_test_det` and `minors_test_det_eq_zero`).
-  * The vectors `b` of (5.50), (5.52), zero outside `p` and `q`, give (5.51) and (5.53)
-    (`minors_coeff`): `κ_{p,q} = 0` for `p ≠ q` (`b = e_p`, all the pairs), and
-    `κ_{q,q} = (-1)^{q+1} κ_{1,1}` (`b = e_p + e_q`, `p = 1`). By the Laplace expansion along the
-    first row, `X_B = δ_B det` (5.48), `δ_B = κ_{1,1}` (`minors_X_eq_det`).
+  * The function `t ↦ X_B (ξ + t a ⊗ b)` is affine. For the pair `(λ_k, λ_{s+1})`, `k ≤ s`, of
+    columns of `B`, take `a = e_1 + e_2` and `ξ` with the rows `1` and `2` zero and the rows
+    `3, …, s+1` the identity on the other columns of `B`, so that `ξ_{λ_k} = ξ_{λ_{s+1}} = 0` (a
+    case of (5.49), (5.52); `minorsTest`, `minors_test_add`). Then
+    `X_B (ξ + t a ⊗ b) = t² X_B (ξ + a ⊗ b)` (`minors_X_test_smul`), so "the coefficient of the term
+    in `t²` must be `0`" (p. 189; `minors_X_test_eq_zero`). This coefficient is the sum of the terms
+    of the columns `λ_k` and `λ_{s+1}`, as displayed on p. 190, for every vector `b`
+    (`minors_coeff_eq`, `minors_coeff_last`, with the minors of `minors_test_det` and
+    `minors_test_det_eq_zero`).
+  * Varying `b` gives (5.51) and (5.53) (`minors_coeff`): `κ_{l,q} = 0` for `l ≠ q`, and
+    `κ_{k,k} = (-1)^{k+s+1} κ_{s+1,s+1}`. By the Laplace expansion along the first row,
+    `X_B = δ_B det` (5.48), `δ_B = (-1)^s κ_{s+1,s+1}` (`minors_X_eq_det`).
   * If `l ∈ S`, then `γ_{l,S} = 0`: take `B = S ∪ {x}`, `x ∉ S`. The pairs `(l, S)` with `l ∉ S` are
     the `(λ_q, B ∖ λ_q)`, each counted once (`minors_exists_insert`, `minors_del_injective`), so
     `g (ξ) = ∑_B X_B (ξ_{{1} ∪ I, B})`, and (5.48) gives (5.45).
@@ -77,7 +78,7 @@ minors up to signs.
   minors of `ξ` (`minors_tail_mem`), and of `(s+1) × (s+1)` minors of `ξ` that contain the first
   row.
 
-## Repairs of the source
+## Repairs of the source, and details filled in
 
 * (a) [D08] passes from (ii) to (ii′): `f ∈ C¹` and `f (ξ + a ⊗ b) = f (ξ) + ⟨∇f (ξ); a ⊗ b⟩`
   (pp. 181–182). That a function affine along the rank-one lines is `C¹` is not justified there,
@@ -91,13 +92,14 @@ minors up to signs.
   `det (ξ_1, ξ_2) − ξ¹_3 ξ²_1`, which is not rank-one affine. Here `X_B` is the restriction of `g`
   to the columns in `B`, which is rank-one affine; the identity `g = ∑_B X_B` holds once
   `γ_{l,S} = 0` is known for `l ∈ S`, and it is proved then.
-* (c) The `t²` coefficients displayed on p. 190 omit terms. The columns `λ_p`, `λ_q` are equal for
-  `ξ`, but not for `ξ + t a ⊗ b`, so the other summands `k ≠ p, q` of (5.47) contribute
-  `b_l (b_{λ_q} − b_{λ_p})` times minors that contain the common column. These terms vanish for the
-  choice `ξ_{λ_p} = ξ_{λ_q} = 0` in the rows `3, …, s+1`, which is made here.
-* (d) [D08] uses only the pairs `(λ_k, λ_{s+1})`. They do not give `γ_{λ_j, B ∖ λ_k} = 0` for
-  `j ≠ k`, `j, k ≤ s`, which (5.51) and (5.53) state (for `s = 2` and `B = {1, 2, 3}`:
-  `γ_{1,{1,3}} = 0`). Here all the pairs are used.
+* (c) The `t²` coefficients displayed on p. 190 omit terms. The columns `λ_k`, `λ_{s+1}` are equal
+  for `ξ`, but not for `ξ + t a ⊗ b`, so the summands of (5.47) without another column of `B`
+  contribute `b_l (b_{λ_{s+1}} − b_{λ_k})` times minors that contain the common column. These terms
+  vanish for the choice `ξ_{λ_k} = ξ_{λ_{s+1}} = 0` in the rows `3, …, s+1`, which is made here.
+* (d) (5.50) and (5.52) set `b_l = 0` for the other columns `l` of `B`. Then the displayed
+  coefficients do not contain the `γ_{l,α}` with these `l`, which (5.51) and (5.53) state to vanish
+  (the terms omitted in (c) would give them). For the choice of `ξ` in (c) the restriction on `b` is
+  not needed, and `b` is arbitrary here.
 * (e) In Step `N`, [D08] ("proceeding as in Step 2") does not say that `χ` and `ψ_l` are rank-one
   affine, which the induction hypothesis requires: `minors_rowCons_RA` and `minors_RA_sub`.
 * (f) The row sets: [D08] shows that the `h_1^i` are rank-one affine, then "with the same
@@ -406,51 +408,84 @@ private lemma minors_coeff_eq {κ : Fin (s + 2) → Fin (s + 2) → ℝ} (hX : M
   simp only [minors_test_det_eq_zero, mul_zero, Finset.sum_const_zero, add_zero] at h
   exact h
 
-/-- (5.51), (5.53): if `X_B` is affine along the rank-one lines, then `κ_{p,q} = 0` for `p ≠ q`, and
-the `κ_{q,q}` alternate. The vector `b` is `e_p` for the first, with every pair `p ≠ q`, and
-`e_p + e_q` for the second, with `p` the first column. -/
+/-- The displayed coefficient of p. 190 of [D08] for the pair `(λ_k, λ_{s+1})`, for every `b`: the
+sum of the terms of the columns `λ_k` and `λ_{s+1}`. -/
+private lemma minors_coeff_last {κ : Fin (s + 2) → Fin (s + 2) → ℝ} (hX : MinorsRA (minorsX κ))
+    (k : Fin (s + 1)) (b : Fin (s + 2) → ℝ) :
+    (∑ l, κ l k.castSucc * b l) * ((-1) ^ s * b (Fin.last (s + 1))) +
+      (∑ l, κ l (Fin.last (s + 1)) * b l) * ((-1) ^ (k : ℕ) * b k.castSucc) = 0 := by
+  have h := minors_coeff_eq hX k.castSucc (Fin.last s) b
+  have e : k.castSucc.succAbove (Fin.last s) = Fin.last (s + 1) := by simp
+  have ht : minorsTest k.castSucc (Fin.last s) b = minorsTest (Fin.last (s + 1)) k b := by
+    simp [minorsTest, Fin.succAbove_last, Fin.castSucc_succAbove_castSucc]
+  rw [e, ht, minors_test_det, Fin.succAbove_last, Fin.val_last] at h
+  exact h
+
+/-- (5.51), (5.53): if `X_B` is affine along the rank-one lines, then `κ_{l,q} = 0` for `l ≠ q`, and
+the `κ_{q,q}` alternate. As in [D08], only the pairs `(λ_k, λ_{s+1})` are used. The vector `b` is
+arbitrary: `e_{s+1}` and `e_{s+1} + e_l` give `κ_{l,k} = 0` for `l ≠ k`, `e_k` and `e_k + e_l` give
+`κ_{l,s+1} = 0` for `l ≠ s + 1`, and `e_k + e_{s+1}` gives the relation of `κ_{k,k}` and
+`κ_{s+1,s+1}`. -/
 private lemma minors_coeff {κ : Fin (s + 1) → Fin (s + 1) → ℝ} (hX : MinorsRA (minorsX κ)) :
-    (∀ p q, p ≠ q → κ p q = 0) ∧ ∀ q, κ q q = (-1) ^ (q : ℕ) * κ 0 0 := by
+    (∀ l q, l ≠ q → κ l q = 0) ∧
+      ∀ q, κ q q = (-1) ^ (q : ℕ) * ((-1) ^ s * κ (Fin.last s) (Fin.last s)) := by
   cases s with
   | zero =>
-    refine ⟨fun p q hpq => absurd ((Fin.fin_one_eq_zero p).trans (Fin.fin_one_eq_zero q).symm) hpq,
+    refine ⟨fun l q hlq => absurd ((Fin.fin_one_eq_zero l).trans (Fin.fin_one_eq_zero q).symm) hlq,
       fun q => ?_⟩
-    rw [show q = 0 from Fin.fin_one_eq_zero q]
+    rw [show q = Fin.last 0 from (Fin.fin_one_eq_zero q).trans rfl]
     simp
   | succ s =>
-    have hoff : ∀ p q, p ≠ q → κ p q = 0 := by
-      intro p q hpq
-      obtain ⟨j, rfl⟩ := Fin.exists_succAbove_eq hpq
-      have h := minors_coeff_eq hX q j (Pi.single (q.succAbove j) 1)
-      have hdet : ((minorsTest q j (Pi.single (q.succAbove j) 1)).submatrix Fin.succ
-          (q.succAbove j).succAbove).det = 0 := by
-        refine det_eq_zero_of_row_eq_zero 0 fun k => ?_
-        simp [minors_test_one, Fin.succAbove_ne]
-      have hsum : ∑ l, κ l q * (Pi.single (q.succAbove j) 1 : Fin (s + 2) → ℝ) l =
-          κ (q.succAbove j) q := by
-        simp [Pi.single_apply]
-      rw [hdet, mul_zero, add_zero, Pi.single_eq_same, mul_one, hsum] at h
-      exact (mul_eq_zero.1 h).resolve_right (pow_ne_zero _ (by norm_num))
-    refine ⟨hoff, fun q => ?_⟩
-    refine Fin.cases (by simp) (fun j => ?_) q
-    -- the pair of the columns `0` and `j + 1`, and `b = e_0 + e_{j+1}`
-    set b : Fin (s + 2) → ℝ := Pi.single 0 1 + Pi.single j.succ 1 with hb
-    have hb0 : b (j.succ.succAbove 0) = 1 := by simp [hb]
-    have hbj : b j.succ = 1 := by simp [hb]
-    have hsum : ∀ x, ∑ l, κ l x * b l = κ 0 x + κ j.succ x := by
-      intro x
-      simp [hb, mul_add, Finset.sum_add_distrib, Pi.single_apply]
-    have ht : minorsTest 0 j b = minorsTest j.succ 0 b := by simp [minorsTest]
-    have h := minors_coeff_eq hX 0 j b
-    rw [Fin.zero_succAbove, ht, minors_test_det, hb0, hbj, hsum, hsum,
-      hoff j.succ 0 (Fin.succ_ne_zero j), hoff 0 j.succ (Fin.succ_ne_zero j).symm, Fin.val_zero,
-      pow_zero] at h
-    rw [Fin.val_succ, pow_succ]
-    linarith
+    have hpow : ∀ n : ℕ, ((-1 : ℝ)) ^ n ≠ 0 := fun n => pow_ne_zero _ (by norm_num)
+    -- the pair `(λ_k, λ_{s+1})`
+    have hk : ∀ k : Fin (s + 1), (∀ l, l ≠ k.castSucc → κ l k.castSucc = 0) ∧
+        ∀ l, l ≠ Fin.last (s + 1) → κ l (Fin.last (s + 1)) = 0 := by
+      intro k
+      have hne : Fin.last (s + 1) ≠ k.castSucc := (Fin.castSucc_lt_last k).ne'
+      have h1 : κ (Fin.last (s + 1)) k.castSucc = 0 := by
+        have h := minors_coeff_last hX k (Pi.single (Fin.last (s + 1)) 1)
+        simpa [Pi.single_apply, hne, hne.symm] using h
+      have h2 : κ k.castSucc (Fin.last (s + 1)) = 0 := by
+        have h := minors_coeff_last hX k (Pi.single k.castSucc 1)
+        simpa [Pi.single_apply, hne, hne.symm] using h
+      constructor
+      · intro l hl
+        by_cases hl' : l = Fin.last (s + 1)
+        · rw [hl', h1]
+        · have h := minors_coeff_last hX k (Pi.single (Fin.last (s + 1)) 1 + Pi.single l 1)
+          simpa [mul_add, Finset.sum_add_distrib, Pi.single_apply, hne, hne.symm, hl, Ne.symm hl,
+            hl', Ne.symm hl', h1] using h
+      · intro l hl
+        by_cases hl' : l = k.castSucc
+        · rw [hl', h2]
+        · have h := minors_coeff_last hX k (Pi.single k.castSucc 1 + Pi.single l 1)
+          simpa [mul_add, Finset.sum_add_distrib, Pi.single_apply, hne, hne.symm, hl, Ne.symm hl,
+            hl', Ne.symm hl', h2] using h
+    constructor
+    · intro l q hlq
+      refine Fin.lastCases (fun hlq => (hk 0).2 l hlq) (fun k hlq => (hk k).1 l hlq) q hlq
+    · refine Fin.lastCases ?_ (fun k => ?_)
+      · rw [Fin.val_last, ← mul_assoc, ← mul_pow, neg_one_mul, neg_neg, one_pow, one_mul]
+      · have hne : Fin.last (s + 1) ≠ k.castSucc := (Fin.castSucc_lt_last k).ne'
+        have h := minors_coeff_last hX k (Pi.single k.castSucc 1 + Pi.single (Fin.last (s + 1)) 1)
+        have h1 := (hk k).1 _ hne
+        have h2 := (hk k).2 _ hne.symm
+        simp only [Pi.add_apply, mul_add, Finset.sum_add_distrib, Pi.single_apply, mul_ite, mul_one,
+          mul_zero, Finset.sum_ite_eq', Finset.mem_univ, ite_true, hne, hne.symm, ite_false, h1, h2,
+          add_zero, zero_add] at h
+        rw [Fin.val_castSucc]
+        have e1 : ((-1 : ℝ)) ^ s * (-1) ^ s = 1 := by rw [← mul_pow]; norm_num
+        calc κ k.castSucc k.castSucc = κ k.castSucc k.castSucc * ((-1) ^ s * (-1) ^ s) := by
+              rw [e1, mul_one]
+          _ = (-1) ^ (k : ℕ) * ((-1) ^ (s + 1) * κ (Fin.last (s + 1)) (Fin.last (s + 1))) := by
+              rw [pow_succ]
+              linear_combination (-1 : ℝ) ^ s * h
 
-/-- (5.48): `X_B = δ_B det`, by the Laplace expansion along the first row. -/
+/-- (5.48): `X_B = δ_B det`, by the Laplace expansion along the first row, with
+`δ_B = (-1)^s κ_{s+1,s+1}`. -/
 private lemma minors_X_eq_det {κ : Fin (s + 1) → Fin (s + 1) → ℝ} (hX : MinorsRA (minorsX κ))
-    (Y : Matrix (Fin (s + 1)) (Fin (s + 1)) ℝ) : minorsX κ Y = κ 0 0 * Y.det := by
+    (Y : Matrix (Fin (s + 1)) (Fin (s + 1)) ℝ) :
+    minorsX κ Y = ((-1) ^ s * κ (Fin.last s) (Fin.last s)) * Y.det := by
   rw [det_succ_row_zero, minorsX, Finset.mul_sum]
   refine Finset.sum_congr rfl fun q _ => ?_
   rw [Finset.sum_eq_single q (fun l _ hl => by rw [(minors_coeff hX).1 l q hl, zero_mul])
@@ -554,7 +589,7 @@ private lemma minors_part_eq_sum_minor (hs : s < m) (r : Fin s ↪o Fin N)
       omega
     obtain ⟨C, q, rfl, -⟩ := minors_exists_insert c hx
     exact (minors_coeff (hX C)).1 (q.succAbove k) q (Fin.succAbove_ne q k)
-  refine ⟨fun C => γ (minorsDel C 0) (C 0), fun ξ => ?_⟩
+  refine ⟨fun C => (-1) ^ s * γ (minorsDel C (Fin.last s)) (C (Fin.last s)), fun ξ => ?_⟩
   -- the sum over the pairs `(l, S)`, `l ∉ S`, regrouped by `B = S ∪ {l}`
   rw [minorsPart, ← Fintype.sum_prod_type', ← Fintype.sum_of_injective _ minors_del_injective
     (fun p => γ (minorsDel p.1 p.2) (p.1 p.2) *

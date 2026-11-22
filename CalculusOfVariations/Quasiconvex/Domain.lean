@@ -16,8 +16,8 @@ direction from the cube holds on every bounded measurable set
 (`quasiconvexAtOn_of_unitCube`).
 
 This is Proposition 5.11 of B. Dacorogna, *Direct Methods in the Calculus of Variations*, 2nd ed.,
-Springer, 2008 ([D08], p. 172), and Lemma 5.2 (i) of F. Rindler, *Calculus of Variations*, 2nd ed.,
-Graduate Texts in Mathematics 310, Springer, 2026 ([R2], p. 106; Lipschitz domains), with their
+Springer, 2008 ([D08], pp. 172–173), and Lemma 5.2 (i) of F. Rindler, *Calculus of Variations*, 2nd
+ed., Graduate Texts in Mathematics 310, Springer, 2026 ([R2], p. 106; Lipschitz domains), with their
 argument (also Remark 2 after Definition 4.2 in S. Müller, *Variational models for microstructure
 and phase transitions*, lecture notes, MPI MiS Leipzig, 1998): extend the test map by zero, put a
 translated and scaled copy of its domain inside the other domain, and compute the energy of the
@@ -25,10 +25,15 @@ copy, the rest contributing `f (A)` times its measure. Here the unit cube is the
 domain.
 
 The computation uses that the gradient of the extended map vanishes almost everywhere outside the
-domain of the test map. [D08] uses this without proof for arbitrary bounded open sets ([R2] and
-Müller assume Lipschitz domains, `|∂U| = 0`); it is the vanishing of the gradient of a Lipschitz map
+domain of the test map. In [D08] this is immediate, since `W^{1,∞}_0 (E)` is there
+`W^{1,∞} (E) ∩ W^{1,1}_0 (E)` (Definition 12.9 (iv)), and in [R2] and Müller because the domains are
+Lipschitz, respectively `|∂U| = 0`. For the test maps of this package (Lipschitz, vanishing outside
+the domain) on an arbitrary bounded open set it is the vanishing of the gradient of a Lipschitz map
 almost everywhere on its zero set (`Lipschitz.ZeroSet`). [D08] does not say that the first domain is
 nonempty; for the empty set the proposition is false (its hypothesis is void).
+
+The sources assume `f` Borel and locally bounded; here `f` is lower semicontinuous and locally
+bounded (only the measurability is used).
 -/
 
 @[expose] public section

@@ -11,8 +11,8 @@ public import CalculusOfVariations.Lipschitz.Gradient
 # Periodic extension and periodic averages
 
 * `rd_perExt φ = φ ∘ fract`, the periodic extension of a map on the unit cube; for a Lipschitz map
-  vanishing off the open cube it is Lipschitz with the same constant and `ℤ^m`-periodic, with the
-  same gradient on the open cube;
+  vanishing off the open cube it is Lipschitz (with the constant `m K`, if `K` is that of `φ`) and
+  `ℤ^m`-periodic, with the same gradient on the open cube;
 * the periodic average identity `∫_{(0,1)^m} G (N x) dx = ∫_{(0,1)^m} G` for bounded measurable
   `ℤ^m`-periodic `G` and integers `N ≥ 1`;
 * a Lipschitz periodic map is bounded, and its gradient is periodic.

@@ -28,8 +28,10 @@ gradients `∇v_j`, `v_j = v_{j,k (j)}`, are bounded independently of `j`. As `f
 
 Here `ρ_j = rd_eta (1/j)` (Lipschitz cut-offs, equal to `1` on `[1/j, 1 − 1/j]^m`, with
 `|∇ρ_j| ≤ m j`), and `k (j)` is chosen with `|u_{k (j)}| ≤ 1/j`, so that `v_j` is Lipschitz with a
-constant independent of `j`, and with `k (j) ≥ j`. ([R2] does not say that `k (j) → ∞`; this is
-needed for `∫_Q f (F + ∇u_{k (j)}) → E`.)
+constant independent of `j`, and with `k (j) ≥ j`, so that `∫_Q f (F + ∇u_{k (j)}) → E` (for the
+laminates of [R2] this integral does not depend on `k`, so `k (j) → ∞` is not needed there). The
+sources assume `f` Borel and locally bounded; of the lower semicontinuity only the measurability is
+used.
 -/
 
 @[expose] public section

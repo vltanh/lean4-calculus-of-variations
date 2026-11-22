@@ -25,7 +25,8 @@ disjoint copies `a_i + ε_i D̄` of `D̄`; the rescaled copies `ε_i ζ ((x − 
 `ζ` on `D`, glued, give a test map `v` on `Ω` with `⨍_Ω f (A + ∇v) = ⨍_D f (A + ∇ζ)`
 (`exists_testMap_setIntegral_eq`); then the roles of `Ω` and `D` are interchanged. The argument
 needs `|∂D| = 0`, which [KP] do not state in the proposition (it is a hypothesis of their Theorem
-2.1, whose covering argument they use): the sets `a_i + ε_i D`, on which `v` is defined by `ζ`,
+2.1, whose covering argument they use, and of their remark on the independence of the domain,
+p. 331): the sets `a_i + ε_i D`, on which `v` is defined by `ζ`,
 cover `Ω` up to a null set only if the `a_i + ε_i ∂D` are null sets. No condition on `∂Ω` is needed
 for the inequality `domainInf Ω f A ≤ domainInf D f A`.
 -/
@@ -39,7 +40,7 @@ namespace CalculusOfVariations
 variable {d m : ℕ}
 
 /-- The infimum formula on `Ω`: `inf_φ ⨍_Ω f (A + ∇φ)` over the Lipschitz `φ` vanishing outside `Ω`
-([KP], (8.1), where it is `φ^#_Ω`). -/
+([KP], (8.1), where it is `ψ^#`, and `ψ^#_Ω` in the proof of (i); `ψ = f`). -/
 noncomputable def domainInf (Ω : Set (Fin m → ℝ)) (f : Matrix (Fin d) (Fin m) ℝ → ℝ)
     (A : Matrix (Fin d) (Fin m) ℝ) : EReal :=
   ⨅ (φ : (Fin m → ℝ) → Fin d → ℝ) (_ : (∃ K, LipschitzWith K φ) ∧ ∀ x ∉ Ω, φ x = 0),

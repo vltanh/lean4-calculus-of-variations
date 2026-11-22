@@ -13,12 +13,13 @@ public import CalculusOfVariations.Quasiconvex.Laminate
 `rankOneConvex_of_quasiconvex`: a lower semicontinuous, locally bounded `f` that is quasiconvex on
 the unit cube at every matrix is rank-one convex. This is Proposition 5.6 of F. Rindler, *Calculus
 of Variations*, 2nd ed., Graduate Texts in Mathematics 310, Springer, 2026 ([R2]), p. 111–113, for
-lower semicontinuous integrands ([R2]: locally bounded and Borel), with its proof: laminates on a
-cube with two faces orthogonal to the rank-one direction (Step 1), cut off near the boundary (Step
-2), give the two-point inequality `f (F) ≤ λ f (F + (1 − λ) a ⊗ n) + (1 − λ) f (F − λ a ⊗ n)`
+lower semicontinuous integrands ([R2]: locally bounded and Borel) and with quasiconvexity on the
+unit cube ([R2]: on the unit ball; `quasiconvexAtOn_iff`), with its proof: laminates on a cube with
+two faces orthogonal to the rank-one direction (Step 1), cut off near the boundary (Step 2), give
+the two-point inequality `f (F) ≤ λ f (F + (1 − λ) a ⊗ n) + (1 − λ) f (F − λ a ⊗ n)`
 (`le_of_quasiconvexAtOn_vecMulVec`, `Quasiconvex.Laminate`), which is (5.7) of [R2] for the matrices
 `F + (1 − λ) a ⊗ n` and `F − λ a ⊗ n`. This inequality at every matrix is the convexity of `f` along
-every rank-one line. The numbering of the first edition (2018) differs; it was not consulted.
+every rank-one line.
 -/
 
 @[expose] public section
