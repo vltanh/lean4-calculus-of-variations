@@ -28,6 +28,8 @@ jobs:
         run: lake env lean scripts/Audit.lean
       - name: Check that the Challenges' copies of the definitions are current
         run: python3 scripts/sync_challenge_defs.py --check
+      - name: Check that the README's links to the code are current
+        run: python3 scripts/linkify_docs.py --check
       - name: Check the Markdown tables
         run: python3 scripts/check_md_tables.py README.md
       - name: Check that no line exceeds 100 characters
