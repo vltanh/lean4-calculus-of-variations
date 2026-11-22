@@ -1,0 +1,176 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+version: "v0.4"
+
+project:
+  name: "Null Lagrangians and quasiaffine functions, in Lean"
+  description: >-
+    Functions f on d x m matrices that are affine along rank-one lines are exactly the affine
+    combinations of the minors of the matrix, of all orders, with no regularity assumed. They are
+    also exactly the quasiaffine functions (f and -f quasiconvex), and the null Lagrangians: the
+    integral of f(A + D phi) over a bounded open set Omega is |Omega| f(A) for every matrix A and every
+    Lipschitz map phi that vanishes outside Omega.
+
+
+    This is the characterization due to Ball (1977), after Ericksen and Edelen, in the form and with
+    the proofs of Dacorogna's book (2008, Theorems 5.20 and 8.35). Part of a Lean library of the
+    vectorial calculus of variations.
+  authors:
+    - "The-Anh Vu-Le"
+  license: "Apache-2.0"
+  responsible_maintainers:
+    - "The-Anh Vu-Le"
+
+classification:
+  arxiv: ["math.AP", "math.CA"]
+  msc2020: ["49J45", "26B10", "26B25", "15A15", "68V20"]
+
+sources:
+  - title: "Direct Methods in the Calculus of Variations, second edition"
+    authors:
+      - "Bernard Dacorogna"
+    id: "doi:10.1007/978-0-387-55249-1"
+    type: "book"
+    location: "Applied Mathematical Sciences 78, Springer, 2008; https://doi.org/10.1007/978-0-387-55249-1"
+    relationship: "formalizes"
+    note: >-
+      Theorem 5.20, the equivalence of (i), (ii) and (iii'), and Theorem 8.35, (8.44), with
+      Theorem 8.33; the proofs follow its proofs, with repairs of Lemma 5.24 (see fidelity).
+    author_endorsement: "not-contacted"
+  - title: "Quasiconvexity and relaxation of nonconvex problems in the calculus of variations"
+    authors:
+      - "Bernard Dacorogna"
+    id: "doi:10.1016/0022-1236(82)90046-5"
+    type: "paper"
+    location: "J. Funct. Anal. 46 (1982), 102-118; https://doi.org/10.1016/0022-1236(82)90046-5"
+    relationship: "formalizes"
+    note: >-
+      Proposition 4, the equivalence of (i)-(iv), stated there without proof.
+    author_endorsement: "not-contacted"
+  - title: "Convexity conditions and existence theorems in nonlinear elasticity"
+    authors:
+      - "John M. Ball"
+    id: "doi:10.1007/BF00279992"
+    type: "paper"
+    location: "Arch. Rational Mech. Anal. 63 (1977), 337-403; https://doi.org/10.1007/BF00279992"
+    relationship: "background"
+    note: >-
+      The characterization of null Lagrangians as affine combinations of minors. Not consulted: the
+      attribution (to Ball, after Edelen, Ericksen and Rund) is that of Dacorogna 2008.
+    author_endorsement: "not-contacted"
+  - title: "Quasi-convexity and the lower semicontinuity of multiple integrals"
+    authors:
+      - "Charles B. Morrey, Jr."
+    id: "doi:10.2140/pjm.1952.2.25"
+    type: "paper"
+    location: "Pacific J. Math. 2 (1952), 25-53; https://doi.org/10.2140/pjm.1952.2.25"
+    relationship: "background"
+    note: >-
+      Lemma 5.1 (the integral of a Jacobian, by mollification and Green's theorem).
+    author_endorsement: "not-contacted"
+
+related_formalizations:
+  - id: "https://github.com/sergioconti/so3-r1c-and-not-qc"
+    relationship: "independent"
+    note: >-
+      Conti, Dolzmann and Dondl (October 2026): a frame-indifferent rank-one convex function on
+      R^{3x3} that is not quasiconvex. It has Morrey's quasiconvexity for m x n matrices with smooth
+      compactly supported test maps, and the inequality for smooth periodic maps and continuous
+      quasiconvex f. Not used: after the proofs that this library had on 22 November 2026, a
+      literature search displayed its README, its definitions, docstrings and statements, and a few
+      short auxiliary proofs; nothing was taken from it.
+  - id: "https://github.com/lcao11/hierarchical_laminates_lean"
+    relationship: "independent"
+    note: >-
+      Cao (October 2026): a minimum of two quadratic forms whose quasiconvex and rank-one convex envelopes differ (d = 32,
+      m = 2); in that size, periodic quasiconvex functions below a continuous one are rank-one
+      convex; functions convex in each coordinate and locally bounded are locally Lipschitz. Seen (statements and docstrings) in the literature search of
+      22 November 2026, after the proofs that this library had then; not used.
+  - id: "https://github.com/Robertboy18/PDEAtlas"
+    relationship: "independent"
+    note: >-
+      After Evans (November 2026): null Lagrangians, the divergence form of the minors of every order
+      of a C^2 map, their weak continuity in W^{1,q}, and existence for polyconvex energies. It has
+      the closest results: the divergence form of minors (here Theorem 8.33 of Dacorogna 2008, inside
+      the proof) and null Lagrangians for C^2 maps. It has no quasiconvexity or rank-one convexity,
+      and no characterization of quasiaffine functions. Seen (statements and docstrings) in the literature search of 22 November 2026; not used.
+  - id: "https://github.com/facebookresearch/atlas-lean"
+    relationship: "independent"
+    note: "Definitions of rank-one convexity and quasiconvexity for 2 x 2 matrices; not used."
+
+status:
+  scope: >-
+    Proved, for all d and m: the statements listed under alignment. Not included: the conditions
+    (ii') (f of class C^1, with an identity for the gradient) and (iii) (polyaffine) of Dacorogna's
+    Theorem 5.20; Theorem 8.35 (ii), for maps in W^{1,p}; quasiaffine functions with values
+    +infinity.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: []
+
+automation:
+  methods:
+    - method: "agent"
+      models: ["claude-opus-5-5"]
+      framework: "Claude Code (Claude Agent SDK)"
+      tool_setup: >-
+        The formalize-math-paper skill (https://github.com/vltanh/formalize-math-paper), versions
+        4.2.0 to 4.3.1: a main session and sub-agents (statement writers, provers, independent
+        reviewers, a literature search); the number of agents was not tracked for this library
+        alone. Lean v4.36.0-rc2, Mathlib v4.36.0-rc2.
+      cost:
+        wall_time: "about WALL hours from the first to the last commit of the library, 22 November 2026 (git log), with other work in parallel; agent time not tracked"
+        spend_usd: "not tracked"
+        hardware: "local machine (20 cores, 62 GB RAM) and API"
+      prompting_notes: >-
+        The maintainer asked for the theorems to be proved in general form, by the proofs of the
+        cited sources, without sorry or axioms.
+  spend_usd: "not tracked"
+  notes: >-
+    The AI system wrote the statements, the proofs and the documents. Independent AI agents
+    compared the proofs of the library with the cited sources, and one compared the statements of
+    this entry with them. No person has reviewed the statements or the proofs.
+
+fidelity:
+  divergences: >-
+    Statements. Test maps: Lipschitz maps on R^m that vanish outside Omega, instead of
+    W^{1,infinity}_0 (Omega) (Dacorogna 2008) or smooth maps with compact support (Dacorogna 1982).
+    For bounded Lipschitz domains the first two classes agree; for a general bounded open set the
+    maps here are among those of Dacorogna 2008 (W^{1,infinity} and W^{1,1}_0), possibly not all of
+    them. Theorem 8.35 is stated for every bounded set Omega (the source: bounded open). Borel
+    measurability and local boundedness, part of the definition of quasiconvexity in the source, are
+    stated with the conditions 2 and 3 (a null Lagrangian is assumed Borel and locally bounded).
+    Quasiconvexity is tested on the unit cube, which is the same by Dacorogna 2008, Proposition 5.11.
+    The minors are indexed by pairs of strictly increasing maps Fin k -> Fin d, Fin k -> Fin m, for all
+    k <= min(d, m), including the minor of order 0, the constant 1 (the source: f(0) and the vector
+    T(xi) of the minors, with signs); the coefficients are functions of k and of these maps.
+    Proofs. They follow Dacorogna 2008: Theorem 5.20 (ii) => (iii') by induction on the number of rows
+    and Lemma 5.24, repaired: for n > s + 1 the functions X_beta of (5.47) are not rank-one affine and
+    their sum is not g, so the columns are restricted first; the t^2 coefficients displayed on p. 190
+    omit terms, so the matrices are chosen with zero columns; that f is of class C^1 is neither
+    justified there nor used. Theorem 8.35, (8.44), by the proof of its part (ii) with v affine; the
+    divergence identity (8.42) is proved with Leibniz' formula and a sign-reversing involution on
+    permutations instead of an induction on the order, with the same cancelling terms. (iii') => (i)
+    by Theorem 8.35, the source's second argument (its first one goes through polyconvexity).
+
+review:
+  status: "agent-reviewed"
+  reviewers:
+    - "none"
+  notes: >-
+    No human review. REVIEWN
+
+alignment:
+  namespace: "NullLagrangiansChallenge"
+  statements:
+    - source: "Dacorogna 2008, Theorem 8.35, (8.44)"
+      lean: "NullLagrangiansChallenge.setIntegral_minor_add_grad"
+      module: "NullLagrangians.Challenge"
+      status: "proved"
+      note: "Minors of every order are null Lagrangians, on every bounded set, for Lipschitz test maps."
+    - source: "Dacorogna 2008, Theorem 5.20 (i), (ii), (iii'); Dacorogna 1982, Proposition 4"
+      lean: "NullLagrangiansChallenge.rankOneAffine_tfae"
+      module: "NullLagrangians.Challenge"
+      status: "proved"
+      note: "Rank-one affine, quasiaffine, null Lagrangian and affine combination of minors are equivalent."
+
+acknowledgements: "Lean and Mathlib."

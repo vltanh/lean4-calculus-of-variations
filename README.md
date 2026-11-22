@@ -10,9 +10,9 @@ Lean 4 with Mathlib `v4.36.0-rc2`, for integrands `f : ℝ^{d×m} → ℝ` and L
   rank-one convex, by laminates, cut off near the boundary of a cube with faces orthogonal to the
   rank-one direction; quasiconvexity does not
   depend on the bounded open domain, and may be tested with periodic maps.
-- **Quadratic forms and minors.** A rank-one convex quadratic form is quasiconvex; a rank-one
-  affine function is an affine combination of minors; the minors of order `2` and `3` are null
-  Lagrangians, and the `3 × 3` minors are quasiaffine.
+- **Quadratic forms and minors.** A quadratic form is quasiconvex if and only if it is rank-one
+  convex. Rank-one affine functions, quasiaffine functions, null Lagrangians and affine
+  combinations of minors (of every order) are the same.
 - **The quasiconvex envelope.** Dacorogna's formula `f^{qc} (A) = inf_φ ⨍_Ω f (A + ∇φ)` on every
   nonempty bounded open `Ω`, for continuous `f`, with values in `EReal`; behind it, the independence
   of the domain and the rank-one convexity of the infimum formula `Qf`, and the inequality
@@ -27,7 +27,7 @@ Lean 4 with Mathlib `v4.36.0-rc2`, for integrands `f : ℝ^{d×m} → ℝ` and L
   cubes, piecewise affine maps and Kuhn–Freudenthal interpolation.
 
 **Status: proved.** Every statement is proved; the [audit](scripts/Audit.lean) checks that every
-declaration of the library depends only on `propext`, `Classical.choice` and `Quot.sound` (no
+declaration of the library (and of the Solutions in [`palomar/`](palomar)) depends only on `propext`, `Classical.choice` and `Quot.sound` (no
 `sorry`, no `axiom`, no `native_decide`).
 
 ## Main statements
@@ -38,24 +38,28 @@ is a Lipschitz `φ` vanishing outside `Ω`. The definitions are in
 conventions of the package): `RankOneConvex`,
 `RankOneAffine`, `QuasiconvexAtOn Ω f A` (`|Ω| f (A) ≤ ∫_Ω f (A + ∇φ)` for every test map on `Ω`
 for which the integral exists), `QuasiconvexAtPeriodic`, `Quasiconvex` (on the unit cube, at every
-matrix), `IsLocallyBounded`, and `qcEnvelope` (the supremum of the quasiconvex, lower
-semicontinuous, locally bounded minorants, in `EReal`).
+matrix), `IsLocallyBounded`, `quasiconvexEnvelope` (the supremum of the Borel, locally bounded,
+quasiconvex minorants, in `EReal`; equal to `qcEnvelope`, over the lower semicontinuous ones),
+`domainInf Ω f` (the infimum formula `inf_φ ⨍_Ω f (A + ∇φ)`) and `minor`. The theorems on Borel
+integrands (`…_of_measurable`) have versions for lower semicontinuous ones, without the suffix.
 
 | Statement | Lean | Source |
 | --- | --- | --- |
 | separately convex ⇒ bounded on cubes, locally Lipschitz | `Matrix.exists_abs_le_of_convexOn_single`, `Matrix.locallyLipschitz_of_convexOn_single` | [M, Def. 4.2, Remark 3] |
 | rank-one convex ⇒ locally Lipschitz; in the Frobenius norm, `lip (f; B_r (F)) ≤ √(min d m) osc (f; B̄_{6r} (F)) / (3r)` | `RankOneConvex.locallyLipschitz`, `RankOneConvex.abs_sub_le_of_osc` | [R, Lemma 5.9] (without (5.8)) |
 | `M = ∑_{i < min d m} σ_i p_i ⊗ q_i`, `σ_0 ≥ σ_1 ≥ … ≥ 0`, `p_i`, `q_i` orthonormal (singular value decomposition) | `Matrix.exists_singularValueDecomposition` | [R, Appendix A.1] |
-| `f` lsc, locally bounded, quasiconvex at `F` on the unit cube ⇒ `f (F) ≤ λ f (F + (1−λ) a ⊗ n) + (1−λ) f (F − λ a ⊗ n)`, by laminates with cut-offs | `le_of_quasiconvexAtOn_vecMulVec`, with `sawLaminate`, `setIntegral_sawLaminate`, `le_of_quasiconvexAtOn_of_tendsto` (the cut-off), `le_of_quasiconvexAtOn_unitCube_of_lsc` (`n = e_j`) | [R, Prop. 5.6] |
-| `f` lsc, locally bounded, quasiconvex ⇒ rank-one convex | `rankOneConvex_of_quasiconvex` | [R, Prop. 5.6] |
+| `f` Borel, locally bounded, quasiconvex at `F` on the unit cube ⇒ `f (F) ≤ λ f (F + (1−λ) a ⊗ n) + (1−λ) f (F − λ a ⊗ n)`, by laminates with cut-offs | `le_of_quasiconvexAtOn_vecMulVec`, with `sawLaminate`, `setIntegral_sawLaminate`, `le_of_quasiconvexAtOn_of_tendsto` (the cut-off), `le_of_quasiconvexAtOn_unitCube_of_measurable` (`n = e_j`) | [R, Prop. 5.6] |
+| `f` Borel, locally bounded, quasiconvex ⇒ rank-one convex | `rankOneConvex_of_quasiconvex_of_measurable` | [R, Prop. 5.6] |
 | without regularity of `f`: quasiconvex at `F` on the unit cube ⇒ the two-point inequality along `a ⊗ e_j`, by truncated laminates; on a rotated cube, along `a ⊗ R e_j` | `le_of_quasiconvexAtOn_unitCube`, `le_of_quasiconvexAtOn_orthogonal`, with `cubeLaminate` | [M, Lemma 4.3] |
-| `f` lsc, locally bounded: quasiconvexity on the cube ⇔ on any nonempty bounded open `Ω` | `quasiconvexAtOn_iff`, `quasiconvexAtOn_of_unitCube` | [Da08, Prop. 5.11], [R, Lemma 5.2 (i)] |
-| `f` lsc, locally bounded: quasiconvexity on the cube ⇔ with periodic test maps | `quasiconvexAtOn_iff_periodic` | [Da08, Prop. 5.13] |
-| `Q` bilinear, `A ↦ Q (A, A)` rank-one convex ⇒ quasiconvex | `quadraticForm_quasiconvex` | [Da08, Thm 5.25 (i)] |
+| `f` Borel, locally bounded: quasiconvexity on the cube ⇔ on any nonempty bounded open `Ω` | `quasiconvexAtOn_iff_of_measurable`, `quasiconvexAtOn_of_unitCube` | [Da08, Prop. 5.11], [R, Lemma 5.2 (i)] |
+| `f` Borel, locally bounded: quasiconvexity on the cube ⇔ with periodic test maps | `quasiconvexAtOn_iff_periodic_of_measurable` | [Da08, Prop. 5.13] |
+| `Q` bilinear: `A ↦ Q (A, A)` quasiconvex ⇔ rank-one convex | `quadraticForm_quasiconvex_iff`, `quadraticForm_quasiconvex` | [Da08, Thm 5.25 (i)] |
+| `f` rank-one affine ⇔ quasiaffine ⇔ null Lagrangian ⇔ affine combination of minors | `rankOneAffine_tfae` | [Da08, Thm 5.20, (i), (ii), (iii′)], [Da82, Prop. 4] |
 | rank-one affine ⇒ affine combination of minors (continuity not assumed) | `RankOneAffine.exists_eq_sum_minor`; for continuous functions, `RankOneAffine.exists_eq_sum_minor_of_continuous` | [Da08, Thm 5.20, (ii) ⇒ (iii′)] |
-| `∫ minor (∇φ) = 0` for `2 × 2`, `3 × 3` minors, `φ` Lipschitz with compact support | `nl_null2`, `nl_null3` | [Da08, Thm 8.35], [Mo, Lemma 5.1] |
-| `∫_Q minor (A + ∇φ) = minor A` for `3 × 3` minors, `φ` a test map on `Q` | `nl_minor3_quasiaffine` | [Da08, Thm 8.35] |
-| `f^{qc} (A) = inf_φ ⨍_Ω f (A + ∇φ)`, `Ω` nonempty, bounded, open, `f` continuous; `Ω` the unit ball | `qcEnvelope_eq_iInf`, `qcEnvelope_eq_iInf_unitBall` | from [KP, Prop. 8.1]; [Da82, Thm 5], [Da08, Thm 6.9] |
+| `∫_Ω minor (A + ∇φ) = \|Ω\| minor A`, minors of every order, `φ` Lipschitz, `φ = 0` off the bounded set `Ω` | `setIntegral_minor_add_grad`; `nl_det_eq_sum_D` (a Jacobian is a divergence) | [Da08, Thm 8.35, (8.44); Thm 8.33] |
+| with explicit formulas: `∫ minor (∇φ) = 0` for `2 × 2`, `3 × 3` minors, `φ` Lipschitz with compact support; `∫_Q minor (A + ∇φ) = minor A` for `3 × 3` minors | `nl_null2`, `nl_null3`, `nl_minor3_quasiaffine` | [Da08, Thm 8.35], [Mo, Lemma 5.1] |
+| `f^{qc} (A) = inf_φ ⨍_Ω f (A + ∇φ)`, `Ω` nonempty, bounded, open, `f` continuous; `Ω` the unit ball | `quasiconvexEnvelope_eq_domainInf`, `qcEnvelope_eq_iInf`, `qcEnvelope_eq_iInf_unitBall` | from [KP, Prop. 8.1]; [Da82, Thm 5], [Da08, Thm 6.9] |
+| the infimum formula, `Ω` nonempty, bounded, open: independent of `Ω`; rank-one convex; finite at one matrix ⇒ real-valued, continuous, quasiconvex | `domainInf_eq_of_isBounded`, `domainInf_le_of_rank_le_one`, `exists_domainInf_eq_coe` | [KP, Prop. 8.1] |
 | the infimum formula does not depend on the domain (null boundaries): copies of a test map by Vitali's theorem | `domainInf_eq`, `domainInf_le_domainInf`, `exists_testMap_setIntegral_eq` | [KP, Prop. 8.1 (i)] |
 | `Qf (F) ≤ λ Qf (F + (1−λ) a ⊗ n) + (1−λ) Qf (F − λ a ⊗ n)`, in `EReal`; `Qf` finite ⇒ rank-one convex, continuous | `cubeInf_le_two_point_vecMulVec`, `cubeInf_le_two_point` (`n = e_j`), `cubeInfReal_rankOneConvex`, `cubeInfReal_continuous` | [KP, Prop. 8.1 (ii), (iii)] |
 | `⨍_Q Qf (F + ∇ψ) ≥ Qf (F)` for piecewise affine test maps `ψ`; `Qf` finite ⇒ quasiconvex | `cubeInf_le_sum_of_piecewiseAffine`, `cubeInfReal_quasiconvex` | [KP, Prop. 8.1 (iv), Prop. 7.2, Step 6] |
@@ -72,17 +76,15 @@ All names are in the namespace `CalculusOfVariations` except those that begin wi
 them in Lean:
 
 ```lean
-theorem CalculusOfVariations.quasiconvexAtOn_iff {f : Matrix (Fin d) (Fin m) ℝ → ℝ}
-    (hlsc : LowerSemicontinuous f) (hbdd : IsLocallyBounded f) (A : Matrix (Fin d) (Fin m) ℝ)
+theorem CalculusOfVariations.quasiconvexAtOn_iff_of_measurable {f : Matrix (Fin d) (Fin m) ℝ → ℝ}
+    (hf : Measurable f) (hbdd : IsLocallyBounded f) (A : Matrix (Fin d) (Fin m) ℝ)
     {Ω : Set (Fin m → ℝ)} (hΩ : IsOpen Ω) (hb : Bornology.IsBounded Ω) (hne : Ω.Nonempty) :
     QuasiconvexAtOn (unitCube m) f A ↔ QuasiconvexAtOn Ω f A
 
-theorem CalculusOfVariations.qcEnvelope_eq_iInf {f : Matrix (Fin d) (Fin m) ℝ → ℝ}
+theorem CalculusOfVariations.quasiconvexEnvelope_eq_domainInf {f : Matrix (Fin d) (Fin m) ℝ → ℝ}
     (hf : Continuous f) {Ω : Set (Fin m → ℝ)} (hΩ : IsOpen Ω) (hb : Bornology.IsBounded Ω)
     (hne : Ω.Nonempty) (A : Matrix (Fin d) (Fin m) ℝ) :
-    qcEnvelope f A =
-      ⨅ (φ : (Fin m → ℝ) → Fin d → ℝ) (_ : (∃ K, LipschitzWith K φ) ∧ ∀ x ∉ Ω, φ x = 0),
-        (((volume Ω).toReal⁻¹ * ∫ x in Ω, f (A + grad φ x) : ℝ) : EReal)
+    quasiconvexEnvelope f A = domainInf Ω f A
 ```
 
 ## Method
@@ -101,8 +103,13 @@ theorem CalculusOfVariations.qcEnvelope_eq_iInf {f : Matrix (Fin d) (Fin m) ℝ 
 - **Quadratic forms** follow [Da08, Thm 5.25 (i)]: the linear term integrates to zero, and the
   quadratic term is nonnegative under the Legendre–Hadamard condition, by Plancherel's formula,
   applied to smooth maps and then, by mollification, to Lipschitz maps.
-- **Null Lagrangians** follow [Da08, Thm 8.35 (ii)] and [Mo, Lemma 5.1]: divergence identities for
-  smooth maps, then mollification.
+- **Null Lagrangians** follow [Da08, Thm 8.35 (ii)] and [Mo, Lemma 5.1]: the minors of a sum are
+  expanded into mixed minors, which are divergences [Da08, Thm 8.33], for smooth maps; then
+  mollification. The identity (8.42) under the divergence form is proved with Leibniz' formula and a
+  sign-reversing involution on permutations, where [Da08] argues by induction on the order with the
+  same cancelling terms.
+- **Quasiaffine functions** follow [Da08, Thm 5.20]: rank-one affine ⇒ affine combination of minors
+  (next item) ⇒ null Lagrangian [Da08, Thm 8.35] ⇒ quasiaffine ⇒ rank-one affine.
 - **Rank-one affine functions** follow the proof of [Da08, Thm 5.20, (ii) ⇒ (iii′)]: induction on
   the number of rows (after a transposition, `N ≤ n`). The function is affine in its first row
   (5.42), the coefficients are combinations of minors of the other rows (5.43), the parts with a
@@ -200,8 +207,9 @@ the Lean Zulip archive, the Archive of Formal Proofs, MathComp-Analysis).
   a continuous one are rank-one convex; functions convex in each coordinate and locally bounded
   are locally Lipschitz) and [atlas-lean](https://github.com/facebookresearch/atlas-lean)
   (definitions for `2 × 2` matrices).
-- [PDEAtlas](https://github.com/Robertboy18/PDEAtlas), after Evans, has null Lagrangians, the weak
-  continuity of minors of every order, and minimizers of polyconvex energies;
+- [PDEAtlas](https://github.com/Robertboy18/PDEAtlas), after Evans, has null Lagrangians, the
+  divergence form (for `C²` maps) and the weak continuity of minors of every order, and minimizers of
+  polyconvex energies;
   [Tau Ceti](https://github.com/TauCetiProject/TauCeti) has Sobolev spaces on domains and the
   direct method.
 - HOL Light has the Euler–Lagrange equations (Guan et al., J. Automat. Reason. 65 (2021)); nothing
@@ -209,13 +217,14 @@ the Lean Zulip archive, the Archive of Formal Proofs, MathComp-Analysis).
 
 Beyond these, no earlier formalization was found of the independence of the domain, the
 equivalence with periodic test maps, quasiconvex ⇒ rank-one convex in every size, rank-one convex
-⇒ locally Lipschitz, Dacorogna's formula, the theorems on rank-one affine functions and on
-quadratic forms, Kristensen's smoothing, or convexity through Mathlib's distributions. The lower
+⇒ locally Lipschitz, Dacorogna's formula, the theorems on rank-one affine and quasiaffine functions
+and on quadratic forms, Kristensen's smoothing, or convexity through Mathlib's distributions. The lower
 semicontinuity and relaxation theorems, Young measures and `W^{1,p}` are not treated here.
 
 ## Planned extensions
 
-- Minors of every order are null Lagrangians and quasiaffine.
+- Dacorogna's formula for Borel, locally bounded integrands with a quasiconvex minorant [Da08,
+  Thm 6.9].
 - Mathlib-style names for the helper lemmas (prefixes `rd_`, `cv_`, `env_`, `glue_`, `lam_`,
   `distrib_`, `nl_`, and `plancherel` for the mollification lemmas), and one family of lemmas on
   gradients of Lipschitz maps in `Lipschitz/Gradient.lean` instead of two.
@@ -237,9 +246,29 @@ everything. The package requires Lean and Mathlib `v4.36.0-rc2`.
 
 ```sh
 lake exe cache get                 # Mathlib's compiled files
-lake build
-lake env lean scripts/Audit.lean   # axioms; fails on any `sorry`
+lake build                         # the library and palomar/
+lake env lean scripts/Audit.lean   # axioms; fails on any `sorry` of the library or a Solution
+python3 scripts/sync_challenge_defs.py --check   # the Challenges' copies of the definitions
+lake env lake comparator --config=palomar/Quasiconvexity/comparator.json   # and the other entries
 ```
+
+## Palomar
+
+The headline theorems are packaged for the [Palomar registry](https://palomar-registry.org) as three
+entries, not submitted yet. An entry is a directory `palomar/<Entry>/`: `Challenge.lean` states the
+theorems, with `sorry` proofs and the definitions they need, importing only Mathlib; `Solution.lean`
+proves the same statements from the library; `comparator.json` configures Comparator, which checks
+that the Solution proves the Challenge; `formalization.yaml` is the metadata (sources, scope,
+differences from the sources).
+
+| Entry | Theorems | Sources |
+| --- | --- | --- |
+| [`Quasiconvexity`](palomar/Quasiconvexity/Challenge.lean) | rank-one convex ⇒ locally Lipschitz, with the oscillation bound; quasiconvex ⇒ rank-one convex; independence of the domain; periodic test maps; quadratic forms | [R], [Da08] |
+| [`QuasiconvexEnvelope`](palomar/QuasiconvexEnvelope/Challenge.lean) | Dacorogna's formula; independence of the domain, rank-one convexity, continuity and quasiconvexity of the infimum formula | [KP], [Da82], [Da08] |
+| [`NullLagrangians`](palomar/NullLagrangians/Challenge.lean) | minors are null Lagrangians; rank-one affine ⇔ quasiaffine ⇔ null Lagrangian ⇔ affine combination of minors | [Da08], [Da82] |
+
+The definitions in the Challenges are copies of marked blocks of `CalculusOfVariations/Basic.lean`,
+made by [`scripts/sync_challenge_defs.py`](scripts/sync_challenge_defs.py).
 
 ## Layout
 
@@ -252,12 +281,13 @@ lake env lean scripts/Audit.lean   # axioms; fails on any `sorry`
 | [`CalculusOfVariations/Covering/`](CalculusOfVariations/Covering) | `Cubes` (finite Besicovitch coverings) |
 | [`CalculusOfVariations/Quasiconvex/`](CalculusOfVariations/Quasiconvex) | `Domain`, `Cutoff`, `Periodic`, `Laminate`, `RankOneConvex`, `TruncatedLaminate` |
 | [`CalculusOfVariations/QuadraticForm/`](CalculusOfVariations/QuadraticForm) | `Plancherel`, `Quasiconvex` |
-| [`CalculusOfVariations/Minors/`](CalculusOfVariations/Minors) | `RankOneAffine`, `RankOneAffineContinuous`, `NullLagrangian`, `Quasiaffine` |
+| [`CalculusOfVariations/Minors/`](CalculusOfVariations/Minors) | `RankOneAffine`, `RankOneAffineContinuous`, `NullLagrangian`, `Quasiaffine` (orders `2`, `3`), `AllOrders`, `Characterization` |
 | [`CalculusOfVariations/Envelope/`](CalculusOfVariations/Envelope) | `Cube` (the infimum formula on the cube), `Domain` (independence of the domain), `RankOneConvex`, `Glue` (piecewise affine test maps), `Convexity` (continuity, quasiconvexity), `Formula` |
 | [`CalculusOfVariations/Smoothing/`](CalculusOfVariations/Smoothing) | `RankOneConvex` |
 | [`CalculusOfVariations/Distribution/`](CalculusOfVariations/Distribution) | `SecondDerivative`, `Convex` |
-| [`scripts/Audit.lean`](scripts/Audit.lean) | the axiom audit |
-| [`.github/workflows/`](.github/workflows) | CI: build, audit, import list of the audit, line lengths |
+| [`palomar/`](palomar) | the Palomar entries |
+| [`scripts/`](scripts) | `Audit.lean` (the axiom audit), `sync_challenge_defs.py`, `check_md_tables.py` |
+| [`.github/workflows/`](.github/workflows) | CI: build, audit, import list of the audit, copies of the definitions, tables, line lengths; Palomar's preflight, one per entry, on demand |
 
 ## References
 
@@ -270,13 +300,13 @@ lake env lean scripts/Audit.lean   # axioms; fails on any `sorry`
 - [Mo] C. B. Morrey, *Quasi-convexity and the lower semicontinuity of multiple integrals*, Pacific
   J. Math. 2 (1952), 25–53: Lemma 5.1; Theorems 2.1, 2.2, 4.1–4.3, 5.2.
 - [Da82] B. Dacorogna, *Quasiconvexity and relaxation of nonconvex problems in the calculus of
-  variations*, J. Funct. Anal. 46 (1982), 102–118.
+  variations*, J. Funct. Anal. 46 (1982), 102–118: Proposition 4, Theorem 5 (statements).
 - [KP] D. Kinderlehrer, P. Pedregal, *Characterizations of Young measures generated by gradients*,
   Arch. Rational Mech. Anal. 115 (1991), 329–365: Proposition 8.1, with Step 6 of the proof of
   Proposition 7.2.
 - [Da08] B. Dacorogna, *Direct methods in the calculus of variations*, 2nd ed., Springer, 2008:
-  Propositions 5.11, 5.13, Theorem 5.20 with Lemma 5.24, Theorem 5.25 (i), Theorem 6.9 (statement),
-  Theorem 8.35.
+  Propositions 5.11, 5.13, Theorem 5.20 with Lemma 5.24, Theorem 5.25 (i), Proposition 5.67,
+  Theorem 6.9 (statement), Theorems 8.33, 8.35.
 - [K] J. Kristensen, *On the non-locality of quasiconvexity*, Ann. Inst. H. Poincaré Anal. Non
   Linéaire 16 (1999), 1–13: proof of Proposition 2.
 - [F] H. Freudenthal, *Simplizialzerlegungen von beschränkter Flachheit*, Ann. of Math. 43 (1942),

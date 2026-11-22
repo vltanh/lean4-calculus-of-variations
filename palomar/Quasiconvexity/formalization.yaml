@@ -1,0 +1,207 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/mathlib-initiative/formalization.yaml/main/schema/formalization.schema.json
+version: "v0.4"
+
+project:
+  name: "Quasiconvexity and rank-one convexity, in Lean"
+  description: >-
+    The basic theory of Morrey's quasiconvexity, for integrands f on d x m matrices of every size,
+    from the textbooks of Rindler and Dacorogna. A quasiconvex function is rank-one convex.
+    Quasiconvexity does not depend on the domain, among the nonempty bounded open sets, and may be
+    tested with periodic maps. A rank-one convex function is locally Lipschitz, with a bound by its
+    oscillation. A quadratic form is quasiconvex if and only if it is rank-one convex.
+
+
+    f is Borel and locally bounded, as in the textbooks; for the theorems on rank-one convex
+    functions it is an arbitrary function. Test maps are Lipschitz and vanish outside the domain.
+    Part of a Lean library of the vectorial calculus of variations.
+  authors:
+    - "The-Anh Vu-Le"
+  license: "Apache-2.0"
+  responsible_maintainers:
+    - "The-Anh Vu-Le"
+
+classification:
+  arxiv: ["math.AP", "math.CA"]
+  msc2020: ["49J45", "26B25", "49J10", "68V20"]
+
+sources:
+  - title: "Calculus of Variations, second edition"
+    authors:
+      - "Filip Rindler"
+    id: "doi:10.1007/978-3-032-24483-3"
+    type: "book"
+    location: "Graduate Texts in Mathematics 310, Springer, 2026; https://doi.org/10.1007/978-3-032-24483-3"
+    relationship: "formalizes"
+    note: >-
+      Lemma 5.2 (i) (independence of the domain), Proposition 5.6 (quasiconvex implies rank-one
+      convex), Lemma 5.9 without (5.8) (rank-one convex implies locally Lipschitz, with (5.9)); the
+      proofs follow its proofs.
+    author_endorsement: "not-contacted"
+  - title: "Direct Methods in the Calculus of Variations, second edition"
+    authors:
+      - "Bernard Dacorogna"
+    id: "doi:10.1007/978-0-387-55249-1"
+    type: "book"
+    location: "Applied Mathematical Sciences 78, Springer, 2008; https://doi.org/10.1007/978-0-387-55249-1"
+    relationship: "formalizes"
+    note: >-
+      Propositions 5.11 (independence of the domain) and 5.13 (periodic test maps), Theorem 5.25 (i)
+      (quadratic forms), and the implication from quasiconvex to rank-one convex of Theorem 5.3 (i);
+      the proofs follow its proofs, except that the last one is Rindler's.
+    author_endorsement: "not-contacted"
+  - title: "Quasi-convexity and the lower semicontinuity of multiple integrals"
+    authors:
+      - "Charles B. Morrey, Jr."
+    id: "doi:10.2140/pjm.1952.2.25"
+    type: "paper"
+    location: "Pacific J. Math. 2 (1952), 25-53; https://doi.org/10.2140/pjm.1952.2.25"
+    relationship: "background"
+    note: >-
+      The origin of the notions, and of most of the results (Theorems 4.1 to 4.3 and 5.2), in other
+      forms.
+    author_endorsement: "not-contacted"
+  - title: "Variational models for microstructure and phase transitions"
+    authors:
+      - "Stefan Müller"
+    id: "doi:10.1007/BFb0092670"
+    type: "other"
+    location: "Lecture notes no. 2, Max-Planck-Institut für Mathematik in den Naturwissenschaften, Leipzig, 1998; Lecture Notes in Mathematics 1713, Springer, 1999, 85-210"
+    relationship: "background"
+    note: >-
+      Definition 4.2 and its Remarks 2 and 3, Lemma 4.3, Proposition 4.19: the same results and similar
+      proofs.
+    author_endorsement: "not-contacted"
+
+related_formalizations:
+  - id: "https://github.com/sergioconti/so3-r1c-and-not-qc"
+    relationship: "independent"
+    note: >-
+      Conti, Dolzmann and Dondl (October 2026): a frame-indifferent rank-one convex function on
+      R^{3x3} that is not quasiconvex. It has Morrey's quasiconvexity for m x n matrices with smooth
+      compactly supported test maps, and the inequality for smooth periodic maps and continuous
+      quasiconvex f. Not used: after the proofs that this library had on 22 November 2026, a
+      literature search displayed its README, its definitions, docstrings and statements, and a few
+      short auxiliary proofs; nothing was taken from it.
+  - id: "https://github.com/lcao11/hierarchical_laminates_lean"
+    relationship: "independent"
+    note: >-
+      Cao (October 2026): a minimum of two quadratic forms whose quasiconvex and rank-one convex envelopes differ (d = 32,
+      m = 2); in that size, periodic quasiconvex functions below a continuous one are rank-one
+      convex; functions convex in each coordinate and locally bounded are locally Lipschitz. Seen (statements and docstrings) in the literature search of
+      22 November 2026, after the proofs that this library had then; not used.
+  - id: "https://github.com/Robertboy18/PDEAtlas"
+    relationship: "independent"
+    note: >-
+      After Evans: null Lagrangians, polyconvex energies, the Legendre-Hadamard condition for
+      minimizers; no quasiconvexity or rank-one convexity. Seen (statements and docstrings) in the literature search of 22 November 2026; not used.
+  - id: "https://github.com/facebookresearch/atlas-lean"
+    relationship: "independent"
+    note: "Definitions of rank-one convexity and quasiconvexity for 2 x 2 matrices; not used."
+
+status:
+  scope: >-
+    Proved, for all d and m: the statements listed under alignment. Not included: the growth
+    estimate (5.8) of Rindler's Lemma 5.9 and Lemma 5.2 (ii) (test maps in W^{1,p}); the other
+    implications of Dacorogna's Theorem 5.3 (convex, polyconvex) and parts (ii), (iii) of
+    Theorem 5.25; integrands with the value +infinity; lower semicontinuity of integrals.
+  sorry_count: 0
+  sorry_in_definitions: 0
+  axioms: []
+
+automation:
+  methods:
+    - method: "agent"
+      models: ["claude-opus-5-5"]
+      framework: "Claude Code (Claude Agent SDK)"
+      tool_setup: >-
+        The formalize-math-paper skill (https://github.com/vltanh/formalize-math-paper), versions
+        4.2.0 to 4.3.1: a main session and sub-agents (statement writers, provers, independent
+        reviewers, a literature search); the number of agents was not tracked for this library
+        alone. Lean v4.36.0-rc2, Mathlib v4.36.0-rc2.
+      cost:
+        wall_time: "about WALL hours from the first to the last commit of the library, 22 November 2026 (git log), with other work in parallel; agent time not tracked"
+        spend_usd: "not tracked"
+        hardware: "local machine (20 cores, 62 GB RAM) and API"
+      prompting_notes: >-
+        The maintainer asked for the theorems to be proved in general form, by the proofs of the
+        cited sources, without sorry or axioms.
+  spend_usd: "not tracked"
+  notes: >-
+    The AI system wrote the statements, the proofs and the documents. Independent AI agents
+    compared the proofs of the library with the cited sources, and one compared the statements of
+    this entry with them. No person has reviewed the statements or the proofs.
+
+fidelity:
+  divergences: >-
+    Statements. Test maps: Lipschitz maps on R^m that vanish outside Omega, instead of
+    W^{1,infinity}_0 (Omega). For bounded Lipschitz domains the classes agree; for a general bounded
+    open set the maps here are among those of Dacorogna (W^{1,infinity} and W^{1,1}_0), possibly not
+    all of them. Quasiconvexity is tested on the unit cube (Rindler: the unit ball; Dacorogna: every
+    bounded open set), which is the same by the independence of the domain. Borel measurability and
+    local boundedness, part of the definition of quasiconvexity in both books, are hypotheses; the
+    integrability required by the definition here is automatic under them (integrableOn_add_grad).
+    Rindler's rank-one convex functions are Borel and locally bounded by definition; here no
+    regularity is assumed in the two theorems on rank-one convex functions. The independence of the
+    domain and the criterion with periodic maps are stated at each matrix A (the books: for all A
+    together), which their proofs give. The domains in the independence of the domain are nonempty:
+    Dacorogna's Proposition 5.11 does not say so for its first domain, and is false for the empty set.
+    The Lipschitz estimate (5.9) is stated for any bound omega of the oscillation on the closed ball.
+    Theorem 5.25 (i) is stated for bilinear forms Q and A -> Q(A, A), which are the quadratic
+    functions of the source. Matrices are d x m (Rindler: m x d; Dacorogna: N x n).
+    Proofs. They follow the sources, with these repairs and additions: the slope bound (5.10) of
+    Rindler holds for the difference f(A) - f(B) only when it is nonnegative, so A and B are
+    exchanged in the other case; local boundedness of rank-one convex functions is proved (by
+    convexity in each entry); the gradient of a Lipschitz map vanishes almost everywhere on its zero
+    set (needed for the test maps used here on arbitrary open sets); rotated cubes are treated by an
+    orthogonal change of variables and the independence of the domain; the independence of the
+    domain passes through the unit cube; in Proposition 5.13 the width of the cut-off layer and the
+    frequency are chosen separately; in Theorem 5.25 (i) Plancherel's formula is applied to smooth
+    maps and the inequality passes to Lipschitz maps by mollification.
+
+review:
+  status: "agent-reviewed"
+  reviewers:
+    - "none"
+  notes: >-
+    No human review. REVIEWQ
+
+alignment:
+  namespace: "QuasiconvexityChallenge"
+  statements:
+    - source: "Rindler 2026, Lemma 5.9 (first assertion)"
+      lean: "QuasiconvexityChallenge.rankOneConvex_locallyLipschitz"
+      module: "Quasiconvexity.Challenge"
+      status: "proved"
+      note: "A rank-one convex f: R^{d x m} -> R is locally Lipschitz (Frobenius norm); no regularity of f is assumed."
+    - source: "Rindler 2026, proof of Lemma 5.9, (5.9)"
+      lean: "QuasiconvexityChallenge.rankOneConvex_abs_sub_le_of_osc"
+      module: "Quasiconvexity.Challenge"
+      status: "proved"
+      note: "Lipschitz constant sqrt(min(d, m)) omega / (3r) on the ball of radius r, omega a bound of the oscillation on the closed ball of radius 6r."
+    - source: "Rindler 2026, Proposition 5.6; Dacorogna 2008, Theorem 5.3 (i)"
+      lean: "QuasiconvexityChallenge.rankOneConvex_of_quasiconvex"
+      module: "Quasiconvexity.Challenge"
+      status: "proved"
+      note: "Borel, locally bounded, quasiconvex on the unit cube at every matrix implies rank-one convex."
+    - source: "Dacorogna 2008, Proposition 5.11; Rindler 2026, Lemma 5.2 (i)"
+      lean: "QuasiconvexityChallenge.quasiconvexAtOn_iff"
+      module: "Quasiconvexity.Challenge"
+      status: "proved"
+      note: "Quasiconvexity at A is the same on all nonempty bounded open sets."
+    - source: "Dacorogna 2008, Proposition 5.13"
+      lean: "QuasiconvexityChallenge.quasiconvexAtOn_unitCube_iff_periodic"
+      module: "Quasiconvexity.Challenge"
+      status: "proved"
+      note: "Quasiconvexity at A on the unit cube is equivalent to the inequality for Z^m-periodic Lipschitz maps."
+    - source: "Dacorogna 2008, Theorem 5.25 (i)"
+      lean: "QuasiconvexityChallenge.quadraticForm_quasiconvex_iff"
+      module: "Quasiconvexity.Challenge"
+      status: "proved"
+      note: "A quadratic form is quasiconvex if and only if it is rank-one convex."
+    - source: "a check of the definitions"
+      lean: "QuasiconvexityChallenge.integrableOn_add_grad"
+      module: "Quasiconvexity.Challenge"
+      status: "proved"
+      note: "The integrability clause in the definition of quasiconvexity holds for Borel, locally bounded f and bounded domains."
+
+acknowledgements: "Lean and Mathlib."
