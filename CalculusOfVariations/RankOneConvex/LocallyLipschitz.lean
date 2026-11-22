@@ -23,7 +23,7 @@ in the Frobenius norm `|·|` (`RankOneConvex.abs_sub_le_of_osc`). This is Lemma 
 attributes the result to Morrey and the proof to J. M. Ball, B. Kirchheim, J. Kristensen,
 *Regularity of quasiconvex envelopes*, Calc. Var. Partial Differential Equations 11 (2000), 333–359,
 Lemma 2.2. The result is cited in the literature as Lemma 5.6 of the first edition (Universitext,
-Springer, 2018), which was not consulted.
+Springer, 2018).
 
 The proof (in [R2] the matrices are `m × d`):
 

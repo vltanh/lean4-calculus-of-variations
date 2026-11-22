@@ -146,7 +146,8 @@ theorem CalculusOfVariations.qcEnvelope_eq_iInf {f : Matrix (Fin d) (Fin m) ℝ 
 
 ## Simpler proofs
 
-Arguments shorter or simpler than those of the sources, which the library follows:
+Arguments shorter or simpler than those of the sources, which the library follows ("checked in Lean":
+the argument compiles, but it is not part of the library):
 
 - Rank-one convex ⇒ locally Lipschitz: a rank-one convex function is separately convex, and
   `Matrix.locallyLipschitz_of_convexOn_single` applies; no singular values, no explicit constant.

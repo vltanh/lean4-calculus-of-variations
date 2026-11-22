@@ -96,10 +96,10 @@ minors up to signs.
   for `ξ`, but not for `ξ + t a ⊗ b`, so the summands of (5.47) without another column of `B`
   contribute `b_l (b_{λ_{s+1}} − b_{λ_k})` times minors that contain the common column. These terms
   vanish for the choice `ξ_{λ_k} = ξ_{λ_{s+1}} = 0` in the rows `3, …, s+1`, which is made here.
-* (d) (5.50) and (5.52) set `b_l = 0` for the other columns `l` of `B`. Then the displayed
-  coefficients do not contain the `γ_{l,α}` with these `l`, which (5.51) and (5.53) state to vanish
-  (the terms omitted in (c) would give them). For the choice of `ξ` in (c) the restriction on `b` is
-  not needed, and `b` is arbitrary here.
+* (d) (5.50) and (5.52) set `b_l = 0` for the other columns `l` of `B`. Then the `γ_{λ_j, B ∖ λ_k}`
+  with `j ≠ k`, `j, k ≤ s`, which (5.51) and (5.53) state to vanish, are in none of the displayed
+  coefficients (the terms omitted in (c), for the pair `(λ_j, λ_{s+1})`, would give them). For the
+  choice of `ξ` in (c) the restriction on `b` is not needed, and `b` is arbitrary here.
 * (e) In Step `N`, [D08] ("proceeding as in Step 2") does not say that `χ` and `ψ_l` are rank-one
   affine, which the induction hypothesis requires: `minors_rowCons_RA` and `minors_RA_sub`.
 * (f) The row sets: [D08] shows that the `h_1^i` are rank-one affine, then "with the same
