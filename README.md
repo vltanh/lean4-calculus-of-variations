@@ -49,8 +49,8 @@ semicontinuous, locally bounded minorants, in `EReal`).
 | `f` lsc, locally bounded, quasiconvex at `F` on the unit cube ⇒ `f (F) ≤ λ f (F + (1−λ) a ⊗ n) + (1−λ) f (F − λ a ⊗ n)`, by laminates with cut-offs | `le_of_quasiconvexAtOn_vecMulVec`, with `sawLaminate`, `setIntegral_sawLaminate`, `le_of_quasiconvexAtOn_of_tendsto` (the cut-off), `le_of_quasiconvexAtOn_unitCube_of_lsc` (`n = e_j`) | [R, Prop. 5.6] |
 | `f` lsc, locally bounded, quasiconvex ⇒ rank-one convex | `rankOneConvex_of_quasiconvex` | [R, Prop. 5.6] |
 | without regularity of `f`: quasiconvex at `F` on the unit cube ⇒ the two-point inequality along `a ⊗ e_j`, by truncated laminates; on a rotated cube, along `a ⊗ R e_j` | `le_of_quasiconvexAtOn_unitCube`, `le_of_quasiconvexAtOn_orthogonal`, with `cubeLaminate` | [M, Lemma 4.3] |
-| quasiconvexity on the cube ⇔ on any nonempty bounded open `Ω` | `quasiconvexAtOn_iff`, `quasiconvexAtOn_of_unitCube` | [Da08, Prop. 5.11], [R, Lemma 5.2 (i)] |
-| quasiconvexity on the cube ⇔ with periodic test maps | `quasiconvexAtOn_iff_periodic` | [Da08, Prop. 5.13] |
+| `f` lsc, locally bounded: quasiconvexity on the cube ⇔ on any nonempty bounded open `Ω` | `quasiconvexAtOn_iff`, `quasiconvexAtOn_of_unitCube` | [Da08, Prop. 5.11], [R, Lemma 5.2 (i)] |
+| `f` lsc, locally bounded: quasiconvexity on the cube ⇔ with periodic test maps | `quasiconvexAtOn_iff_periodic` | [Da08, Prop. 5.13] |
 | `Q` bilinear, `A ↦ Q (A, A)` rank-one convex ⇒ quasiconvex | `quadraticForm_quasiconvex` | [Da08, Thm 5.25 (i)] |
 | rank-one affine ⇒ affine combination of minors (continuity not assumed) | `RankOneAffine.exists_eq_sum_minor`; for continuous functions, `RankOneAffine.exists_eq_sum_minor_of_continuous` | [Da08, Thm 5.20, (ii) ⇒ (iii′)] |
 | `∫ minor (∇φ) = 0` for `2 × 2`, `3 × 3` minors, `φ` Lipschitz with compact support | `nl_null2`, `nl_null3` | [Da08, Thm 8.35], [Mo, Lemma 5.1] |
@@ -163,8 +163,8 @@ the argument compiles, but it is not part of the library):
   two of these rows are equal, by the `t²` coefficient along `(e_i + e_j) ⊗ b`, so it is an
   alternating form, a combination of minors with the rows `I`; no induction, no transposition, no
   Lemma 5.24. On paper.
-- Lemma 5.24 of [Da08]: the same argument shows that `g` is alternating in the rows `{1} ∪ I`. On
-  paper.
+- Lemma 5.24 of [Da08]: the same argument shows that the part `g^i` with the other rows `I` is alternating in
+  the rows `{1} ∪ I`. On paper.
 - Dacorogna's formula: (ii) of [KP, Prop. 8.1] is needed only along the `e_i ⊗ e_j`
   (`cubeInf_le_two_point`), with `Matrix.locallyLipschitz_of_convexOn_single` for the continuity; no
   rotated cubes. Checked in Lean.
@@ -222,7 +222,8 @@ lake env lean scripts/Audit.lean   # axioms; fails on any `sorry`
   school, Cetraro, 1996): Definition 4.2 and Remark 3; Lemma 4.3; the density argument of Theorem 4.4
   (i).
 - [R] F. Rindler, *Calculus of Variations*, 2nd ed., Graduate Texts in Mathematics 310, Springer,
-  2026: Lemma 5.2 (i), Proposition 5.6, Lemma 5.9 (cited in the literature as Lemma 5.6 of the first edition, 2018), Appendix A.1.
+  2026: Lemma 5.2 (i), Proposition 5.6, Lemma 5.9 (cited in the literature as Lemma 5.6 of the first
+  edition, 2018), Appendix A.1.
 - [Mo] C. B. Morrey, *Quasi-convexity and the lower semicontinuity of multiple integrals*, Pacific
   J. Math. 2 (1952), 25–53: Lemma 5.1.
 - [Da82] B. Dacorogna, *Quasiconvexity and relaxation of nonconvex problems in the calculus of
@@ -231,7 +232,8 @@ lake env lean scripts/Audit.lean   # axioms; fails on any `sorry`
   Arch. Rational Mech. Anal. 115 (1991), 329–365: Proposition 8.1, with Step 6 of the proof of
   Proposition 7.2.
 - [Da08] B. Dacorogna, *Direct methods in the calculus of variations*, 2nd ed., Springer, 2008:
-  Propositions 5.11, 5.13, Theorem 5.20 with Lemma 5.24, Theorem 5.25 (i), Theorem 6.9 (statement), Theorem 8.35.
+  Propositions 5.11, 5.13, Theorem 5.20 with Lemma 5.24, Theorem 5.25 (i), Theorem 6.9 (statement),
+  Theorem 8.35.
 - [K] J. Kristensen, *On the non-locality of quasiconvexity*, Ann. Inst. H. Poincaré Anal. Non
   Linéaire 16 (1999), 1–13: proof of Proposition 2.
 - [F] H. Freudenthal, *Simplizialzerlegungen von beschränkter Flachheit*, Ann. of Math. 43 (1942),

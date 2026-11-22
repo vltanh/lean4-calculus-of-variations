@@ -32,7 +32,7 @@ the domain) on an arbitrary bounded open set it is the vanishing of the gradient
 almost everywhere on its zero set (`Lipschitz.ZeroSet`). [D08] does not say that the first domain is
 nonempty; for the empty set the proposition is false (its hypothesis is void).
 
-The sources assume `f` Borel and locally bounded; here `f` is lower semicontinuous and locally
+[D08] and [R2] assume `f` Borel and locally bounded; here `f` is lower semicontinuous and locally
 bounded (only the measurability is used).
 -/
 

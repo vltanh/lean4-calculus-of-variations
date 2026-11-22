@@ -78,7 +78,7 @@ private lemma minors_legendreHadamard (Q : LinearMap.BilinForm ℝ (Matrix (Fin 
   linarith
 
 /-- **A rank-one convex quadratic form is quasiconvex** ([D08], Theorem 5.25 (i); the converse holds
-for every integrand, `rankOneConvex_of_quasiconvex`).
+for every lower semicontinuous, locally bounded integrand, `rankOneConvex_of_quasiconvex`).
 
 Proof ([D08], p. 192–194). Since `Q` is quadratic,
 `Q (A + ∇φ) = Q (A) + [Q (A, ∇φ) + Q (∇φ, A)] + Q (∇φ)`; the linear term integrates to `0`
