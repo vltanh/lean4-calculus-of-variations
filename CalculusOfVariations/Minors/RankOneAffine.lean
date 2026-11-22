@@ -18,65 +18,78 @@ import Mathlib.LinearAlgebra.Matrix.RowCol
 # Rank-one affine functions are affine combinations of minors
 
 `minor A r c`: the `k × k` minor of `A` with the rows `r` and the columns `c`.
-`RankOneAffine.exists_eq_sum_minor`: a rank-one affine `f : ℝ^{d×m} → ℝ` is an affine combination
-of the minors of its argument. Continuity is not needed.
+`RankOneAffine.exists_eq_sum_minor`: a rank-one affine `f` on the `d × m` matrices is an affine
+combination of the minors of its argument, of orders `k ≤ min (d, m)`. Continuity is not needed.
 
-This is the implication (iii) ⇒ (iv) of B. Dacorogna, *Direct methods in the calculus of
-variations*, 2nd ed., Springer, 2008, Theorem 5.20, which is the statement cited; the proof of the
-book was not accessible. The proof here is the one of S. Conti, G. Dolzmann, B. Kirchheim,
-S. Müller, *Sufficient conditions for the validity of the Cauchy–Born rule close to SO(n)*,
-J. Eur. Math. Soc. 8 (2006), 515–530, Appendix, Theorem 6.1, pp. 526–528 ([CDKM]): a continuous
-null Lagrangian `N` on `m × n` matrices is a constant plus a linear combination of minors. After
-its first sentence, which shows that `N` is affine along every rank-one line `t ↦ F + t a ⊗ b`,
-that proof uses only this property and the continuity of `N`.
+The statement is the implication (iii) ⇒ (iv) of B. Dacorogna, *Direct methods in the calculus of
+variations*, 2nd ed., Springer, 2008, Theorem 5.20, the result cited; that book is not openly
+accessible, and its proof was not consulted. The proof here is the one of S. Conti, G. Dolzmann,
+B. Kirchheim, S. Müller, *Sufficient conditions for the validity of the Cauchy–Born rule close to
+SO(n)*, J. Eur. Math. Soc. 8 (2006), 515–530, Appendix, Theorem 6.1, pp. 526–528 ([CDKM]): a
+continuous null Lagrangian `N` (on the `m × n` matrices, in [CDKM]) is the sum of a constant and a
+linear combination of minors. The first sentence of that proof shows that `N` is affine along
+every rank-one line `t ↦ F + t a ⊗ b`; the rest uses only this property and the continuity of `N`.
+Below, `d × m` and `min (d, m)` stand for [CDKM]'s `m × n` and `d = min (m, n)`.
 
 ## The steps of [CDKM], and where they are here
 
 1. `N` is affine along the rank-one lines. Here `f` is convex and concave along them, hence affine
-   (`minors_RA_of_rankOneAffine`).
-2. `N` is a polynomial of degree at most `min (m, n)`, `N = ∑_k P_k` with `P_k` homogeneous of
-   degree `k` ((6.3)), and (6.2) gives `P_k (F) = 0` whenever `rank F < k`. Replaced here by
-   Steps 2a and 2b below.
-3. `P_k` has only the products of entries that occur in the `k × k` minors. With `F_{I,J}` the
-   matrix `F` with the entries outside the rows `I` and the columns `J` set to `0`, and `S_{I,J}`
-   the terms of `P_k` whose rows are exactly `I` and whose columns are exactly `J`,
-   `P_k (F_{I,J}) = ∑_{I' ⊆ I, J' ⊆ J} S_{I',J'} (F)` (`minors_hom_restr`); if `|I| < k` or
-   `|J| < k`, then `rank F_{I,J} < k`, so `P_k (F_{I,J}) = 0`, and by induction `S_{I,J} = 0`
-   (`minors_block_eq_zero`; the induction is on `|I| + |J|`).
-4. For `|I| = |J| = k`, `I = {α₁ < ⋯ < α_k}`, `J = {β₁ < ⋯ < β_k}`, the form
-   `Q (v¹, …, v^k) = S_{I,J} (F_v) = P_k (F_v)`, `F_v = ∑_{i,j} v^j_i e_{α_i} ⊗ e_{β_j}`, is
-   multilinear in the columns `v^j`, and vanishes when `dim span {v^j} < k`, since then
-   `rank F_v < k`; so it is alternating, hence a multiple `ĉ_{I,J} det` of the determinant, and
-   `S_{I,J} (F) = ĉ_{I,J} det_k F_{I,J}` (`minors_block_eq_minor`).
-5. `N = ∑_k ∑_{|I| = |J| = k} ĉ_{I,J} det_k F_{I,J}` (`RankOneAffine.exists_eq_sum_minor`).
+   along them (`minors_RA_of_rankOneAffine`).
+2. (6.1) `D^k N (A, A, H₃, …, H_k) = 0` if `rank A ≤ 1`, hence (6.2) `D^k N (F, …, F) = 0` if
+   `rank F < k`, since `F` is then a sum of at most `k − 1` rank-one matrices; applied with
+   `k = min (d, m) + 1`, with Proposition 6.2, `N` is a polynomial of degree at most `min (d, m)`,
+   and (6.3) `N = ∑_{k ≤ min (d, m)} P_k`, `P_k` homogeneous of degree `k`. Here: Steps 2a and 2b
+   below, the degree bound `minors_eq_sum_hom`.
+3. The terms of `P_k` are grouped by their sets of rows `I` and of columns `J` into `S_{I,J}`
+   (`minors_hom_eq_sum_block`). With `F_{I,J}` the matrix `F` with the entries outside `I × J` set
+   to `0`, `P_k (F_{I,J}) = ∑_{I' ⊆ I, J' ⊆ J} S_{I',J'} (F)` (`minors_hom_restr`). If `|I| < k` or
+   `|J| < k`, then `rank F_{I,J} < k` (`minors_rank_restr_lt`), so `P_k (F_{I,J}) = 0` by (6.2) and
+   (6.3), and by induction `S_{I,J} = 0` (`minors_block_eq_zero`; [CDKM] induct separately on `|I|`
+   and on `|J|`, here the induction is on `|I| + |J|`).
+4. Regrouping by permutations, `P_k = ∑_{α,β} P_{α,β}` over the increasing `α₁ < ⋯ < α_k`,
+   `β₁ < ⋯ < β_k`, with `P_{α,β} (F) = ∑_{σ ∈ S_k} c^σ F_{α₁ β_{σ 1}} ⋯ F_{α_k β_{σ k}}`
+   (`minorsPerm`, `minors_hom_eq_sum_perm`).
+5. The multilinear form `Q (v¹, …, v^k) = ∑_σ c^σ v^{σ 1}_1 ⋯ v^{σ k}_k` on `(ℝ^k)^k` (`minorsQ`)
+   satisfies `Q (v) = P_{α,β} (F_v) = P_k (F_v)`, `F_v = ∑_{i,j} v^j_i e_{α_i} ⊗ e_{β_j}`, so by
+   (6.2) and (6.3) `Q (v) = 0` when `rank F_v < k` (`minors_perm_Fv`,
+   `minors_Q_eq_zero_of_rank_lt`); by polarization `Q` is antisymmetric, hence a multiple
+   `ĉ_{α,β} det` of the determinant, and `P_{α,β} (F) = ĉ_{α,β} det_k F_{I,J}`
+   (`minors_perm_eq_minor`). Here the polarization is not needed: Mathlib's uniqueness theorem,
+   `AlternatingMap.eq_smul_basis_det`, is stated for forms that vanish when two arguments are
+   equal, which is the vanishing that [CDKM]'s polarization starts from (`F_v` with two equal
+   columns is a sum of `k − 1` rank-one matrices, `minors_Fv_eq_sum_erase`).
 
-**Departure from [CDKM] (its step 2).** [CDKM] obtain step 2 from the continuity of `N`: the
-second distributional derivative of `N` in a rank-one direction vanishes, hence (6.1)
-`D^k N (A, A, H₃, …, H_k) = 0` for `rank A ≤ 1`, hence (6.2) `D^k N (F, …, F) = 0` for
-`rank F < k`, so `D^{d+1} N = 0` (their Proposition 6.2) and `N` is a polynomial of degree at most
-`d = min (m, n)`. The statement here does not assume `f` continuous, so step 2 is replaced by two
-algebraic steps, which give what steps 3 and 4 use:
+So `f (F) = ∑_{k ≤ min (d, m)} ∑_{α,β} ĉ_{α,β} minor F α β` (`RankOneAffine.exists_eq_sum_minor`).
 
-* **Step 2a.** `f` is affine in each entry, since `e_i ⊗ e_j` has rank one, and a function on
-  `ℝ^N` that is affine in each coordinate is `∑_S c_S ∏_{s ∈ S} x_s` (`minors_multiaffine`); so
-  `f (F) = ∑_S c_S F^S` over the sets `S` of entries, `F^S = ∏_{(i,j) ∈ S} F_{ij}`
-  (`minors_exists_mono`), and `P_k = ∑_{|S| = k} c_S F^S` (`minorsHom`).
-* **Step 2b** (for (6.2)). If `F` is a sum of fewer than `k` rank-one matrices `A_l`, then
+## Departure from [CDKM]: their step 2
+
+[CDKM] obtain (6.1) and (6.2) from the continuity of `N`: the second distributional derivative
+of `N` in a rank-one direction vanishes, and (6.1) follows by differentiating further. Then
+`D^{min (d, m) + 1} N = 0` by (6.2) and their Proposition 6.2, so `N` is a polynomial, and (6.3)
+is Taylor's formula. The statement here does not assume `f` continuous, so the derivatives are
+replaced by algebra (Steps 2a and 2b), and Proposition 6.2 is not needed; the rest of step 2
+(the reduction of a matrix of rank `< k` to a sum of at most `k − 1` rank-one matrices, and the
+case `k = min (d, m) + 1` for the degree bound) is kept.
+
+* **Step 2a** (for "`N` is a polynomial" and (6.3)). `f` is affine in each entry, since
+  `e_i ⊗ e_j` has rank one, and a function on `ℝ^ι` (`ι` finite) that is affine in each
+  coordinate is `∑_{S ⊆ ι} c_S ∏_{s ∈ S} x_s` (`minors_multiaffine`). So `f (F) = ∑_S c_S F^S`
+  over the sets `S` of entries, `F^S = ∏_{(i,j) ∈ S} F_{ij}` (`minors_exists_mono`), and
+  `f = ∑_k P_k`, `P_k = ∑_{|S| = k} c_S F^S` (`minorsHom`).
+* **Step 2b** (for (6.1) and (6.2)). If `F = ∑_{l ≤ r} A_l` with `rank A_l ≤ 1` and `r < k`, then
   `P_k (F) = 0` (`minors_hom_eq_zero`): `s ↦ f (∑_l s_l A_l)` is affine in each `s_l`, so by
-  Step 2a the function `t ↦ f (t F)` is a polynomial of degree less than `k`, while
-  `f (t F) = ∑_j t^j P_j (F)`. It is used where [CDKM] use (6.2), with explicit decompositions in
-  place of the rank: `F_{I,J}` is the sum of the `|I|` matrices `e_i ⊗ (row i of F_{I,J})`, and
-  of the `|J|` matrices `(column j of F_{I,J}) ⊗ e_j` (`minors_restr_eq_sum_rows`,
-  `minors_restr_eq_sum_cols`); and in step 4 only the case of two equal columns `v^p = v^q` is
-  needed, where `F_v` is a sum of `k − 1` rank-one matrices (`minors_Fv_eq_sum_erase`).
+  Step 2a the function `t ↦ f (t F)` is a polynomial of degree at most `r`, while
+  `f (t F) = ∑_j t^j P_j (F)`. As in [CDKM], a matrix of rank `< k` is a sum of at most `k − 1`
+  rank-one matrices (`minors_exists_sum_vecMulVec`), so `P_k (F) = 0` when `rank F < k`
+  (`minors_hom_eq_zero_of_rank_lt`); this is the form in which [CDKM] use (6.2) with (6.3), in
+  steps 3 and 5 and, with `k = min (d, m) + 1`, for the degree bound (`minors_eq_sum_hom`).
 
-Steps 3 to 5 are those of [CDKM], with the monomials of Step 2a. These have no repeated entry and
-are indexed by their sets of entries `S`, of rows `I` and columns `J`; the degree bound
-`k ≤ min (m, n)` holds because there is no `k × k` minor otherwise. In step 4, [CDKM] write the
-terms of `S_{I,J}` as a sum over the permutations of `{1, …, k}` to see that `Q` is multilinear;
-here a monomial of `S_{I,J}` has `k` entries in the `k` columns of `J`, hence exactly one in each
-column, and is linear in it (`minors_mono_updateCol`, `minorsQ`). "Every alternating multilinear
-form is a multiple of the determinant" is Mathlib's `AlternatingMap.eq_smul_basis_det`.
+The monomials of Step 2a have no repeated entry and are indexed by their sets of entries, so the
+coefficient `c^σ` of step 4 is the coefficient `c_S` of the set `S = {(α_i, β_{σ i})}`
+(`minorsGraph`), where [CDKM], whose monomials are indexed by tuples of entries, have
+`c^σ = ∑_τ c̃_{τ(α), (τ ∘ σ)(β)}`. [CDKM] print `Q (v) = ∑_σ c^σ v^1_{σ 1} ⋯ v^k_{σ k}`; with their
+`F_v`, `P_{α,β} (F_v) = ∑_σ c^σ v^{σ 1}_1 ⋯ v^{σ k}_k`, which is the `Q` used here (the two
+differ by `σ ↦ σ⁻¹`, which does not affect the argument).
 -/
 
 @[expose] public section
@@ -146,8 +159,9 @@ private lemma minors_rank_vecMulVec {u : Fin d → ℝ} {v : Fin m → ℝ} (h :
   le_antisymm (rank_vecMulVec_le _ _) (Nat.one_le_iff_ne_zero.2 fun h' =>
     h (minors_rank_eq_zero_imp h'))
 
-/-- **Step 1.** A rank-one affine function is affine along the rank-one lines ([CDKM] reach this
-from the null Lagrangian property; here it is the definition, convex and concave along them). -/
+/-- **Step 1.** A rank-one affine function is affine along the rank-one lines: by definition it
+is convex and concave along them (`minors_affine_of_convex_concave`). [CDKM] reach this from the
+null Lagrangian property. -/
 private lemma minors_RA_of_rankOneAffine {f : Matrix (Fin d) (Fin m) ℝ → ℝ}
     (hf : RankOneAffine f) : MinorsRA f := by
   intro A u v t
@@ -157,7 +171,7 @@ private lemma minors_RA_of_rankOneAffine {f : Matrix (Fin d) (Fin m) ℝ → ℝ
   have := minors_affine_of_convex_concave (hf.1 A _ hr) (hf.2 A _ hr) t
   simpa using this
 
-/-! #### Step 2a (in place of [CDKM]'s step 2): `f` is a polynomial with no repeated entry -/
+/-! #### Step 2a (for [CDKM]'s step 2): `f` is a polynomial with no repeated entry -/
 
 /-- **Step 2a.** A function on `ℝ^ι` that is affine in each coordinate separately is
 `g (x) = ∑_S c_S ∏_{i ∈ S} x_i`. Induction on the coordinates:
@@ -247,7 +261,7 @@ private lemma minors_mono_smul (S : Finset (Fin d × Fin m)) (t : ℝ)
   simp only [minorsMono, Matrix.smul_apply, smul_eq_mul, Finset.prod_mul_distrib,
     Finset.prod_const]
 
-/-! #### Step 2b (for [CDKM]'s (6.2)): `P_k` vanishes on sums of fewer than `k` rank-one matrices -/
+/-! #### Step 2b (for [CDKM]'s (6.1) and (6.2)): `P_k (F) = 0` when `rank F < k` -/
 
 /-- **Step 2b.** If `F = ∑_{l ∈ L} a_l ⊗ b_l` with `|L| < k`, then `P_k (F) = 0`:
 `s ↦ f (∑_l s_l a_l ⊗ b_l)` is affine in each `s_l` (rank-one lines), hence by Step 2a a
@@ -302,6 +316,73 @@ private lemma minors_hom_eq_zero {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : 
   rw [minorsHom, Finset.sum_filter]
   exact Eq.trans (Finset.sum_congr rfl fun S _ => if_congr eq_comm rfl rfl) hk'
 
+/-- A matrix of rank `r` is a sum of `r` rank-one matrices ([CDKM], proof of (6.2)): with a basis
+`b_1, …, b_r` of the column space, `F = ∑_l b_l ⊗ w_l`, `w_l` the coordinates of the columns of
+`F` along `b_l`. -/
+private lemma minors_exists_sum_vecMulVec (F : Matrix (Fin d) (Fin m) ℝ) :
+    ∃ (r : ℕ) (a : Fin r → Fin d → ℝ) (b : Fin r → Fin m → ℝ), r ≤ F.rank ∧
+      F = ∑ l, vecMulVec (a l) (b l) := by
+  let V := LinearMap.range F.mulVecLin
+  let e := Module.finBasis ℝ V
+  let col : Fin m → V := fun j => ⟨F.mulVecLin (Pi.single j 1), LinearMap.mem_range_self _ _⟩
+  refine ⟨_, fun l => (e l : Fin d → ℝ), fun l j => e.repr (col j) l, le_rfl, ?_⟩
+  ext i j
+  have h1 : F i j = (col j : Fin d → ℝ) i := by
+    simp [col]
+  have h2 : (col j : Fin d → ℝ) = ∑ l, e.repr (col j) l • (e l : Fin d → ℝ) := by
+    conv_lhs => rw [← e.sum_repr (col j)]
+    simp only [Submodule.coe_sum, Submodule.coe_smul]
+  rw [h1, h2, Matrix.sum_apply, Finset.sum_apply]
+  simp only [Pi.smul_apply, smul_eq_mul, vecMulVec_apply, mul_comm]
+
+/-- The rank of a sum of `|L|` rank-one matrices is at most `|L|`. -/
+private lemma minors_rank_sum_vecMulVec_le {ι : Type*} [DecidableEq ι] (L : Finset ι)
+    (a : ι → Fin d → ℝ) (b : ι → Fin m → ℝ) :
+    (∑ l ∈ L, vecMulVec (a l) (b l)).rank ≤ L.card := by
+  have hle : LinearMap.range (∑ l ∈ L, vecMulVec (a l) (b l)).mulVecLin ≤
+      Submodule.span ℝ ((L.image a : Finset (Fin d → ℝ)) : Set (Fin d → ℝ)) := by
+    rintro _ ⟨x, rfl⟩
+    rw [Matrix.mulVecLin_apply, sum_mulVec]
+    refine Submodule.sum_mem _ fun l hl => ?_
+    rw [vecMulVec_mulVec, op_smul_eq_smul]
+    exact Submodule.smul_mem _ _
+      (Submodule.subset_span (Finset.mem_coe.2 (Finset.mem_image_of_mem a hl)))
+  exact (Submodule.finrank_mono hle).trans
+    ((finrank_span_finset_le_card _).trans Finset.card_image_le)
+
+/-- **Step 2b**, as [CDKM] use (6.2) with (6.3): `P_k (F) = 0` when `rank F < k`, since `F` is
+then a sum of fewer than `k` rank-one matrices. -/
+private lemma minors_hom_eq_zero_of_rank_lt {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : MinorsRA f)
+    {c : Finset (Fin d × Fin m) → ℝ} (hc : ∀ F, f F = ∑ S, c S * minorsMono S F) {k : ℕ}
+    {F : Matrix (Fin d) (Fin m) ℝ} (hF : F.rank < k) : minorsHom c k F = 0 := by
+  obtain ⟨r, a, b, hr, h⟩ := minors_exists_sum_vecMulVec F
+  rw [h]
+  exact minors_hom_eq_zero hf hc Finset.univ a b (by
+    rw [Finset.card_univ, Fintype.card_fin]; omega)
+
+/-- **The degree bound and (6.3).** `f = ∑_{k ≤ min (d, m)} P_k`: `f = ∑_k P_k` (Step 2a), and
+`P_k = 0` for `k > min (d, m)` by Step 2b, since `rank F ≤ min (d, m)` ([CDKM] apply (6.2) with
+`k = min (m, n) + 1`). -/
+private lemma minors_eq_sum_hom {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : MinorsRA f)
+    {c : Finset (Fin d × Fin m) → ℝ} (hc : ∀ F, f F = ∑ S, c S * minorsMono S F)
+    (F : Matrix (Fin d) (Fin m) ℝ) :
+    f F = ∑ k ∈ Finset.range (min d m + 1), minorsHom c k F := by
+  have h1 : ∑ S, c S * minorsMono S F = ∑ k ∈ Finset.range (d * m + 1), minorsHom c k F := by
+    refine (Finset.sum_fiberwise_of_maps_to (g := Finset.card) (fun S _ => ?_) _).symm
+    have := Finset.card_le_univ S
+    simp only [Fintype.card_prod, Fintype.card_fin] at this
+    exact Finset.mem_range.2 (Nat.lt_succ_of_le this)
+  rw [hc, h1]
+  refine (Finset.sum_subset (Finset.range_subset_range.2 (Nat.succ_le_succ ?_))
+    fun k _ hk => ?_).symm
+  · rcases Nat.eq_zero_or_pos m with h | h
+    · simp [h]
+    · exact (min_le_left d m).trans (Nat.le_mul_of_pos_right d h)
+  · rw [Finset.mem_range, not_lt] at hk
+    refine minors_hom_eq_zero_of_rank_lt hf hc ?_
+    have := le_min (rank_le_height F) (rank_le_width F)
+    omega
+
 /-! #### Step 3: only the monomials with `k` distinct rows and `k` distinct columns survive -/
 
 /-- `F_{I,J}`: the entries of `F` outside the rows `I` and the columns `J` set to `0`. -/
@@ -333,6 +414,16 @@ private lemma minors_mono_restr (S : Finset (Fin d × Fin m)) (I : Finset (Fin d
     · obtain ⟨j, hj, hjJ⟩ := Finset.not_subset.1 h
       obtain ⟨s, hs, rfl⟩ := Finset.mem_image.1 hj
       exact Finset.prod_eq_zero hs (by simp [hjJ])
+
+/-- [CDKM]'s grouping: `P_k = ∑_{I,J} S_{I,J}`. -/
+private lemma minors_hom_eq_sum_block (c : Finset (Fin d × Fin m) → ℝ) (k : ℕ)
+    (F : Matrix (Fin d) (Fin m) ℝ) : minorsHom c k F = ∑ I, ∑ J, minorsBlock c k I J F := by
+  rw [← Fintype.sum_prod_type', minorsHom,
+    ← Finset.sum_fiberwise _ (fun S => (S.image Prod.fst, S.image Prod.snd))]
+  refine Finset.sum_congr rfl fun p _ => ?_
+  simp only [minorsBlock, Finset.filter_filter]
+  refine Finset.sum_congr (Finset.filter_congr fun S _ => ?_) fun _ _ => rfl
+  simp only [Prod.ext_iff]
 
 /-- `P_k (F_{I,J}) = ∑_{I' ⊆ I, J' ⊆ J} S_{I',J'} (F)`. -/
 private lemma minors_hom_restr (c : Finset (Fin d × Fin m) → ℝ) (k : ℕ) (I : Finset (Fin d))
@@ -371,10 +462,20 @@ private lemma minors_restr_eq_sum_cols (I : Finset (Fin d)) (J : Finset (Fin m))
     minorsRestr, of_apply]
   by_cases hb : b ∈ J <;> simp [hb]
 
-/-- **Step 3.** `S_{I,J} = 0` when `|I| < k` or `|J| < k`, by induction on `|I| + |J|`:
-`F_{I,J}` is then a sum of fewer than `k` rank-one matrices, so `P_k (F_{I,J}) = 0` (Step 2b, for
-[CDKM]'s `rank F_{I,J} < k` and (6.2)), and the other terms of
-`P_k (F_{I,J}) = ∑_{I' ⊆ I, J' ⊆ J} S_{I',J'} (F)` vanish by induction. -/
+/-- `rank F_{I,J} < k` when `|I| < k` or `|J| < k`. -/
+private lemma minors_rank_restr_lt {I : Finset (Fin d)} {J : Finset (Fin m)} {k : ℕ}
+    (h : I.card < k ∨ J.card < k) (F : Matrix (Fin d) (Fin m) ℝ) :
+    (minorsRestr I J F).rank < k := by
+  rcases h with h | h
+  · rw [minors_restr_eq_sum_rows]
+    exact (minors_rank_sum_vecMulVec_le _ _ _).trans_lt h
+  · rw [minors_restr_eq_sum_cols]
+    exact (minors_rank_sum_vecMulVec_le _ _ _).trans_lt h
+
+/-- **Step 3.** `S_{I,J} = 0` when `|I| < k` or `|J| < k`: then `rank F_{I,J} < k`, so
+`P_k (F_{I,J}) = 0` (Step 2b), and the other terms of
+`P_k (F_{I,J}) = ∑_{I' ⊆ I, J' ⊆ J} S_{I',J'} (F)` vanish by induction. [CDKM] induct separately
+on `|I|` and on `|J|`; here the induction is on `|I| + |J|`. -/
 private lemma minors_block_eq_zero {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : MinorsRA f)
     {c : Finset (Fin d × Fin m) → ℝ} (hc : ∀ F, f F = ∑ S, c S * minorsMono S F) (k : ℕ) :
     ∀ n (I : Finset (Fin d)) (J : Finset (Fin m)), I.card + J.card = n →
@@ -383,10 +484,8 @@ private lemma minors_block_eq_zero {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf 
   induction n using Nat.strong_induction_on with
   | _ n ih =>
   intro I J hn hIJ F
-  have h1 : minorsHom c k (minorsRestr I J F) = 0 := by
-    rcases hIJ with h | h
-    · rw [minors_restr_eq_sum_rows]; exact minors_hom_eq_zero hf hc I _ _ h
-    · rw [minors_restr_eq_sum_cols]; exact minors_hom_eq_zero hf hc J _ _ h
+  have h1 : minorsHom c k (minorsRestr I J F) = 0 :=
+    minors_hom_eq_zero_of_rank_lt hf hc (minors_rank_restr_lt hIJ F)
   rw [minors_hom_restr, ← Finset.sum_product' (f := fun I' J' => minorsBlock c k I' J' F),
     ← Finset.add_sum_erase _ _ (Finset.mk_mem_product (Finset.mem_powerset_self I)
       (Finset.mem_powerset_self J))] at h1
@@ -430,15 +529,7 @@ private lemma minors_block_eq {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : Min
       omega
   rw [h2, add_zero]
 
-/-- `S_{I,J} (F_{I,J}) = S_{I,J} (F)`. -/
-private lemma minors_block_restr (c : Finset (Fin d × Fin m) → ℝ) (k : ℕ) (I : Finset (Fin d))
-    (J : Finset (Fin m)) (F : Matrix (Fin d) (Fin m) ℝ) :
-    minorsBlock c k I J (minorsRestr I J F) = minorsBlock c k I J F := by
-  refine Finset.sum_congr rfl fun S hS => ?_
-  obtain ⟨-, hI, hJ⟩ := (Finset.mem_filter.1 hS).2
-  rw [minors_mono_restr, ite_eq_left ⟨hI.le, hJ.le⟩]
-
-/-! #### Step 4: each surviving block `S_{I,J}` is a multiple of a minor -/
+/-! #### Step 4: regrouping by the permutations, `P_k = ∑_{α,β} P_{α,β}` -/
 
 /-- The set of values of an order embedding. -/
 private def minorsRng {n k : ℕ} (r : Fin k ↪o Fin n) : Finset (Fin n) :=
@@ -463,21 +554,136 @@ private lemma minors_rng_orderEmbOfFin {n k : ℕ} (s : Finset (Fin n)) (h : s.c
       rw [Finset.range_orderEmbOfFin]; exact hx
     exact this
 
+/-- The set of entries `(α_i, β_{σ i})`, `i ≤ k`, of a permutation `σ`. -/
+private def minorsGraph {k : ℕ} (α : Fin k ↪o Fin d) (β : Fin k ↪o Fin m)
+    (σ : Equiv.Perm (Fin k)) : Finset (Fin d × Fin m) :=
+  Finset.univ.image fun i => (α i, β (σ i))
+
+/-- `P_{α,β} (F) = ∑_{σ ∈ S_k} c^σ F_{α₁ β_{σ 1}} ⋯ F_{α_k β_{σ k}}`, where `c^σ` is the
+coefficient of the monomial with the entries `(α_i, β_{σ i})`. -/
+private def minorsPerm (c : Finset (Fin d × Fin m) → ℝ) {k : ℕ} (α : Fin k ↪o Fin d)
+    (β : Fin k ↪o Fin m) (F : Matrix (Fin d) (Fin m) ℝ) : ℝ :=
+  ∑ σ : Equiv.Perm (Fin k), c (minorsGraph α β σ) * ∏ i, F (α i) (β (σ i))
+
+private lemma minors_graph_inj {k : ℕ} (α : Fin k ↪o Fin d) (β : Fin k ↪o Fin m)
+    (σ : Equiv.Perm (Fin k)) : Function.Injective fun i => (α i, β (σ i)) :=
+  fun _ _ h => α.injective (Prod.ext_iff.1 h).1
+
+private lemma minors_card_graph {k : ℕ} (α : Fin k ↪o Fin d) (β : Fin k ↪o Fin m)
+    (σ : Equiv.Perm (Fin k)) : (minorsGraph α β σ).card = k := by
+  rw [minorsGraph, Finset.card_image_of_injective _ (minors_graph_inj α β σ), Finset.card_univ,
+    Fintype.card_fin]
+
+private lemma minors_fst_graph {k : ℕ} (α : Fin k ↪o Fin d) (β : Fin k ↪o Fin m)
+    (σ : Equiv.Perm (Fin k)) : (minorsGraph α β σ).image Prod.fst = minorsRng α := by
+  ext a
+  simp [minorsGraph, minors_mem_rng]
+
+private lemma minors_snd_graph {k : ℕ} (α : Fin k ↪o Fin d) (β : Fin k ↪o Fin m)
+    (σ : Equiv.Perm (Fin k)) : (minorsGraph α β σ).image Prod.snd = minorsRng β := by
+  ext b
+  simp only [minorsGraph, Finset.image_image, Finset.mem_image, Finset.mem_univ, true_and,
+    Function.comp_apply, minors_mem_rng]
+  constructor
+  · rintro ⟨i, rfl⟩
+    exact ⟨σ i, rfl⟩
+  · rintro ⟨j, rfl⟩
+    exact ⟨σ.symm j, by rw [Equiv.apply_symm_apply]⟩
+
+private lemma minors_graph_injective {k : ℕ} (α : Fin k ↪o Fin d) (β : Fin k ↪o Fin m) :
+    Function.Injective (minorsGraph α β) := by
+  intro σ σ' h
+  refine Equiv.ext fun i => ?_
+  have hi : (α i, β (σ i)) ∈ minorsGraph α β σ' :=
+    h ▸ Finset.mem_image_of_mem _ (Finset.mem_univ i)
+  obtain ⟨i', -, hi'⟩ := Finset.mem_image.1 hi
+  obtain rfl : i' = i := α.injective (Prod.ext_iff.1 hi').1
+  exact (β.injective (Prod.ext_iff.1 hi').2).symm
+
+/-- A set of `k` entries with the rows `α` and the columns `β` is the set of entries of a
+permutation. -/
+private lemma minors_exists_graph {k : ℕ} {α : Fin k ↪o Fin d} {β : Fin k ↪o Fin m}
+    {S : Finset (Fin d × Fin m)} (hk : S.card = k) (hI : S.image Prod.fst = minorsRng α)
+    (hJ : S.image Prod.snd = minorsRng β) : ∃ σ : Equiv.Perm (Fin k), minorsGraph α β σ = S := by
+  have hinj : Set.InjOn Prod.snd (S : Set (Fin d × Fin m)) :=
+    Finset.card_image_iff.1 (by rw [hJ, minors_card_rng, hk])
+  have h1 : ∀ i, ∃ s ∈ S, s.1 = α i := fun i =>
+    Finset.mem_image.1 (by rw [hI]; exact (minors_mem_rng α _).2 ⟨i, rfl⟩)
+  choose s hsS hs1 using h1
+  have h2 : ∀ i, ∃ j, β j = (s i).2 := fun i =>
+    (minors_mem_rng β _).1 (by rw [← hJ]; exact Finset.mem_image_of_mem _ (hsS i))
+  choose τ hτ using h2
+  have hτinj : Function.Injective τ := by
+    intro i i' h
+    have : s i = s i' := hinj (hsS i) (hsS i') (by rw [← hτ, ← hτ, h])
+    exact α.injective (by rw [← hs1, ← hs1, this])
+  let σ := Equiv.ofBijective τ (Finite.injective_iff_bijective.1 hτinj)
+  refine ⟨σ, Finset.eq_of_subset_of_card_le ?_ (by rw [hk, minors_card_graph])⟩
+  intro x hx
+  obtain ⟨i, -, rfl⟩ := Finset.mem_image.1 hx
+  have : (α i, β (σ i)) = s i := Prod.ext (hs1 i).symm (hτ i)
+  rw [this]
+  exact hsS i
+
+/-- `S_{I,J} = P_{α,β}` for `I`, `J` the values of `α`, `β`: the monomials with `k` entries, the
+rows `I` and the columns `J` are those of the permutations. -/
+private lemma minors_block_eq_perm (c : Finset (Fin d × Fin m) → ℝ) {k : ℕ}
+    (α : Fin k ↪o Fin d) (β : Fin k ↪o Fin m) (F : Matrix (Fin d) (Fin m) ℝ) :
+    minorsBlock c k (minorsRng α) (minorsRng β) F = minorsPerm c α β F := by
+  symm
+  refine Finset.sum_nbij (minorsGraph α β) (fun σ _ => ?_)
+    (fun σ _ σ' _ h => minors_graph_injective α β h) (fun S hS => ?_) (fun σ _ => ?_)
+  · simp only [Finset.mem_filter, Finset.mem_univ, true_and]
+    exact ⟨minors_card_graph α β σ, minors_fst_graph α β σ, minors_snd_graph α β σ⟩
+  · obtain ⟨hk, hI, hJ⟩ := (Finset.mem_filter.1 (Finset.mem_coe.1 hS)).2
+    obtain ⟨σ, hσ⟩ := minors_exists_graph hk hI hJ
+    exact ⟨σ, Finset.mem_coe.2 (Finset.mem_univ σ), hσ⟩
+  · rw [minorsMono, minorsGraph, Finset.prod_image (minors_graph_inj α β σ).injOn]
+
+/-- **Step 4** ([CDKM]: "regrouping terms which are obtained by permutation within a fixed index
+set"). `P_k = ∑_{α,β} P_{α,β}` over the increasing `α : Fin k ↪o Fin d`, `β : Fin k ↪o Fin m`:
+by Step 3 only the `S_{I,J}` with `|I| = |J| = k` remain, and `S_{I,J} = P_{α,β}` for the
+increasing enumerations `α`, `β` of `I`, `J`. -/
+private lemma minors_hom_eq_sum_perm {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : MinorsRA f)
+    {c : Finset (Fin d × Fin m) → ℝ} (hc : ∀ F, f F = ∑ S, c S * minorsMono S F) (k : ℕ)
+    (F : Matrix (Fin d) (Fin m) ℝ) :
+    minorsHom c k F = ∑ α : Fin k ↪o Fin d, ∑ β : Fin k ↪o Fin m, minorsPerm c α β F := by
+  rw [minors_hom_eq_sum_block, ← Fintype.sum_prod_type', ← Fintype.sum_prod_type']
+  refine (Finset.sum_of_injOn (fun p => (minorsRng p.1, minorsRng p.2)) ?_ ?_ ?_ ?_).symm
+  · rintro ⟨α, β⟩ - ⟨α', β'⟩ - h
+    simp only [Prod.mk.injEq] at h
+    have e1 : α' = (minorsRng α).orderEmbOfFin (minors_card_rng α) :=
+      Finset.orderEmbOfFin_unique' _ fun x => h.1 ▸ (minors_mem_rng α' _).2 ⟨x, rfl⟩
+    have e2 : α = (minorsRng α).orderEmbOfFin (minors_card_rng α) :=
+      Finset.orderEmbOfFin_unique' _ fun x => (minors_mem_rng α _).2 ⟨x, rfl⟩
+    have e3 : β' = (minorsRng β).orderEmbOfFin (minors_card_rng β) :=
+      Finset.orderEmbOfFin_unique' _ fun x => h.2 ▸ (minors_mem_rng β' _).2 ⟨x, rfl⟩
+    have e4 : β = (minorsRng β).orderEmbOfFin (minors_card_rng β) :=
+      Finset.orderEmbOfFin_unique' _ fun x => (minors_mem_rng β _).2 ⟨x, rfl⟩
+    exact Prod.ext (e2.trans e1.symm) (e4.trans e3.symm)
+  · exact fun _ _ => Finset.mem_univ _
+  · rintro ⟨I, J⟩ - hIJ
+    by_contra hne
+    obtain ⟨S, hS, -⟩ := Finset.exists_ne_zero_of_sum_ne_zero hne
+    obtain ⟨hk, hI, hJ⟩ := (Finset.mem_filter.1 hS).2
+    have hI' : I.card ≤ k := by
+      rw [← (show S.image Prod.fst = I from hI), ← hk]; exact Finset.card_image_le
+    have hJ' : J.card ≤ k := by
+      rw [← (show S.image Prod.snd = J from hJ), ← hk]; exact Finset.card_image_le
+    by_cases h : I.card = k ∧ J.card = k
+    · refine hIJ ⟨(I.orderEmbOfFin h.1, J.orderEmbOfFin h.2),
+        Finset.mem_coe.2 (Finset.mem_univ _), ?_⟩
+      dsimp only
+      rw [minors_rng_orderEmbOfFin, minors_rng_orderEmbOfFin]
+    · exact hne (minors_block_eq_zero hf hc k _ I J rfl (by omega) F)
+  · rintro ⟨α, β⟩ -
+    exact (minors_block_eq_perm c α β F).symm
+
+/-! #### Step 5: each `P_{α,β}` is a multiple of a minor -/
+
 /-- The column `x ∈ ℝ^k` placed in the rows `r`: `∑_i x_i e_{r_i}`. -/
 private def minorsEmb {k : ℕ} (r : Fin k ↪o Fin d) (x : Fin k → ℝ) : Fin d → ℝ :=
   fun a => ∑ i, if r i = a then x i else 0
-
-private lemma minors_emb_add {k : ℕ} (r : Fin k ↪o Fin d) (x y : Fin k → ℝ) :
-    minorsEmb r (x + y) = minorsEmb r x + minorsEmb r y := by
-  ext a
-  simp only [minorsEmb, Pi.add_apply, ← Finset.sum_add_distrib]
-  exact Finset.sum_congr rfl fun i _ => by split_ifs <;> simp
-
-private lemma minors_emb_smul {k : ℕ} (r : Fin k ↪o Fin d) (t : ℝ) (x : Fin k → ℝ) :
-    minorsEmb r (t • x) = t • minorsEmb r x := by
-  ext a
-  simp only [minorsEmb, Pi.smul_apply, smul_eq_mul, Finset.mul_sum]
-  exact Finset.sum_congr rfl fun i _ => by split_ifs <;> simp
 
 private lemma minors_emb_apply {k : ℕ} (r : Fin k ↪o Fin d) (x : Fin k → ℝ) (i : Fin k) :
     minorsEmb r x (r i) = x i := by
@@ -500,22 +706,6 @@ private lemma minors_Fv_apply_of_notMem {k : ℕ} (r : Fin k ↪o Fin d) (c : Fi
     minorsFv r c v a b = 0 := by
   simp only [minorsFv, Matrix.sum_apply, vecMulVec_apply, Pi.single_apply]
   exact Finset.sum_eq_zero fun j _ => by rw [ite_eq_right (fun h => hb j h.symm), mul_zero]
-
-/-- Changing the column `v^j` changes the column `c_j` of `F_v`. -/
-private lemma minors_Fv_update {k : ℕ} (r : Fin k ↪o Fin d) (c : Fin k ↪o Fin m)
-    (v : Fin k → Fin k → ℝ) (j : Fin k) (x : Fin k → ℝ) :
-    minorsFv r c (Function.update v j x) = (minorsFv r c v).updateCol (c j) (minorsEmb r x) := by
-  ext a b
-  rw [updateCol_apply]
-  split_ifs with hb
-  · subst hb
-    rw [minors_Fv_apply, Function.update_self]
-  · by_cases hb' : ∃ j', c j' = b
-    · obtain ⟨j', rfl⟩ := hb'
-      have hj : j' ≠ j := fun h => hb (h ▸ rfl)
-      rw [minors_Fv_apply, minors_Fv_apply, Function.update_of_ne hj]
-    · push Not at hb'
-      rw [minors_Fv_apply_of_notMem r c _ a hb', minors_Fv_apply_of_notMem r c _ a hb']
 
 /-- `F_{I,J}`, for `I`, `J` the values of `r`, `c`, is `F_v` with `v` the columns of the block. -/
 private lemma minors_restr_eq_Fv {k : ℕ} (r : Fin k ↪o Fin d) (c : Fin k ↪o Fin m)
@@ -558,78 +748,69 @@ private lemma minors_Fv_eq_sum_erase {k : ℕ} (r : Fin k ↪o Fin d) (c : Fin k
   rw [e, Finset.sum_erase_add _ _ (Finset.mem_univ q)]
   rfl
 
-/-- A monomial with exactly one entry `s₀` in the column `s₀.2` is linear in that column. -/
-private lemma minors_mono_updateCol {S : Finset (Fin d × Fin m)}
-    (hS : Set.InjOn Prod.snd (S : Set (Fin d × Fin m))) {s₀ : Fin d × Fin m} (hs₀ : s₀ ∈ S)
-    (G : Matrix (Fin d) (Fin m) ℝ) (w : Fin d → ℝ) :
-    minorsMono S (G.updateCol s₀.2 w) = w s₀.1 * ∏ s ∈ S.erase s₀, G s.1 s.2 := by
-  unfold minorsMono
-  rw [← Finset.mul_prod_erase S _ hs₀, updateCol_self]
-  congr 1
-  refine Finset.prod_congr rfl fun s hs => ?_
-  obtain ⟨hne, hs⟩ := Finset.mem_erase.1 hs
-  exact updateCol_ne fun h => hne (hS hs hs₀ h)
+/-- [CDKM]'s form `Q (v¹, …, v^k) = ∑_σ c^σ v^{σ 1}_1 ⋯ v^{σ k}_k` on `(ℝ^k)^k` (the form
+`P_{α,β} (F_v)`; [CDKM] print the product as `v^1_{σ 1} ⋯ v^k_{σ k}`, which is the same up to
+`σ ↦ σ⁻¹`), multilinear: a sum of products of one coordinate of each `v^j`. -/
+private noncomputable def minorsQ (c : Finset (Fin d × Fin m) → ℝ) {k : ℕ} (α : Fin k ↪o Fin d)
+    (β : Fin k ↪o Fin m) : MultilinearMap ℝ (fun _ : Fin k => Fin k → ℝ) ℝ :=
+  ∑ σ : Equiv.Perm (Fin k), c (minorsGraph α β σ) •
+    (MultilinearMap.mkPiAlgebra ℝ (Fin k) ℝ).compLinearMap fun j => LinearMap.proj (σ.symm j)
 
-/-- The form `Q (v¹, …, v^k) = S_{I,J} (F_v)` (`I`, `J` the values of `r`, `cc`), multilinear in
-the columns `v^j`: a monomial of `S_{I,J}` has `k` entries in the `k` columns `J`, so exactly one
-in each column, and is linear in it ([CDKM] see this from the permutation form of `S_{I,J}`). -/
-private noncomputable def minorsQ (c : Finset (Fin d × Fin m) → ℝ) {k : ℕ} (r : Fin k ↪o Fin d)
-    (cc : Fin k ↪o Fin m) : MultilinearMap ℝ (fun _ : Fin k => Fin k → ℝ) ℝ where
-  toFun v := minorsBlock c k (minorsRng r) (minorsRng cc) (minorsFv r cc v)
-  map_update_add' := by
-    intro inst v j x y
-    obtain rfl : inst = instDecidableEqFin k := Subsingleton.elim _ _
-    simp only [minorsBlock, minors_Fv_update, minors_emb_add, ← Finset.sum_add_distrib, ← mul_add]
-    refine Finset.sum_congr rfl fun S hS => ?_
-    obtain ⟨hk, -, hJ⟩ := (Finset.mem_filter.1 hS).2
-    have hinj : Set.InjOn Prod.snd (S : Set (Fin d × Fin m)) :=
-      Finset.card_image_iff.1 (by rw [hJ, minors_card_rng, hk])
-    obtain ⟨s₀, hs₀, hcj⟩ := Finset.mem_image.1 (hJ ▸ (minors_mem_rng cc (cc j)).2 ⟨j, rfl⟩)
-    rw [← hcj, minors_mono_updateCol hinj hs₀, minors_mono_updateCol hinj hs₀,
-      minors_mono_updateCol hinj hs₀, Pi.add_apply]
-    ring
-  map_update_smul' := by
-    intro inst v j t x
-    obtain rfl : inst = instDecidableEqFin k := Subsingleton.elim _ _
-    simp only [minorsBlock, minors_Fv_update, minors_emb_smul, smul_eq_mul, Finset.mul_sum]
-    refine Finset.sum_congr rfl fun S hS => ?_
-    obtain ⟨hk, -, hJ⟩ := (Finset.mem_filter.1 hS).2
-    have hinj : Set.InjOn Prod.snd (S : Set (Fin d × Fin m)) :=
-      Finset.card_image_iff.1 (by rw [hJ, minors_card_rng, hk])
-    obtain ⟨s₀, hs₀, hcj⟩ := Finset.mem_image.1 (hJ ▸ (minors_mem_rng cc (cc j)).2 ⟨j, rfl⟩)
-    rw [← hcj, minors_mono_updateCol hinj hs₀, minors_mono_updateCol hinj hs₀, Pi.smul_apply,
-      smul_eq_mul]
-    ring
+private lemma minors_Q_apply (c : Finset (Fin d × Fin m) → ℝ) {k : ℕ} (α : Fin k ↪o Fin d)
+    (β : Fin k ↪o Fin m) (v : Fin k → Fin k → ℝ) :
+    minorsQ c α β v = ∑ σ : Equiv.Perm (Fin k), c (minorsGraph α β σ) * ∏ i, v (σ i) i := by
+  simp only [minorsQ, FunLike.coe_sum, Finset.sum_apply, _root_.smul_apply, smul_eq_mul,
+    MultilinearMap.compLinearMap_apply, MultilinearMap.mkPiAlgebra_apply, LinearMap.proj_apply]
+  refine Finset.sum_congr rfl fun σ _ => ?_
+  rw [← Equiv.prod_comp σ (fun j => v j (σ.symm j))]
+  simp only [Equiv.symm_apply_apply]
 
-/-- **Step 4.** For `I`, `J` the values of `r`, `cc` (so `|I| = |J| = k`), `S_{I,J}` is a
-multiple of the minor with the rows `r` and the columns `cc`. The form `Q` is multilinear, and it
-is alternating: `Q (v) = P_k (F_v)` (Step 3), and if `v^p = v^q` with `p ≠ q`, then `F_v` is a sum
-of `k − 1` rank-one matrices, so `P_k (F_v) = 0` (Step 2b, for [CDKM]'s
-`dim span {v^j} < k` and (6.2)). So `Q = Q (e) det`, and
-`S_{I,J} (F) = S_{I,J} (F_{I,J}) = Q (columns of the block of F) = Q (e) minor F r cc`. -/
-private lemma minors_block_eq_minor {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : MinorsRA f)
+/-- `Q (v) = P_{α,β} (F_v)`. -/
+private lemma minors_perm_Fv (c : Finset (Fin d × Fin m) → ℝ) {k : ℕ} (α : Fin k ↪o Fin d)
+    (β : Fin k ↪o Fin m) (v : Fin k → Fin k → ℝ) :
+    minorsPerm c α β (minorsFv α β v) = minorsQ c α β v := by
+  simp only [minorsPerm, minors_Q_apply, minors_Fv_apply, minors_emb_apply]
+
+/-- [CDKM]: `Q (v) = P_{α,β} (F_v) = P_k (F_v)` (Steps 3 and 4), so `Q (v) = 0` when
+`rank F_v < k` (Step 2b). -/
+private lemma minors_Q_eq_zero_of_rank_lt {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : MinorsRA f)
     {c : Finset (Fin d × Fin m) → ℝ} (hc : ∀ F, f F = ∑ S, c S * minorsMono S F) {k : ℕ}
-    (r : Fin k ↪o Fin d) (cc : Fin k ↪o Fin m) :
-    ∃ a : ℝ, ∀ F, minorsBlock c k (minorsRng r) (minorsRng cc) F = a * minor F r cc := by
+    (α : Fin k ↪o Fin d) (β : Fin k ↪o Fin m) {v : Fin k → Fin k → ℝ}
+    (hv : (minorsFv α β v).rank < k) : minorsQ c α β v = 0 := by
+  rw [← minors_perm_Fv, ← minors_block_eq_perm,
+    minors_block_eq hf hc (minors_card_rng α) (minors_card_rng β), minors_restr_Fv]
+  exact minors_hom_eq_zero_of_rank_lt hf hc hv
+
+/-- **Step 5.** `P_{α,β} (F) = ĉ_{α,β} · minor F α β`. `Q` vanishes when two columns `v^p = v^q`
+coincide, since `F_v` is then a sum of `k − 1` rank-one matrices, so `rank F_v < k`; so `Q` is
+alternating, hence `Q = Q (e) det` (Mathlib's `AlternatingMap.eq_smul_basis_det`; [CDKM] first
+deduce by polarization that `Q` is antisymmetric, and use that antisymmetric multilinear forms are
+multiples of the determinant). And `P_{α,β} (F) = Q (v)` for the columns `v^j` of the block of `F`
+with the rows `α` and the columns `β`. -/
+private lemma minors_perm_eq_minor {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : MinorsRA f)
+    {c : Finset (Fin d × Fin m) → ℝ} (hc : ∀ F, f F = ∑ S, c S * minorsMono S F) {k : ℕ}
+    (α : Fin k ↪o Fin d) (β : Fin k ↪o Fin m) :
+    ∃ a : ℝ, ∀ F, minorsPerm c α β F = a * minor F α β := by
   let Q : (Fin k → ℝ) [⋀^Fin k]→ₗ[ℝ] ℝ :=
-    { minorsQ c r cc with
-      map_eq_zero_of_eq' := fun v p q hpq hne => by
-        change minorsBlock c k (minorsRng r) (minorsRng cc) (minorsFv r cc v) = 0
-        rw [minors_block_eq hf hc (minors_card_rng r) (minors_card_rng cc), minors_restr_Fv,
-          minors_Fv_eq_sum_erase r cc v hpq hne]
+    { toMultilinearMap := minorsQ c α β
+      map_eq_zero_of_eq' := fun v p q hpq hne => minors_Q_eq_zero_of_rank_lt hf hc α β (by
+        rw [minors_Fv_eq_sum_erase α β v hpq hne]
         have := Fin.pos p
-        exact minors_hom_eq_zero hf hc _ _ _ (by
-          rw [Finset.card_erase_of_mem (Finset.mem_univ _), Finset.card_univ, Fintype.card_fin]
-          omega) }
+        refine (minors_rank_sum_vecMulVec_le _ _ _).trans_lt ?_
+        rw [Finset.card_erase_of_mem (Finset.mem_univ _), Finset.card_univ, Fintype.card_fin]
+        omega) }
   refine ⟨Q (Pi.basisFun ℝ (Fin k)), fun F => ?_⟩
-  have h := congrArg (fun φ : (Fin k → ℝ) [⋀^Fin k]→ₗ[ℝ] ℝ => φ (fun j i => F (r i) (cc j)))
+  have h := congrArg (fun φ : (Fin k → ℝ) [⋀^Fin k]→ₗ[ℝ] ℝ => φ (fun j i => F (α i) (β j)))
     (Q.eq_smul_basis_det (Pi.basisFun ℝ (Fin k)))
   simp only [_root_.smul_apply, smul_eq_mul, Module.Basis.det_apply] at h
-  have hM : (Pi.basisFun ℝ (Fin k)).toMatrix (fun j i => F (r i) (cc j)) = F.submatrix r cc := by
+  have hM : (Pi.basisFun ℝ (Fin k)).toMatrix (fun j i => F (α i) (β j)) = F.submatrix α β := by
     ext i j
     simp [Module.Basis.toMatrix_apply]
   rw [hM] at h
-  rw [← minors_block_restr, minors_restr_eq_Fv, minor]
+  have hP : minorsPerm c α β F = minorsQ c α β (fun j i => F (α i) (β j)) := by
+    rw [minors_Q_apply]
+    rfl
+  rw [hP, minor]
   exact h
 
 end RankOneAffine
@@ -640,10 +821,8 @@ end RankOneAffine
 `f (A) = ∑_{k ≤ min d m} ∑_{r, c} a k r c · minor A r c` for every `A` (the `0 × 0` minor is the
 constant `1`). Continuity is not needed. The proof is that of Conti–Dolzmann–Kirchheim–Müller
 2006, Theorem 6.1, with Steps 2a and 2b in place of its use of continuity (module docstring):
-`f = ∑_S c_S F^S = ∑_k P_k` (Step 2a), `P_k = ∑_{I,J} S_{I,J}` by grouping the monomials by their
-rows and columns, `S_{I,J} = 0` unless `|I| = |J| = k` (Step 3), and then `S_{I,J}` is a multiple
-of the minor with the rows `I` and the columns `J` (Step 4); there is no `k × k` minor for
-`k > min d m`. -/
+`f = ∑_{k ≤ min d m} P_k` (Steps 2a, 2b), `P_k = ∑_{r, c} P_{r,c}` (Steps 3, 4), and
+`P_{r,c} (A) = ĉ_{r,c} minor A r c` (Step 5). -/
 theorem RankOneAffine.exists_eq_sum_minor {f : Matrix (Fin d) (Fin m) ℝ → ℝ}
     (hf : RankOneAffine f) :
     ∃ a : (k : ℕ) → (Fin k ↪o Fin d) → (Fin k ↪o Fin m) → ℝ,
@@ -651,72 +830,11 @@ theorem RankOneAffine.exists_eq_sum_minor {f : Matrix (Fin d) (Fin m) ℝ → �
   have hRA := minors_RA_of_rankOneAffine hf
   obtain ⟨γ, hγ⟩ := minors_exists_mono hRA
   choose a ha using fun k (r : Fin k ↪o Fin d) (c : Fin k ↪o Fin m) =>
-    minors_block_eq_minor hRA hγ r c
+    minors_perm_eq_minor hRA hγ r c
   refine ⟨a, fun A => ?_⟩
-  -- `f = ∑_k P_k`
-  have step1 : ∑ S, γ S * minorsMono S A =
-      ∑ k ∈ Finset.range (d * m + 1), minorsHom γ k A := by
-    refine (Finset.sum_fiberwise_of_maps_to (g := Finset.card) (fun S _ => ?_) _).symm
-    have := Finset.card_le_univ S
-    simp only [Fintype.card_prod, Fintype.card_fin] at this
-    exact Finset.mem_range.2 (Nat.lt_succ_of_le this)
-  -- `P_k = ∑_{I,J} S_{I,J}`
-  have step2 : ∀ k, minorsHom γ k A = ∑ I, ∑ J, minorsBlock γ k I J A := by
-    intro k
-    rw [← Fintype.sum_prod_type', minorsHom,
-      ← Finset.sum_fiberwise _ (fun S => (S.image Prod.fst, S.image Prod.snd))]
-    refine Finset.sum_congr rfl fun p _ => ?_
-    simp only [minorsBlock, Finset.filter_filter]
-    refine Finset.sum_congr (Finset.filter_congr fun S _ => ?_) fun _ _ => rfl
-    simp only [Prod.ext_iff]
-  -- `∑_{I,J} S_{I,J} = ∑_{r,c} ĉ minor`: only `|I| = |J| = k` contributes (Step 3)
-  have step3 : ∀ k, ∑ I, ∑ J, minorsBlock γ k I J A = ∑ r, ∑ c, a k r c * minor A r c := by
-    intro k
-    rw [← Fintype.sum_prod_type', ← Fintype.sum_prod_type']
-    refine (Finset.sum_of_injOn (fun p => (minorsRng p.1, minorsRng p.2)) ?_ ?_ ?_ ?_).symm
-    · rintro ⟨r, c⟩ - ⟨r', c'⟩ - h
-      simp only [Prod.mk.injEq] at h
-      have e1 : r' = (minorsRng r).orderEmbOfFin (minors_card_rng r) :=
-        Finset.orderEmbOfFin_unique' _ fun x => h.1 ▸ (minors_mem_rng r' _).2 ⟨x, rfl⟩
-      have e2 : r = (minorsRng r).orderEmbOfFin (minors_card_rng r) :=
-        Finset.orderEmbOfFin_unique' _ fun x => (minors_mem_rng r _).2 ⟨x, rfl⟩
-      have e3 : c' = (minorsRng c).orderEmbOfFin (minors_card_rng c) :=
-        Finset.orderEmbOfFin_unique' _ fun x => h.2 ▸ (minors_mem_rng c' _).2 ⟨x, rfl⟩
-      have e4 : c = (minorsRng c).orderEmbOfFin (minors_card_rng c) :=
-        Finset.orderEmbOfFin_unique' _ fun x => (minors_mem_rng c _).2 ⟨x, rfl⟩
-      exact Prod.ext (e2.trans e1.symm) (e4.trans e3.symm)
-    · exact fun _ _ => Finset.mem_univ _
-    · rintro ⟨I, J⟩ - hIJ
-      by_contra hne
-      obtain ⟨S, hS, -⟩ := Finset.exists_ne_zero_of_sum_ne_zero hne
-      obtain ⟨hk, hI, hJ⟩ := (Finset.mem_filter.1 hS).2
-      have hI' : I.card ≤ k := by
-        rw [← (show S.image Prod.fst = I from hI), ← hk]; exact Finset.card_image_le
-      have hJ' : J.card ≤ k := by
-        rw [← (show S.image Prod.snd = J from hJ), ← hk]; exact Finset.card_image_le
-      by_cases h : I.card = k ∧ J.card = k
-      · refine hIJ ⟨(I.orderEmbOfFin h.1, J.orderEmbOfFin h.2),
-          Finset.mem_coe.2 (Finset.mem_univ _), ?_⟩
-        dsimp only
-        rw [minors_rng_orderEmbOfFin, minors_rng_orderEmbOfFin]
-      · exact hne (minors_block_eq_zero hRA hγ k _ I J rfl (by omega) A)
-    · rintro ⟨r, c⟩ -
-      exact (ha k r c A).symm
-  -- the degree bound: no `k × k` minor for `k > min d m`
-  have step4 : ∑ k ∈ Finset.range (d * m + 1), ∑ r, ∑ c, a k r c * minor A r c =
-      ∑ k ∈ Finset.range (min d m + 1), ∑ r, ∑ c, a k r c * minor A r c := by
-    refine (Finset.sum_subset (Finset.range_subset_range.2 (Nat.succ_le_succ ?_))
-      fun k _ hk => ?_).symm
-    · rcases Nat.eq_zero_or_pos m with h | h
-      · simp [h]
-      · exact (min_le_left d m).trans (Nat.le_mul_of_pos_right d h)
-    · rw [Finset.mem_range, not_lt] at hk
-      refine Finset.sum_eq_zero fun r _ => Finset.sum_eq_zero fun c _ => ?_
-      have h1 := Fintype.card_le_of_embedding r.toEmbedding
-      have h2 := Fintype.card_le_of_embedding c.toEmbedding
-      simp only [Fintype.card_fin] at h1 h2
-      omega
-  rw [hγ A, step1, ← step4]
-  exact Finset.sum_congr rfl fun k _ => by rw [step2, step3]
+  rw [minors_eq_sum_hom hRA hγ A]
+  refine Finset.sum_congr rfl fun k _ => ?_
+  rw [minors_hom_eq_sum_perm hRA hγ k A]
+  exact Finset.sum_congr rfl fun r _ => Finset.sum_congr rfl fun c _ => ha k r c A
 
 end CalculusOfVariations

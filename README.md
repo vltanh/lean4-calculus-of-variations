@@ -92,13 +92,13 @@ theorem CalculusOfVariations.qcEnvelope_eq_iInf {f : Matrix (Fin d) (Fin m) ℝ 
   mollification.
 - **Rank-one affine functions** follow the proof of [CDKM, Thm 6.1]: the proof of [Da08,
   Thm 5.20] was not accessible. The homogeneous part `P_k` of degree `k` vanishes on matrices of
-  rank `< k`; so the terms of `P_k` whose rows `I` or columns `J` number fewer than `k` cancel
-  (induction on `|I| + |J|`), and for `|I| = |J| = k` they form an alternating multilinear form in
-  the columns, a multiple of the minor. [CDKM] reach `P_k` and its vanishing through the
-  continuity of the function (distributional derivatives, a polynomial of degree `≤ min (d, m)`);
-  without continuity, here: the function is affine in each entry, hence a sum of products of
-  distinct entries, and `t ↦ f (t F)` has degree `< k` when `F` is a sum of fewer than `k` rank-one
-  matrices (module docstring of `Minors/RankOneAffine.lean`).
+  rank `< k`, so `P_k = 0` for `k > min (d, m)`; the terms of `P_k` whose rows `I` or columns `J`
+  number fewer than `k` cancel (induction on `|I| + |J|`); and for `|I| = |J| = k` they are a sum
+  over the permutations, which is an alternating multilinear form in the columns, a multiple of the
+  minor. [CDKM] obtain `P_k` and its vanishing from the continuity of the function (distributional
+  derivatives); without continuity, here: the function is affine in each entry, hence a sum of
+  products of distinct entries, and `t ↦ f (t F)` has degree `< k` when `F` is a sum of fewer than
+  `k` rank-one matrices (module docstring of `Minors/RankOneAffine.lean`).
 - **Quasiconvex ⇒ rank-one convex** follows [M, Lemma 4.3]: quasiconvexity on the unit cube,
   tested with the laminates `v_k = min (k⁻¹ h (k x_j), dist_∞ (x, ∂Q)) a`, gives the two-point
   inequality along `a ⊗ e_j`, since `∇v_k` differs from the gradient of the sawtooth laminate only
