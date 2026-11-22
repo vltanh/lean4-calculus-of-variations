@@ -15,10 +15,6 @@ scope = "leanprover-community"
 rev = "v4.36.0-rc2"
 
 # Developed alongside it; to be pinned by `git` and `rev` once it is published.
-[[require]]
-name = "HarmonicAnalysis"
-path = "../lean4-harmonic-analysis"
-
 [[lean_lib]]
 name = "CalculusOfVariations"
 globs = ["CalculusOfVariations.*"]

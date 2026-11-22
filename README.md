@@ -1,6 +1,6 @@
 # Calculus of variations in Lean: quasiconvexity, rank-one convexity, the quasiconvex envelope
 
-<!-- PLACEHOLDER: CI badge, once the repository has a public URL. -->
+[![Lean Action CI](https://github.com/vltanh/lean4-calculus-of-variations/actions/workflows/lean_action_ci.yml/badge.svg)](https://github.com/vltanh/lean4-calculus-of-variations/actions/workflows/lean_action_ci.yml)
 
 Lean 4 with Mathlib `v4.36.0-rc2`, for integrands `f : ℝ^{d×m} → ℝ` and Lipschitz maps
 `φ : ℝ^m → ℝ^d` (sup norms):
@@ -144,8 +144,6 @@ theorem CalculusOfVariations.qcEnvelope_eq_iInf {f : Matrix (Fin d) (Fin m) ℝ 
 
 ## Planned extensions
 
-<!-- PLACEHOLDER: the final list. -->
-
 - Minors of every order are null Lagrangians and quasiaffine.
 - Mathlib-style names for the helper lemmas (prefixes `rd_`, `cv_`, `env_`, `glue_`, `lam_`,
   `distrib_`, `nl_`, and `plancherel` for the mollification lemmas), and one family of lemmas on
@@ -155,20 +153,16 @@ theorem CalculusOfVariations.qcEnvelope_eq_iInf {f : Matrix (Fin d) (Fin m) ℝ 
 
 ## Using it from another Lake project
 
-<!-- PLACEHOLDER: the repository URL and a published commit. -->
-
 ```toml
 [[require]]
 name = "CalculusOfVariations"
-git = "<repository URL>"
+git = "https://github.com/vltanh/lean4-calculus-of-variations"
 rev = "<commit>"
 ```
 
 Then import the modules you need, for instance
 `public import CalculusOfVariations.Quasiconvex.Domain`, or `import CalculusOfVariations` for
-everything. The package requires Lean and Mathlib `v4.36.0-rc2`, and the package
-`HarmonicAnalysis` (`lean4-harmonic-analysis`), at a path while both are developed
-<!-- PLACEHOLDER: its published commit -->; no module imports `HarmonicAnalysis` yet.
+everything. The package requires Lean and Mathlib `v4.36.0-rc2`.
 
 ## Building
 
