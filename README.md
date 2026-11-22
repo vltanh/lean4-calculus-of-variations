@@ -144,7 +144,7 @@ theorem CalculusOfVariations.qcEnvelope_eq_iInf {f : Matrix (Fin d) (Fin m) ℝ 
 - **Smoothing** follows the first step of [K, proof of Prop. 2], with cut-offs that are functions
   of `|X|²` (module docstring of `Smoothing/RankOneConvex.lean`).
 
-## Simpler proofs
+## Shorter proofs
 
 Arguments shorter or simpler than those of the sources, which the library follows ("checked in Lean":
 the argument compiles, but it is not part of the library):
@@ -168,6 +168,50 @@ the argument compiles, but it is not part of the library):
 - Dacorogna's formula: (ii) of [KP, Prop. 8.1] is needed only along the `e_i ⊗ e_j`
   (`cubeInf_le_two_point`), with `Matrix.locallyLipschitz_of_convexOn_single` for the continuity; no
   rotated cubes. Checked in Lean.
+
+## Literature
+
+**The theorems.** Morrey [Mo] introduced quasiconvexity, proved that it is equivalent to the lower
+semicontinuity of `∫ f (∇u)` under uniform convergence with bounded Lipschitz constants, and that
+it implies rank-one convexity. The converse fails for `d ≥ 3`, `m ≥ 2` [Š] and is open for `2 × 2`
+matrices ([R], Chapter 8). Laminate proofs of the implication: [Fo], [M], [R]; the independence of
+the domain by Vitali coverings: [BM]. Rank-one convex functions are locally Lipschitz by
+[Mo, Thm 4.3] (continuous `f`) and [KK, Lemma 2.3] (any `f`). Rank-one convex quadratic forms:
+[VH], [Mo, Thm 5.2]; they are polyconvex when `d = 2` or `m = 2`, not in general ([T],
+[Da08, Thm 5.25]). Null Lagrangians are the affine combinations of minors: [La], [Er], [Ed],
+[Ba77], and [BCO] for higher derivatives; a short proof is in [CDKM]. The formula for the
+quasiconvex envelope is due to Dacorogna [Da82], for cubes and growth conditions, and was extended
+in [Fo], [Hü], [KP], [Da08]. Kristensen [K] deduced from [Š] that quasiconvexity is not a local
+condition for `d ≥ 3`, `m ≥ 2`. On `ℝ`, convexity through the second distributional derivative is
+due to Schwartz, and on `ℝ^n` to Reshetnyak and Dudley [Du].
+
+**Formalizations** (searched on 22 November 2026: Mathlib, GitHub, the Palomar registry, arXiv,
+the Lean Zulip archive, the Archive of Formal Proofs, MathComp-Analysis).
+
+- Mathlib has the tools (convex functions, Rademacher's theorem, coverings, mollification,
+  Plancherel's formula, alternating forms, distributions), not these notions: its `QuasiconvexOn`
+  means convex sublevel sets.
+- Lean developments with Morrey's quasiconvexity include
+  [so3-r1c-and-not-qc](https://github.com/sergioconti/so3-r1c-and-not-qc) (Conti, Dolzmann,
+  Dondl: a frame-indifferent counterexample on `ℝ^{3×3}`; the inequality for smooth periodic maps
+  and continuous quasiconvex `f`),
+  [hierarchical_laminates_lean](https://github.com/lcao11/hierarchical_laminates_lean) (Cao: two
+  envelopes that differ, for `d = 32`, `m = 2`; in that size, periodic quasiconvex functions below
+  a continuous one are rank-one convex; functions convex in each coordinate and locally bounded
+  are locally Lipschitz) and [atlas-lean](https://github.com/facebookresearch/atlas-lean)
+  (definitions for `2 × 2` matrices).
+- [PDEAtlas](https://github.com/Robertboy18/PDEAtlas), after Evans, has null Lagrangians, the weak
+  continuity of minors of every order, and minimizers of polyconvex energies;
+  [Tau Ceti](https://github.com/TauCetiProject/TauCeti) has Sobolev spaces on domains and the
+  direct method.
+- HOL Light has the Euler–Lagrange equations (Guan et al., J. Automat. Reason. 65 (2021)); nothing
+  on Morrey's quasiconvexity was found in Isabelle or Rocq.
+
+Beyond these, no earlier formalization was found of the independence of the domain, the
+equivalence with periodic test maps, quasiconvex ⇒ rank-one convex in every size, rank-one convex
+⇒ locally Lipschitz, Dacorogna's formula, the theorems on rank-one affine functions and on
+quadratic forms, Kristensen's smoothing, or convexity through Mathlib's distributions. The lower
+semicontinuity and relaxation theorems, Young measures and `W^{1,p}` are not treated here.
 
 ## Planned extensions
 
@@ -222,10 +266,9 @@ lake env lean scripts/Audit.lean   # axioms; fails on any `sorry`
   school, Cetraro, 1996): Definition 4.2 and Remark 3; Lemma 4.3; the density argument of Theorem 4.4
   (i).
 - [R] F. Rindler, *Calculus of Variations*, 2nd ed., Graduate Texts in Mathematics 310, Springer,
-  2026: Lemma 5.2 (i), Proposition 5.6, Lemma 5.9 (cited in the literature as Lemma 5.6 of the first
-  edition, 2018), Appendix A.1.
+  2026: Lemma 5.2 (i), Proposition 5.6, Lemma 5.9, Appendix A.1; Chapter 8.
 - [Mo] C. B. Morrey, *Quasi-convexity and the lower semicontinuity of multiple integrals*, Pacific
-  J. Math. 2 (1952), 25–53: Lemma 5.1.
+  J. Math. 2 (1952), 25–53: Lemma 5.1; Theorems 2.1, 2.2, 4.1–4.3, 5.2.
 - [Da82] B. Dacorogna, *Quasiconvexity and relaxation of nonconvex problems in the calculus of
   variations*, J. Funct. Anal. 46 (1982), 102–118.
 - [KP] D. Kinderlehrer, P. Pedregal, *Characterizations of Young measures generated by gradients*,
@@ -240,6 +283,38 @@ lake env lean scripts/Audit.lean   # axioms; fails on any `sorry`
   580–582.
 - [Ku] H. W. Kuhn, *Some combinatorial lemmas in topology*, IBM J. Res. Develop. 4 (1960),
   518–524.
+
+Cited in the section on the literature only:
+
+- [Š] V. Šverák, *Rank-one convexity does not imply quasiconvexity*, Proc. Roy. Soc. Edinburgh Sect.
+  A 120 (1992), 185–189.
+- [Fo] I. Fonseca, *The lower quasiconvex envelope of the stored energy function for an elastic
+  crystal*, J. Math. Pures Appl. (9) 67 (1988), 175–195.
+- [BM] J. M. Ball, F. Murat, *`W^{1,p}`-quasiconvexity and variational problems for multiple
+  integrals*, J. Funct. Anal. 58 (1984), 225–253.
+- [KK] B. Kirchheim, J. Kristensen, *On rank-one convex functions that are homogeneous of degree
+  one*, Arch. Ration. Mech. Anal. 221 (2016), 527–558.
+- [VH] L. Van Hove, *Sur l'extension de la condition de Legendre du calcul des variations aux
+  intégrales multiples à plusieurs fonctions inconnues*, Proc. Akad. Wet. Amsterdam 50 (1947),
+  18–23.
+- [T] F. J. Terpstra, *Die Darstellung biquadratischer Formen als Summen von Quadraten mit Anwendung
+  auf die Variationsrechnung*, Math. Ann. 116 (1938), 166–180.
+- [La] A. W. Landers, *Invariant multiple integrals in the calculus of variations*, Contributions to
+  the Calculus of Variations 1938–1941, Univ. of Chicago Press, 1942, 175–207.
+- [Er] J. L. Ericksen, *Nilpotent energies in liquid crystal theory*, Arch. Ration. Mech. Anal. 10
+  (1962), 189–196.
+- [Ed] D. G. B. Edelen, *The null set of the Euler–Lagrange operator*, Arch. Ration. Mech. Anal. 11
+  (1962), 117–121.
+- [Ba77] J. M. Ball, *Convexity conditions and existence theorems in nonlinear elasticity*, Arch.
+  Ration. Mech. Anal. 63 (1977), 337–403.
+- [BCO] J. M. Ball, J. C. Currie, P. J. Olver, *Null Lagrangians, weak continuity, and variational
+  problems of arbitrary order*, J. Funct. Anal. 41 (1981), 135–174.
+- [CDKM] S. Conti, G. Dolzmann, B. Kirchheim, S. Müller, *Sufficient conditions for the validity of
+  the Cauchy–Born rule close to SO(n)*, J. Eur. Math. Soc. 8 (2006), 515–530: Theorem 6.1.
+- [Hü] F. V. Gusejnov (Hüsseinov), *Continuity of quasiconvex functions and a theorem on
+  quasiconvexity* (Russian), Izv. Akad. Nauk Az. SSR, Ser. Fiz.-Tekh. Mat. Nauk 1988, no. 1, 20–25.
+- [Du] R. M. Dudley, *On second derivatives of convex functions*, Math. Scand. 41 (1977), 159–174;
+  *Acknowledgment of priority*, Math. Scand. 46 (1980), 61.
 
 ## Credits
 
