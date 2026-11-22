@@ -48,20 +48,20 @@ theorem rankOneConvex_abs_sub_le_of_osc {f : Matrix (Fin d) (Fin m) ℝ → ℝ}
 
 theorem rankOneConvex_of_quasiconvex {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hm : Measurable f)
     (hb : IsLocallyBounded f) (hf : Quasiconvex f) : RankOneConvex f :=
-  rankOneConvex_of_quasiconvex_of_measurable hm hb hf
+  CalculusOfVariations.rankOneConvex_of_quasiconvex hm hb hf
 
-theorem quasiconvexAtOn_iff {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hm : Measurable f)
+theorem quasiconvexAtOn_iff_of_isBounded {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hm : Measurable f)
     (hb : IsLocallyBounded f) (A : Matrix (Fin d) (Fin m) ℝ) {Ω Ω' : Set (Fin m → ℝ)}
     (hΩ : IsOpen Ω) (hΩb : Bornology.IsBounded Ω) (hΩne : Ω.Nonempty)
     (hΩ' : IsOpen Ω') (hΩ'b : Bornology.IsBounded Ω') (hΩ'ne : Ω'.Nonempty) :
     QuasiconvexAtOn Ω f A ↔ QuasiconvexAtOn Ω' f A :=
-  (quasiconvexAtOn_iff_of_measurable hm hb A hΩ hΩb hΩne).symm.trans
-    (quasiconvexAtOn_iff_of_measurable hm hb A hΩ' hΩ'b hΩ'ne)
+  (CalculusOfVariations.quasiconvexAtOn_iff hm hb A hΩ hΩb hΩne).symm.trans
+    (CalculusOfVariations.quasiconvexAtOn_iff hm hb A hΩ' hΩ'b hΩ'ne)
 
 theorem quasiconvexAtOn_unitCube_iff_periodic {f : Matrix (Fin d) (Fin m) ℝ → ℝ}
     (hm : Measurable f) (hb : IsLocallyBounded f) (A : Matrix (Fin d) (Fin m) ℝ) :
     QuasiconvexAtOn (unitCube m) f A ↔ QuasiconvexAtPeriodic f A :=
-  quasiconvexAtOn_iff_periodic_of_measurable hm hb A
+  quasiconvexAtOn_iff_periodic hm hb A
 
 theorem quadraticForm_quasiconvex_iff (Q : LinearMap.BilinForm ℝ (Matrix (Fin d) (Fin m) ℝ)) :
     (Quasiconvex fun A => Q A A) ↔ RankOneConvex fun A => Q A A :=

@@ -3,7 +3,7 @@
   "solution_module": "QuasiconvexEnvelope.Solution",
   "theorem_names": [
     "QuasiconvexEnvelopeChallenge.quasiconvexEnvelope_eq_domainInf",
-    "QuasiconvexEnvelopeChallenge.domainInf_eq",
+    "QuasiconvexEnvelopeChallenge.domainInf_eq_of_isBounded",
     "QuasiconvexEnvelopeChallenge.domainInf_le_of_rank_le_one",
     "QuasiconvexEnvelopeChallenge.exists_domainInf_eq_coe"
   ],

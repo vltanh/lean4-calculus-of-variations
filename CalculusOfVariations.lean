@@ -28,7 +28,6 @@ public import CalculusOfVariations.Minors.Characterization
 public import CalculusOfVariations.Minors.NullLagrangian
 public import CalculusOfVariations.Minors.Quasiaffine
 public import CalculusOfVariations.Minors.RankOneAffine
-public import CalculusOfVariations.Minors.RankOneAffineContinuous
 public import CalculusOfVariations.QuadraticForm.Plancherel
 public import CalculusOfVariations.QuadraticForm.Quasiconvex
 public import CalculusOfVariations.Quasiconvex.Cutoff

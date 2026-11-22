@@ -32,8 +32,8 @@ test map `φ` on the domain `Ω`; it is rank-one convex if it is convex along th
 1. `rankOneConvex_locallyLipschitz`, `rankOneConvex_abs_sub_le_of_osc`: a rank-one convex function
    is locally Lipschitz, with a bound by its oscillation.
 2. `rankOneConvex_of_quasiconvex`: a quasiconvex function is rank-one convex.
-3. `quasiconvexAtOn_iff`: quasiconvexity does not depend on the domain, among the nonempty bounded
-   open sets.
+3. `quasiconvexAtOn_iff_of_isBounded`: quasiconvexity does not depend on the domain, among the
+   nonempty bounded open sets.
 4. `quasiconvexAtOn_unitCube_iff_periodic`: it may be tested with periodic maps.
 5. `quadraticForm_quasiconvex_iff`: a quadratic form is quasiconvex if and only if it is rank-one
    convex.
@@ -52,10 +52,10 @@ the lower semicontinuity of multiple integrals*, Pacific J. Math. 2 (1952), 25�
   `N × n` matrices). The dimensions `d`, `m` are arbitrary (`0` allowed).
 * A test map on `Ω` is a Lipschitz `φ : ℝ^m → ℝ^d` with `φ = 0` outside `Ω`. For a bounded Lipschitz
   domain these are the maps of `W^{1,∞}_0 (Ω, ℝ^d)`, extended by `0`. For an arbitrary bounded open
-  `Ω` they are among those of [D], where `W^{1,∞}_0 (Ω) = W^{1,∞} (Ω) ∩ W^{1,1}_0 (Ω)`, possibly not
-  all of them (for `Ω = B ∖ {0}`, `B` a ball, `m ≥ 2`, the maps of [D] need not vanish at `0`).
-  Quasiconvexity on `Ω` is the same for both classes, by theorem 3 and [D], Proposition 5.11, since
-  they agree on the cube.
+  `Ω` they are among those of [D], where `W^{1,∞}_0 (Ω) = W^{1,∞} (Ω) ∩ W^{1,1}_0 (Ω)`
+  (Definition 12.9 (iv)), possibly not all of them (for `Ω = B ∖ {0}`, `B` a ball, `m ≥ 2`, the maps
+  of [D] need not vanish at `0`). Quasiconvexity on `Ω` is the same for both classes, by theorem 3
+  and [D], Proposition 5.11, since they agree on the cube.
 * `Quasiconvex f` (quasiconvexity at every matrix) is tested on the unit cube `(0, 1)^m`; [R] uses
   the unit ball, [D] every bounded open set. By theorem 3 this is the same.
 * In [R] and [D] a quasiconvex function is by definition Borel measurable and locally bounded. Here
@@ -100,7 +100,7 @@ def RankOneConvex (f : Matrix (Fin d) (Fin m) ℝ → ℝ) : Prop :=
 
 /-- Quasiconvexity at `A` on the domain `Ω`: `|Ω| f (A) ≤ ∫_Ω f (A + ∇φ)` for every Lipschitz `φ`
 vanishing outside `Ω` for which the integral exists (for a Borel, locally bounded `f` and a bounded
-`Ω`, it always does). -/
+`Ω`, it always does). It is used for bounded `Ω` only: if `|Ω| = ∞`, `(volume Ω).toReal` is `0`. -/
 def QuasiconvexAtOn (Ω : Set (Fin m → ℝ)) (f : Matrix (Fin d) (Fin m) ℝ → ℝ)
     (A : Matrix (Fin d) (Fin m) ℝ) : Prop :=
   ∀ (φ : (Fin m → ℝ) → Fin d → ℝ) (K : NNReal), LipschitzWith K φ → (∀ x ∉ Ω, φ x = 0) →
@@ -135,8 +135,9 @@ open CalculusOfVariations
 variable {d m : ℕ}
 
 open scoped Matrix.Norms.Frobenius in
-/-- **A rank-one convex function is locally Lipschitz** ([R], Lemma 5.9, first assertion), for the
-Frobenius norm. In [R] rank-one convex functions are Borel and locally bounded by definition; here
+/-- **A rank-one convex function is locally Lipschitz** ([D], Theorem 5.3 (iv); [R], Lemma 5.9,
+first assertion), for the Frobenius norm. In [R] rank-one convex functions are Borel and locally
+bounded by definition (with a remark that the local boundedness is automatic); in [D], and here,
 nothing is assumed beyond `f : ℝ^{d×m} → ℝ` and the convexity along rank-one lines. -/
 theorem rankOneConvex_locallyLipschitz {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : RankOneConvex f) :
     LocallyLipschitz f := by
@@ -166,7 +167,7 @@ Lipschitz domains): for a Borel, locally bounded `f`, quasiconvexity at `A` is t
 nonempty bounded open sets. ([D] does not say that its first domain is nonempty; the statement is
 false for the empty one, on which every `f` is quasiconvex. [D] and [R] quantify over `A`; their
 proof, for a fixed `A`, gives the equivalence at each `A`.) -/
-theorem quasiconvexAtOn_iff {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hm : Measurable f)
+theorem quasiconvexAtOn_iff_of_isBounded {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hm : Measurable f)
     (hb : IsLocallyBounded f) (A : Matrix (Fin d) (Fin m) ℝ) {Ω Ω' : Set (Fin m → ℝ)}
     (hΩ : IsOpen Ω) (hΩb : Bornology.IsBounded Ω) (hΩne : Ω.Nonempty)
     (hΩ' : IsOpen Ω') (hΩ'b : Bornology.IsBounded Ω') (hΩ'ne : Ω'.Nonempty) :

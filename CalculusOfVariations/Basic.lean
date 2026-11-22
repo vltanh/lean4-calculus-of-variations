@@ -86,7 +86,7 @@ def RankOneConvex (f : Matrix (Fin d) (Fin m) ℝ → ℝ) : Prop :=
 
 /-- Quasiconvexity at `A` on the domain `Ω`: `|Ω| f (A) ≤ ∫_Ω f (A + ∇φ)` for every Lipschitz `φ`
 vanishing outside `Ω` for which the integral exists (for a Borel, locally bounded `f` and a bounded
-`Ω`, it always does). -/
+`Ω`, it always does). It is used for bounded `Ω` only: if `|Ω| = ∞`, `(volume Ω).toReal` is `0`. -/
 def QuasiconvexAtOn (Ω : Set (Fin m → ℝ)) (f : Matrix (Fin d) (Fin m) ℝ → ℝ)
     (A : Matrix (Fin d) (Fin m) ℝ) : Prop :=
   ∀ (φ : (Fin m → ℝ) → Fin d → ℝ) (K : NNReal), LipschitzWith K φ → (∀ x ∉ Ω, φ x = 0) →

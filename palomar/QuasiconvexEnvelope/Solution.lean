@@ -24,11 +24,11 @@ theorem quasiconvexEnvelope_eq_domainInf (hf : Continuous f) (hΩ : IsOpen Ω)
     quasiconvexEnvelope f A = domainInf Ω f A :=
   CalculusOfVariations.quasiconvexEnvelope_eq_domainInf hf hΩ hb hne A
 
-theorem domainInf_eq (hf : Continuous f) (hΩ : IsOpen Ω) (hb : Bornology.IsBounded Ω)
+theorem domainInf_eq_of_isBounded (hf : Continuous f) (hΩ : IsOpen Ω) (hb : Bornology.IsBounded Ω)
     (hne : Ω.Nonempty) {Ω' : Set (Fin m → ℝ)} (hΩ' : IsOpen Ω') (hb' : Bornology.IsBounded Ω')
     (hne' : Ω'.Nonempty) (A : Matrix (Fin d) (Fin m) ℝ) :
     domainInf Ω f A = domainInf Ω' f A :=
-  domainInf_eq_of_isBounded hf hΩ hb hne hΩ' hb' hne' A
+  CalculusOfVariations.domainInf_eq_of_isBounded hf hΩ hb hne hΩ' hb' hne' A
 
 theorem domainInf_le_of_rank_le_one (hf : Continuous f) (hΩ : IsOpen Ω)
     (hb : Bornology.IsBounded Ω) (hne : Ω.Nonempty) {A B : Matrix (Fin d) (Fin m) ℝ}
@@ -43,7 +43,7 @@ theorem exists_domainInf_eq_coe (hf : Continuous f) (hΩ : IsOpen Ω)
     ∃ g : Matrix (Fin d) (Fin m) ℝ → ℝ, Continuous g ∧ RankOneConvex g ∧ Quasiconvex g ∧
       ∀ A, domainInf Ω f A = (g A : EReal) := by
   obtain ⟨g, hg, hq, h⟩ := CalculusOfVariations.exists_domainInf_eq_coe hf hΩ hb hne h
-  exact ⟨g, hg, rankOneConvex_of_quasiconvex_of_measurable hg.measurable
+  exact ⟨g, hg, rankOneConvex_of_quasiconvex hg.measurable
     (isLocallyBounded_of_continuous hg) hq, hq, h⟩
 
 end QuasiconvexEnvelopeChallenge

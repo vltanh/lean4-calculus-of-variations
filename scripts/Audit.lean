@@ -30,7 +30,6 @@ import all CalculusOfVariations.Minors.Characterization
 import all CalculusOfVariations.Minors.NullLagrangian
 import all CalculusOfVariations.Minors.Quasiaffine
 import all CalculusOfVariations.Minors.RankOneAffine
-import all CalculusOfVariations.Minors.RankOneAffineContinuous
 import all CalculusOfVariations.QuadraticForm.Plancherel
 import all CalculusOfVariations.QuadraticForm.Quasiconvex
 import all CalculusOfVariations.Quasiconvex.Cutoff
@@ -77,13 +76,9 @@ meta def mainResults : List Name :=
    ``CalculusOfVariations.quasiconvexAtOn_of_unitCube,
    ``CalculusOfVariations.quasiconvexAtOn_iff,
    ``CalculusOfVariations.quasiconvexAtOn_iff_periodic,
-   ``CalculusOfVariations.rankOneConvex_of_quasiconvex_of_measurable,
-   ``CalculusOfVariations.quasiconvexAtOn_iff_of_measurable,
-   ``CalculusOfVariations.quasiconvexAtOn_iff_periodic_of_measurable,
    ``CalculusOfVariations.quadraticForm_quasiconvex,
    ``CalculusOfVariations.quadraticForm_quasiconvex_iff,
    ``CalculusOfVariations.RankOneAffine.exists_eq_sum_minor,
-   ``CalculusOfVariations.RankOneAffine.exists_eq_sum_minor_of_continuous,
    ``CalculusOfVariations.setIntegral_minor_add_grad,
    ``CalculusOfVariations.rankOneAffine_tfae,
    ``CalculusOfVariations.nl_null2,
@@ -129,12 +124,12 @@ meta def solutionResults : List Name :=
   [``QuasiconvexityChallenge.rankOneConvex_locallyLipschitz,
    ``QuasiconvexityChallenge.rankOneConvex_abs_sub_le_of_osc,
    ``QuasiconvexityChallenge.rankOneConvex_of_quasiconvex,
-   ``QuasiconvexityChallenge.quasiconvexAtOn_iff,
+   ``QuasiconvexityChallenge.quasiconvexAtOn_iff_of_isBounded,
    ``QuasiconvexityChallenge.quasiconvexAtOn_unitCube_iff_periodic,
    ``QuasiconvexityChallenge.quadraticForm_quasiconvex_iff,
    ``QuasiconvexityChallenge.integrableOn_add_grad,
    ``QuasiconvexEnvelopeChallenge.quasiconvexEnvelope_eq_domainInf,
-   ``QuasiconvexEnvelopeChallenge.domainInf_eq,
+   ``QuasiconvexEnvelopeChallenge.domainInf_eq_of_isBounded,
    ``QuasiconvexEnvelopeChallenge.domainInf_le_of_rank_le_one,
    ``QuasiconvexEnvelopeChallenge.exists_domainInf_eq_coe,
    ``NullLagrangiansChallenge.setIntegral_minor_add_grad,

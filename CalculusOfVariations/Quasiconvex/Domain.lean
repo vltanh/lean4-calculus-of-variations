@@ -11,9 +11,8 @@ public import CalculusOfVariations.Lipschitz.ZeroSet
 # Quasiconvexity does not depend on the domain
 
 For a Borel, locally bounded `f`, quasiconvexity at `A` on the unit cube is equivalent to
-quasiconvexity at `A` on any nonempty bounded open set (`quasiconvexAtOn_iff_of_measurable`, and
-`quasiconvexAtOn_iff` for lower semicontinuous `f`); the direction from the cube holds on every
-bounded measurable set (`quasiconvexAtOn_of_unitCube`).
+quasiconvexity at `A` on any nonempty bounded open set (`quasiconvexAtOn_iff`); the direction from
+the cube holds on every bounded measurable set (`quasiconvexAtOn_of_unitCube`).
 
 This is Proposition 5.11 of B. Dacorogna, *Direct Methods in the Calculus of Variations*, 2nd ed.,
 Springer, 2008 ([D08], pp. 172–173), and Lemma 5.2 (i) of F. Rindler, *Calculus of Variations*, 2nd
@@ -266,18 +265,11 @@ vanishes almost everywhere there (`rd_quasiconvexAtOn_mono`, from `rd_ae_fderiv_
 density point of the zero set of a Lipschitz map, its derivative is `0`; no condition on the
 boundary is needed). "⇒": `Ω` lies in a large cube (`quasiconvexAtOn_of_unitCube`); "⇐": `Ω`
 contains a small cube (`rd_unitCube_of_quasiconvexAtOn`). -/
-theorem quasiconvexAtOn_iff_of_measurable {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : Measurable f)
+theorem quasiconvexAtOn_iff {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hf : Measurable f)
     (hbdd : IsLocallyBounded f) (A : Matrix (Fin d) (Fin m) ℝ) {Ω : Set (Fin m → ℝ)}
     (hΩ : IsOpen Ω) (hb : Bornology.IsBounded Ω) (hne : Ω.Nonempty) :
     QuasiconvexAtOn (unitCube m) f A ↔ QuasiconvexAtOn Ω f A :=
   ⟨quasiconvexAtOn_of_unitCube hf hbdd hb hΩ.measurableSet,
     rd_unitCube_of_quasiconvexAtOn hf hbdd hΩ hb hne⟩
-
-/-- `quasiconvexAtOn_iff_of_measurable` for a lower semicontinuous `f`. -/
-theorem quasiconvexAtOn_iff {f : Matrix (Fin d) (Fin m) ℝ → ℝ} (hlsc : LowerSemicontinuous f)
-    (hbdd : IsLocallyBounded f) (A : Matrix (Fin d) (Fin m) ℝ) {Ω : Set (Fin m → ℝ)}
-    (hΩ : IsOpen Ω) (hb : Bornology.IsBounded Ω) (hne : Ω.Nonempty) :
-    QuasiconvexAtOn (unitCube m) f A ↔ QuasiconvexAtOn Ω f A :=
-  quasiconvexAtOn_iff_of_measurable hlsc.measurable hbdd A hΩ hb hne
 
 end CalculusOfVariations

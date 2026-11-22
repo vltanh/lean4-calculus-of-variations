@@ -17,14 +17,16 @@ Theorem 8.35 of B. Dacorogna, *Direct Methods in the Calculus of Variations*, 2n
 2008 ([D08], p. 409–411; `Ω` open there), by the proof of its part (ii), with `v` affine and
 `w = φ`:
 
-* (Theorem 8.33, p. 407–408) For smooth `v_1, …, v_k` and the partial derivatives in the directions
-  `c_1, …, c_k`, a Jacobian is a divergence, (8.43):
+* (Theorem 8.33, p. 407–408; there for maps of class `C²`) For smooth `v_1, …, v_k` and the partial
+  derivatives in the directions `c_1, …, c_k`, a Jacobian is a divergence, (8.43):
   `det [∂_{c_j} v_i] = ∑_t ± ∂_{c_t} (v_{i₀} M_t)`, `M_t` the minor without the row `i₀` and the
   column `t`, because `∑_t ± ∂_{c_t} M_t = 0`, (8.42). Here both are written with Leibniz' formula,
   as sums over the permutations `σ` of the columns (`nl_det_eq_sum_D`, `nl_sum_perm_eq_zero`), and
   (8.42) is a sign-reversing involution, `σ ↦ σ ∘ (i₀ i)`: it exchanges the two mixed second
   derivatives `∂_{c_{σ(i₀)}} ∂_{c_{σ(i)}} v_i`. [D08] proves (8.42) by induction on `k`, inserting
-  (8.43) for the minors of order `k − 1`; the terms that cancel are the same.
+  (8.43) for the minors of order `k − 1`. The cancellation is the same (mixed second derivatives are
+  symmetric and the sign changes), but not the terms: in [D08] they are second derivatives of
+  products of `v_2` with minors of order `k − 2`.
 * (p. 410–411) `det (X + Y)` is the sum over the sets `s` of rows of the determinants with the rows
   `s` of `X` and the other rows of `Y` (Proposition 5.67 of [D08]; `nl_det_add_eq_sum`). For `X` a
   submatrix of `A` and `Y` the one of `∇ψ`, `ψ` smooth with compact support, each of these

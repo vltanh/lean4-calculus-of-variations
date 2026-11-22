@@ -14,9 +14,8 @@ public import CalculusOfVariations.Quasiconvex.Cutoff
 
 For a Borel, locally bounded `f`, quasiconvexity at `A` on the unit cube is equivalent to the
 inequality `f (A) ≤ ∫_{(0,1)^m} f (A + ∇φ)` for `ℤ^m`-periodic Lipschitz `φ`
-(`quasiconvexAtOn_iff_periodic_of_measurable`, and `quasiconvexAtOn_iff_periodic` for lower
-semicontinuous `f`). This is Proposition 5.13 of B. Dacorogna, *Direct Methods in the Calculus of
-Variations*, 2nd ed., Springer, 2008 ([D08], p. 173–174), with its proof.
+(`quasiconvexAtOn_iff_periodic`). This is Proposition 5.13 of B. Dacorogna, *Direct Methods in the
+Calculus of Variations*, 2nd ed., Springer, 2008 ([D08], p. 173–174), with its proof.
 
 "⇒": for a periodic `φ`, the maps `ψ_ν (x) = ν⁻¹ φ (ν x)`, `ν ∈ ℕ`, satisfy
 `∫_Q f (A + ∇ψ_ν) = ∫_Q f (A + ∇φ)` by periodicity, and they converge to `0` uniformly with bounded
@@ -106,15 +105,9 @@ periodically (`rd_perExt`, `x ↦ φ (fract x)`), Lipschitz because it vanishes 
 cube, with the same gradient on the open cube. The argument is also that of S. Müller, *Variational
 models for microstructure and phase transitions*, lecture notes, MPI MiS Leipzig, 1998, Proposition
 4.19. -/
-theorem quasiconvexAtOn_iff_periodic_of_measurable {f : Matrix (Fin d) (Fin m) ℝ → ℝ}
+theorem quasiconvexAtOn_iff_periodic {f : Matrix (Fin d) (Fin m) ℝ → ℝ}
     (hf : Measurable f) (hbdd : IsLocallyBounded f) (A : Matrix (Fin d) (Fin m) ℝ) :
     QuasiconvexAtOn (unitCube m) f A ↔ QuasiconvexAtPeriodic f A :=
   ⟨rd_periodic_of_cube hf hbdd A, rd_cube_of_periodic A⟩
-
-/-- `quasiconvexAtOn_iff_periodic_of_measurable` for a lower semicontinuous `f`. -/
-theorem quasiconvexAtOn_iff_periodic {f : Matrix (Fin d) (Fin m) ℝ → ℝ}
-    (hlsc : LowerSemicontinuous f) (hbdd : IsLocallyBounded f) (A : Matrix (Fin d) (Fin m) ℝ) :
-    QuasiconvexAtOn (unitCube m) f A ↔ QuasiconvexAtPeriodic f A :=
-  quasiconvexAtOn_iff_periodic_of_measurable hlsc.measurable hbdd A
 
 end CalculusOfVariations

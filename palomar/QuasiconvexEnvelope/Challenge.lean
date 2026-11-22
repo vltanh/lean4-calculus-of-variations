@@ -22,16 +22,17 @@ public import Mathlib.Topology.Semicontinuity.Defs
 /-!
 # Challenge: the quasiconvex envelope (Dacorogna's formula)
 
-For a continuous `f : ℝ^{d×m} → ℝ`, the quasiconvex envelope `f^{qc}`, the largest quasiconvex
-function below `f`, is given by Dacorogna's formula `f^{qc} (A) = inf_φ ⨍_Ω f (A + ∇φ)`, the infimum
-over the test maps `φ` on any nonempty bounded open set `Ω`. `f` need not be bounded below, nor have
+For a continuous `f : ℝ^{d×m} → ℝ`, the quasiconvex envelope `f^{qc}`, the supremum of the
+quasiconvex functions below `f`, is given by Dacorogna's formula
+`f^{qc} (A) = inf_φ ⨍_Ω f (A + ∇φ)`, the infimum over the test maps `φ` on any nonempty bounded open
+set `Ω`. `f` need not be bounded below, nor have
 a quasiconvex minorant: the formula has values in `[−∞, ∞)`, and holds also when both sides are
 `−∞`.
 
 ## The theorems
 
 1. `quasiconvexEnvelope_eq_domainInf`: Dacorogna's formula.
-2. `domainInf_eq`: the infimum formula does not depend on the domain.
+2. `domainInf_eq_of_isBounded`: the infimum formula does not depend on the domain.
 3. `domainInf_le_of_rank_le_one`: the infimum formula is rank-one convex (with values in `EReal`).
 4. `exists_domainInf_eq_coe`: if the infimum formula is finite at one matrix, it is finite
    everywhere, continuous, rank-one convex and quasiconvex.
@@ -41,7 +42,8 @@ gradients*, Arch. Rational Mech. Anal. 115 (1991), 329–365, Proposition 8.1, w
 followed; [D82] B. Dacorogna, *Quasiconvexity and relaxation of nonconvex problems in the calculus
 of variations*, J. Funct. Anal. 46 (1982), 102–118, Theorem 5, the original formula; and
 [D] B. Dacorogna, *Direct Methods in the Calculus of Variations*, 2nd ed., Springer, 2008,
-Theorem 6.9.
+Theorem 6.9. Also cited: [M] S. Müller, *Variational models for microstructure and phase
+transitions*, lecture notes, MPI MiS Leipzig, 1998.
 
 ## Conventions
 
@@ -49,9 +51,9 @@ Theorem 6.9.
   `φ : ℝ^m → ℝ^d` at `x` is `grad φ x` (rows are the components).
 * A test map on `Ω` is a Lipschitz `φ : ℝ^m → ℝ^d` with `φ = 0` outside `Ω`. For a bounded Lipschitz
   domain these are the maps of `W^{1,∞}_0 (Ω, ℝ^d)`, extended by `0`. For an arbitrary bounded open
-  `Ω` they are among those of [D], where `W^{1,∞}_0 (Ω) = W^{1,∞} (Ω) ∩ W^{1,1}_0 (Ω)`, possibly not
-  all of them (for `Ω = B ∖ {0}`, `B` a ball, `m ≥ 2`, the maps of [D] need not vanish at `0`).
-  [D82] has `φ ∈ C^∞_c (Ω, ℝ^d)`, `Ω` a cube.
+  `Ω` they are among those of [D], where `W^{1,∞}_0 (Ω) = W^{1,∞} (Ω) ∩ W^{1,1}_0 (Ω)`
+  (Definition 12.9 (iv)), possibly not all of them (for `Ω = B ∖ {0}`, `B` a ball, `m ≥ 2`, the maps
+  of [D] need not vanish at `0`). [D82] has `φ ∈ C^∞_c (Ω, ℝ^d)`, `Ω` a cube.
 * `quasiconvexEnvelope f A` is the supremum of `g (A)` over the Borel, locally bounded, quasiconvex
   functions `g ≤ f` (the quasiconvex functions of [D] are Borel and locally bounded by definition).
   `Quasiconvex g` is tested on the unit cube; it does not depend on the domain, by [D],
@@ -97,7 +99,7 @@ def RankOneConvex (f : Matrix (Fin d) (Fin m) ℝ → ℝ) : Prop :=
 
 /-- Quasiconvexity at `A` on the domain `Ω`: `|Ω| f (A) ≤ ∫_Ω f (A + ∇φ)` for every Lipschitz `φ`
 vanishing outside `Ω` for which the integral exists (for a Borel, locally bounded `f` and a bounded
-`Ω`, it always does). -/
+`Ω`, it always does). It is used for bounded `Ω` only: if `|Ω| = ∞`, `(volume Ω).toReal` is `0`. -/
 def QuasiconvexAtOn (Ω : Set (Fin m → ℝ)) (f : Matrix (Fin d) (Fin m) ℝ → ℝ)
     (A : Matrix (Fin d) (Fin m) ℝ) : Prop :=
   ∀ (φ : (Fin m → ℝ) → Fin d → ℝ) (K : NNReal), LipschitzWith K φ → (∀ x ∉ Ω, φ x = 0) →
@@ -144,8 +146,9 @@ outside `Ω`, with values in `[−∞, ∞)`.
 
 Sources: [D82], Theorem 5 (for a cube `Ω`, `φ ∈ C^∞_c`, and `a ≤ f (F) ≤ b + c |F|^p`); [D],
 Theorem 6.9 (every bounded open set; `f` Borel and locally bounded, with a quasiconvex minorant).
-Here `f` is continuous, with no condition on its growth and no minorant. This case follows from
-[KP], Proposition 8.1, which states the theorems below and not the formula. -/
+Here `f` is continuous, with no condition on its growth and no minorant. This case is stated in [M],
+Theorem 4.5 (iii) (for every `f` with values in `[−∞, ∞)`, and bounded domains with null boundary),
+and follows from [KP], Proposition 8.1, which states the theorems below and not the formula. -/
 theorem quasiconvexEnvelope_eq_domainInf (hf : Continuous f) (hΩ : IsOpen Ω)
     (hb : Bornology.IsBounded Ω) (hne : Ω.Nonempty) (A : Matrix (Fin d) (Fin m) ℝ) :
     quasiconvexEnvelope f A = domainInf Ω f A := by
@@ -154,7 +157,7 @@ theorem quasiconvexEnvelope_eq_domainInf (hf : Continuous f) (hΩ : IsOpen Ω)
 /-- **The infimum formula does not depend on the domain** ([KP], Proposition 8.1 (i); [D],
 Theorem 6.9), among the nonempty bounded open sets. (In [KP] the argument, by Vitali's covering
 theorem, needs domains with null boundaries; here there is no condition on the boundaries.) -/
-theorem domainInf_eq (hf : Continuous f) (hΩ : IsOpen Ω) (hb : Bornology.IsBounded Ω)
+theorem domainInf_eq_of_isBounded (hf : Continuous f) (hΩ : IsOpen Ω) (hb : Bornology.IsBounded Ω)
     (hne : Ω.Nonempty) {Ω' : Set (Fin m → ℝ)} (hΩ' : IsOpen Ω') (hb' : Bornology.IsBounded Ω')
     (hne' : Ω'.Nonempty) (A : Matrix (Fin d) (Fin m) ℝ) :
     domainInf Ω f A = domainInf Ω' f A := by

@@ -27,7 +27,7 @@ that of [D08]:
 * affine combination of minors ⇒ null Lagrangian: [D08], Theorem 8.35
   (`setIntegral_minor_add_grad`);
 * null Lagrangian ⇒ quasiaffine: the case of the unit cube;
-* quasiaffine ⇒ rank-one affine: `rankOneConvex_of_quasiconvex_of_measurable`.
+* quasiaffine ⇒ rank-one affine: `rankOneConvex_of_quasiconvex`.
 
 Conditions (ii') and (iii) of [D08], Theorem 5.20 (`f` of class `C¹` with
 `f (ξ + a ⊗ b) = f (ξ) + ⟨∇f (ξ); a ⊗ b⟩`; `f` and `−f` polyconvex) are not treated.
@@ -108,8 +108,8 @@ theorem rankOneAffine_tfae (f : Matrix (Fin d) (Fin m) ℝ → ℝ) : List.TFAE
     exact (neg_le_neg_iff.2 (hQ A φ K hφ h0).le)
   tfae_have 2 → 1 := by
     rintro ⟨hm, hb, hq, hq'⟩
-    refine ⟨rankOneConvex_of_quasiconvex_of_measurable hm hb hq,
-      rankOneConvex_of_quasiconvex_of_measurable hm.neg (fun A => ?_) hq'⟩
+    refine ⟨rankOneConvex_of_quasiconvex hm hb hq,
+      rankOneConvex_of_quasiconvex hm.neg (fun A => ?_) hq'⟩
     obtain ⟨U, hU, C, hC⟩ := hb A
     exact ⟨U, hU, C, fun B hB => by rw [Pi.neg_apply, abs_neg]; exact hC B hB⟩
   tfae_finish

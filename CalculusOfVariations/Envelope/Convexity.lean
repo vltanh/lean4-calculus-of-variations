@@ -27,8 +27,8 @@ integrand is `ψ` and the infimum formula `ψ^#`:
   the matrix units (`env_two_point_single`, `cubeInf_bot_line`, `cubeInf_bot_all`). In the finite
   case `cubeInfReal f`, the real-valued `cubeInf f`, is rank-one convex
   (`cubeInfReal_rankOneConvex`), hence locally Lipschitz (`RankOneConvex.locallyLipschitz`) and
-  continuous (`cubeInfReal_continuous`). [KP] leave this to the reader ("it is easy to check that
-  `ψ^#` is finite everywhere and continuous").
+  continuous (`cubeInfReal_continuous`). [KP] leave the last step to the reader ("it is easy to
+  check that `ψ^#` is finite everywhere and continuous").
 * (iv), "If `ψ^# ∈ C (𝕄)`, then it is quasiconvex" (`cubeInfReal_quasiconvex`): [KP] refer to
   B. Dacorogna's book (1989 edition) or to the technique of Step 6 of the proof of their Proposition
   7.2. The latter is followed here: a test map is approximated by piecewise affine ones, `ζ_ε`, with

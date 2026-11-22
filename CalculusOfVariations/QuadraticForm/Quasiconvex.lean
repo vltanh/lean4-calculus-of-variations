@@ -80,7 +80,7 @@ private lemma minors_legendreHadamard (Q : LinearMap.BilinForm ℝ (Matrix (Fin 
   linarith
 
 /-- **A rank-one convex quadratic form is quasiconvex** ([D08], Theorem 5.25 (i); the converse holds
-for every Borel, locally bounded integrand, `rankOneConvex_of_quasiconvex_of_measurable`).
+for every Borel, locally bounded integrand, `rankOneConvex_of_quasiconvex`).
 
 Proof ([D08], p. 192–194). Since `Q` is quadratic,
 `Q (A + ∇φ) = Q (A) + [Q (A, ∇φ) + Q (∇φ, A)] + Q (∇φ)`; the linear term integrates to `0`
@@ -246,7 +246,7 @@ theorem quadraticForm_quasiconvex_iff (Q : LinearMap.BilinForm ℝ (Matrix (Fin 
       funext fun A => minors_bilin_expand Q A A
     rw [e]
     fun_prop
-  exact rankOneConvex_of_quasiconvex_of_measurable hc.measurable
+  exact rankOneConvex_of_quasiconvex hc.measurable
     (isLocallyBounded_of_continuous hc) h
 
 end CalculusOfVariations

@@ -25,7 +25,8 @@ public import Mathlib.Topology.Semicontinuity.Defs
 A function `f : ℝ^{d×m} → ℝ` is quasiaffine if `f` and `−f` are quasiconvex, and rank-one affine if
 `f` and `−f` are rank-one convex. The quasiaffine functions are the rank-one affine ones, and they
 are the affine combinations of the minors (subdeterminants) of the matrix, of all orders; they are
-also the null Lagrangians, the `f` with `∫_Ω f (A + ∇φ) = |Ω| f (A)` for all test maps `φ`.
+also the null Lagrangians, the `f` with `∫_Ω f (A + ∇φ) = |Ω| f (A)` for all `A` and all test maps
+`φ`: for maps with affine boundary values, the integral depends on the boundary values only.
 
 ## The theorems
 
@@ -37,8 +38,8 @@ The sources are [D] B. Dacorogna, *Direct Methods in the Calculus of Variations*
 2008, Theorems 5.20 and 8.35, whose proofs are followed, and [D82] B. Dacorogna, *Quasiconvexity and
 relaxation of nonconvex problems in the calculus of variations*, J. Funct. Anal. 46 (1982), 102–118,
 Proposition 4. The characterization is due to J. M. Ball, *Convexity conditions and existence
-theorems in nonlinear elasticity*, Arch. Ration. Mech. Anal. 63 (1977), 337–403, after Edelen and
-Ericksen.
+theorems in nonlinear elasticity*, Arch. Ration. Mech. Anal. 63 (1977), 337–403, after Edelen,
+Ericksen and Rund ([D], p. 179).
 
 ## Conventions
 
@@ -49,8 +50,9 @@ Ericksen.
   `1`; the `1 × 1` minors are the entries.
 * A test map on `Ω` is a Lipschitz `φ : ℝ^m → ℝ^d` with `φ = 0` outside `Ω`. For a bounded Lipschitz
   domain these are the maps of `W^{1,∞}_0 (Ω, ℝ^d)`, extended by `0`. For an arbitrary bounded open
-  `Ω` they are among those of [D], where `W^{1,∞}_0 (Ω) = W^{1,∞} (Ω) ∩ W^{1,1}_0 (Ω)`, possibly not
-  all of them (for `Ω = B ∖ {0}`, `B` a ball, `m ≥ 2`, the maps of [D] need not vanish at `0`).
+  `Ω` they are among those of [D], where `W^{1,∞}_0 (Ω) = W^{1,∞} (Ω) ∩ W^{1,1}_0 (Ω)`
+  (Definition 12.9 (iv)), possibly not all of them (for `Ω = B ∖ {0}`, `B` a ball, `m ≥ 2`, the maps
+  of [D] need not vanish at `0`). [D82] has `φ ∈ C^∞_c (Ω, ℝ^d)` and bounded domains `Ω`.
 * `Quasiconvex f` is tested on the unit cube; for Borel, locally bounded `f` it does not depend on
   the domain ([D], Proposition 5.11). The quasiconvex functions of [D] are Borel and locally bounded
   by definition; here `Measurable f` and `IsLocallyBounded f` are stated separately.
@@ -92,7 +94,7 @@ def RankOneConvex (f : Matrix (Fin d) (Fin m) ℝ → ℝ) : Prop :=
 
 /-- Quasiconvexity at `A` on the domain `Ω`: `|Ω| f (A) ≤ ∫_Ω f (A + ∇φ)` for every Lipschitz `φ`
 vanishing outside `Ω` for which the integral exists (for a Borel, locally bounded `f` and a bounded
-`Ω`, it always does). -/
+`Ω`, it always does). It is used for bounded `Ω` only: if `|Ω| = ∞`, `(volume Ω).toReal` is `0`. -/
 def QuasiconvexAtOn (Ω : Set (Fin m → ℝ)) (f : Matrix (Fin d) (Fin m) ℝ → ℝ)
     (A : Matrix (Fin d) (Fin m) ℝ) : Prop :=
   ∀ (φ : (Fin m → ℝ) → Fin d → ℝ) (K : NNReal), LipschitzWith K φ → (∀ x ∉ Ω, φ x = 0) →
@@ -145,9 +147,12 @@ equivalent:
    bounded open `Ω`, every `A` and every Lipschitz `φ` vanishing outside `Ω`;
 4. `f` is an affine combination of minors, `f (A) = ∑_{k ≤ min d m} ∑_{r, c} a k r c · minor A r c`.
 
-No regularity of `f` is assumed in 1 and 4. The conditions (ii') and (iii) of [D], Theorem 5.20
-(`f ∈ C¹` with `f (ξ + a ⊗ b) = f (ξ) + ⟨∇f (ξ); a ⊗ b⟩`; `f` and `−f` polyconvex) are not
-stated. -/
+1, 2 and 4 are (ii), (i) and (iii') in [D]; 1 to 4 are (iii), (i), (ii) and (iv) in [D82], where
+(ii) has the test maps `C^∞_c (Ω, ℝ^d)` and bounded domains. [D82] and Ball use the name "null
+Lagrangian" for 2, other authors for the functions for which `∫_Ω f (∇u)` depends only on the
+boundary values of `u`. No regularity of `f` is assumed in 1 and 4. The conditions (ii') and (iii)
+of [D], Theorem 5.20 (`f ∈ C¹` with `f (ξ + a ⊗ b) = f (ξ) + ⟨∇f (ξ); a ⊗ b⟩`; `f` and `−f`
+polyconvex) are not stated. -/
 theorem rankOneAffine_tfae (f : Matrix (Fin d) (Fin m) ℝ → ℝ) : List.TFAE
     [RankOneAffine f,
       Measurable f ∧ IsLocallyBounded f ∧ Quasiconvex f ∧ Quasiconvex (-f),

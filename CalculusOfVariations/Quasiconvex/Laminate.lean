@@ -35,7 +35,7 @@ of Variations*, 2nd ed., Graduate Texts in Mathematics 310, Springer, 2026 ([R2]
   is quasiconvexity of `X ↦ f (X Rᵀ)` at `F R` on `Q`, by the orthogonal change of variables
   `x = R y` (`quasiconvexAtOn_unitCube_comp_orthogonal`), and `a ⊗ n = (a ⊗ e_j) Rᵀ`. Quasiconvexity
   on `Q_n` is quasiconvexity on `Q` by the independence of the domain
-  (`quasiconvexAtOn_iff_of_measurable`; [R2], Lemma 5.2).
+  (`quasiconvexAtOn_iff`; [R2], Lemma 5.2).
 -/
 @[expose] public section
 
@@ -576,7 +576,7 @@ Borel, locally bounded `f` quasiconvex at `F` on the unit cube, and all `a ∈ �
 `λ ∈ (0, 1)`, `f (F) ≤ λ f (F + (1 − λ) a ⊗ n) + (1 − λ) f (F − λ a ⊗ n)`. Write
 `a ⊗ n = (|n| a) ⊗ (n / |n|)`, take an orthogonal `R` with `R e_j = n / |n|`
 (`exists_orthogonal_mulVec_single_eq`), pass from the unit cube to `Q_n = R Q` by the independence
-of the domain (`quasiconvexAtOn_iff_of_measurable`), and apply
+of the domain (`quasiconvexAtOn_iff`), and apply
 `le_of_quasiconvexAtOn_unitCube_of_measurable` to `X ↦ f (X Rᵀ)` at `F R`
 (`quasiconvexAtOn_unitCube_comp_orthogonal`). -/
 theorem le_of_quasiconvexAtOn_vecMulVec {f : Matrix (Fin d) (Fin m) ℝ → ℝ}
@@ -604,7 +604,7 @@ theorem le_of_quasiconvexAtOn_vecMulVec {f : Matrix (Fin d) (Fin m) ℝ → ℝ}
   obtain ⟨R, hR, hRj⟩ := exists_orthogonal_mulVec_single_eq j hn'
   have hR' : R * Rᵀ = 1 := mul_eq_one_comm.1 hR
   -- quasiconvexity on `Q_n = R Q`, and the change of variables
-  have hU := quasiconvexAtOn_unitCube_comp_orthogonal hR ((quasiconvexAtOn_iff_of_measurable hm
+  have hU := quasiconvexAtOn_unitCube_comp_orthogonal hR ((quasiconvexAtOn_iff hm
     hbdd F (lam_isOpen_image_mulVec hR) (lam_isBounded_image_mulVec R)
     (lam_nonempty_image_mulVec R)).1 hf)
   have hcont : Continuous fun X : Matrix (Fin d) (Fin m) ℝ => X * Rᵀ :=
