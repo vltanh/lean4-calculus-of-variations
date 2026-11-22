@@ -12,10 +12,11 @@ public import Mathlib.LinearAlgebra.Matrix.Determinant.Basic
 # A rank-one convex quadratic form is quasiconvex
 
 `quadraticForm_quasiconvex`: if `Q` is a bilinear form on `ℝ^{d×m}` and `A ↦ Q (A, A)` is rank-one
-convex, then `A ↦ Q (A, A)` is quasiconvex. For the statement see Dacorogna, *Direct methods in the
-calculus of variations*, 2nd ed., 2008, Theorem 5.25 (i); the argument is the one of C. B. Morrey,
-*Quasi-convexity and the lower semicontinuity of multiple integrals*, Pacific J. Math. 2 (1952),
-Theorem 5.2 (see `quadraticForm_quasiconvex`).
+convex, then `A ↦ Q (A, A)` is quasiconvex. This is Theorem 5.25 (i) of B. Dacorogna, *Direct
+Methods in the Calculus of Variations*, 2nd ed., Springer, 2008 ([D08], p. 191–194; there for a
+symmetric matrix `M` and `f (ξ) = ⟨M ξ; ξ⟩`), with its proof by Plancherel's formula. [D08] (Remark
+5.26) attributes the result to Van Hove; see also C. B. Morrey, *Quasi-convexity and the lower
+semicontinuity of multiple integrals*, Pacific J. Math. 2 (1952), 25–53, Theorem 5.2.
 -/
 
 @[expose] public section
@@ -75,21 +76,19 @@ private lemma minors_legendreHadamard (Q : LinearMap.BilinForm ℝ (Matrix (Fin 
   norm_num at hc
   linarith
 
-/-- **A rank-one convex quadratic form is quasiconvex** (Dacorogna, *Direct methods in the
-calculus of variations*, 2nd ed., 2008, Theorem 5.25 (i)).
+/-- **A rank-one convex quadratic form is quasiconvex** ([D08], Theorem 5.25 (i)).
 
-Proof: the argument of C. B. Morrey, *Quasi-convexity and the lower semicontinuity of multiple
-integrals*, Pacific J. Math. 2 (1952), 25–53, Theorem 5.2. Since `Q` is quadratic,
+Proof ([D08], p. 192–194). Since `Q` is quadratic,
 `Q (A + ∇φ) = Q (A) + [Q (A, ∇φ) + Q (∇φ, A)] + Q (∇φ)`; the linear term integrates to `0`
-(`plancherel_integral_fderiv_eq_zero`), and `∫ Q (∇φ) ≥ 0` by Plancherel, since rank-one convexity
-is the Legendre–Hadamard condition `Q (a ⊗ ξ) ≥ 0` (`plancherel_lipschitz_nonneg`). The test map,
-extended by `0` outside the cube, is a compactly supported Lipschitz map on `ℝ^m`, and its gradient
-vanishes off the closed cube, whose boundary is null. In Morrey's terms: the linear term vanishes
-(his Lemma 5.1), and the quadratic term is nonnegative under the Legendre–Hadamard condition, which
-Morrey takes from Van Hove (Nederl. Akad. Wetensch. 50 (1947)) for maps of class `C¹` vanishing on
-the boundary and extends to Lipschitz maps; here the smooth case is proved by Plancherel's formula
-(`plancherel_smooth_nonneg`), and the extension to Lipschitz maps is by mollification
-(`plancherel_lipschitz_nonneg`). -/
+(`plancherel_integral_fderiv_eq_zero`), so quasiconvexity is `∫ Q (∇φ) ≥ 0` (Lemma 5.27 (iii)), and
+rank-one convexity is the Legendre–Hadamard condition `Q (a ⊗ ξ) ≥ 0` (Lemma 5.27 (iv),
+`minors_legendreHadamard`). The test map, extended by `0` outside the cube, is a compactly supported
+Lipschitz map on `ℝ^m`, and its gradient vanishes off the closed cube, whose boundary is null. By
+Lemma 5.28 the Fourier transform of `∇φ` is `2πi φ̂ ⊗ ξ`, whose real and imaginary parts have rank
+at most one, and by Plancherel's formula (5.58) `∫ Q (∇φ)` is the integral of the sum of `Q` at
+these parts, so it is nonnegative. Here Plancherel's formula is applied to smooth maps
+(`plancherel_smooth_nonneg`), and the inequality passes to Lipschitz maps by mollification
+(`plancherel_lipschitz_nonneg`); [D08] applies it to the Lipschitz map itself. -/
 theorem quadraticForm_quasiconvex
     (Q : LinearMap.BilinForm ℝ (Matrix (Fin d) (Fin m) ℝ))
     (hQ : RankOneConvex fun A => Q A A) : Quasiconvex fun A => Q A A := by

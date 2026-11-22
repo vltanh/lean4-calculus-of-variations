@@ -15,9 +15,12 @@ public import Mathlib.Analysis.Calculus.FDeriv.Measurable
 # The `3 × 3` minors are quasiaffine
 
 For a Lipschitz test map `φ` vanishing outside the unit cube,
-`∫_{(0,1)^m} det ((A + ∇φ)_{rc}) = det (A_{rc})` for every `3 × 3` minor
-(`nl_minor3_quasiaffine`): expand `det (X + Y) = det X + tr (adj X · Y) + tr (X · adj Y) + det Y`
-and integrate the minors of `∇φ` of orders `1`, `2`, `3` (`Minors.NullLagrangian`).
+`∫_{(0,1)^m} det ((A + ∇φ)_{rc}) = det (A_{rc})` for every `3 × 3` minor (`nl_minor3_quasiaffine`):
+expand `det (X + Y) = det X + tr (adj X · Y) + tr (X · adj Y) + det Y` and integrate the minors of
+`∇φ` of orders `1`, `2`, `3` (`Minors.NullLagrangian`). This is Theorem 8.35 of B. Dacorogna,
+*Direct Methods in the Calculus of Variations*, 2nd ed., Springer, 2008 ([D08], p. 409–411), for the
+`3 × 3` minors and the cube, by the proof of its part (ii) (expand `det (∇v + ∇w)` into mixed
+minors, write them as divergences, and argue by density), with `v` affine and `w = φ`.
 -/
 
 @[expose] public section

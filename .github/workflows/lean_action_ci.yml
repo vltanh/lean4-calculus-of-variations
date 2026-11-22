@@ -1,8 +1,5 @@
 name: Lean Action CI
 
-# PLACEHOLDER: the dependency `HarmonicAnalysis` is required by a path (`../lean4-harmonic-analysis`)
-# while both packages are developed; CI can resolve it once it is required by `git` and `rev`.
-
 on:
   push:
   pull_request:

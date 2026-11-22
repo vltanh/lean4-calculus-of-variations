@@ -51,10 +51,10 @@ semicontinuous, locally bounded minorants, in `EReal`).
 | without regularity of `f`: quasiconvex at `F` on the unit cube ⇒ the two-point inequality along `a ⊗ e_j`, by truncated laminates; on a rotated cube, along `a ⊗ R e_j` | `le_of_quasiconvexAtOn_unitCube`, `le_of_quasiconvexAtOn_orthogonal`, with `cubeLaminate` | [M, Lemma 4.3] |
 | quasiconvexity on the cube ⇔ on any nonempty bounded open `Ω` | `quasiconvexAtOn_iff`, `quasiconvexAtOn_of_unitCube` | [Da08, Prop. 5.11], [R, Lemma 5.2 (i)] |
 | quasiconvexity on the cube ⇔ with periodic test maps | `quasiconvexAtOn_iff_periodic` | [Da08, Prop. 5.13] |
-| `Q` bilinear, `A ↦ Q (A, A)` rank-one convex ⇒ quasiconvex | `quadraticForm_quasiconvex` | [Da08, Thm 5.25 (i)]; [Mo, Thm 5.2] |
+| `Q` bilinear, `A ↦ Q (A, A)` rank-one convex ⇒ quasiconvex | `quadraticForm_quasiconvex` | [Da08, Thm 5.25 (i)] |
 | rank-one affine ⇒ affine combination of minors (continuity not assumed) | `RankOneAffine.exists_eq_sum_minor`; for continuous functions, `RankOneAffine.exists_eq_sum_minor_of_continuous` | [Da08, Thm 5.20, (ii) ⇒ (iii′)] |
-| `∫ minor (∇φ) = 0` for `2 × 2`, `3 × 3` minors, `φ` Lipschitz with compact support | `nl_null2`, `nl_null3` | [Mo, Lemma 5.1] |
-| `∫_Q minor (A + ∇φ) = minor A` for `3 × 3` minors, `φ` a test map on `Q` | `nl_minor3_quasiaffine` | |
+| `∫ minor (∇φ) = 0` for `2 × 2`, `3 × 3` minors, `φ` Lipschitz with compact support | `nl_null2`, `nl_null3` | [Da08, Thm 8.35], [Mo, Lemma 5.1] |
+| `∫_Q minor (A + ∇φ) = minor A` for `3 × 3` minors, `φ` a test map on `Q` | `nl_minor3_quasiaffine` | [Da08, Thm 8.35] |
 | `f^{qc} (A) = inf_φ ⨍_Ω f (A + ∇φ)`, `Ω` nonempty, bounded, open, `f` continuous; `Ω` the unit ball | `qcEnvelope_eq_iInf`, `qcEnvelope_eq_iInf_unitBall` | [KP, Prop. 8.1], [Da82, Thm 5] |
 | the infimum formula does not depend on the domain (null boundaries): copies of a test map by Vitali's theorem | `domainInf_eq`, `domainInf_le_domainInf`, `exists_testMap_setIntegral_eq` | [KP, Prop. 8.1 (i)] |
 | `Qf (F) ≤ λ Qf (F + (1−λ) a ⊗ n) + (1−λ) Qf (F − λ a ⊗ n)`, in `EReal`; `Qf` finite ⇒ rank-one convex, continuous | `cubeInf_le_two_point_vecMulVec`, `cubeInf_le_two_point` (`n = e_j`), `cubeInfReal_rankOneConvex`, `cubeInfReal_continuous` | [KP, Prop. 8.1 (ii), (iii)] |
@@ -98,12 +98,11 @@ theorem CalculusOfVariations.qcEnvelope_eq_iInf {f : Matrix (Fin d) (Fin m) ℝ 
   without proof, the gradient of a Lipschitz map vanishes almost everywhere on its zero set
   (Lebesgue density). The first domain must be nonempty.
 - **Periodic test maps** follow [Da08, Prop. 5.13]: rescaled copies `ν⁻¹ φ (ν x)` and cut-offs.
-- **Quadratic forms** follow [Mo, Thm 5.2]: the linear term integrates to zero, and the quadratic
-  term is nonnegative under the Legendre–Hadamard condition, for smooth maps (Morrey cites Van Hove;
-  here by Plancherel's formula for Schwartz functions) and then for Lipschitz maps (here by
-  mollification).
-- **Null Lagrangians** follow [Mo, Lemma 5.1]: divergence identities for smooth maps, then
-  mollification.
+- **Quadratic forms** follow [Da08, Thm 5.25 (i)]: the linear term integrates to zero, and the
+  quadratic term is nonnegative under the Legendre–Hadamard condition, by Plancherel's formula,
+  applied to smooth maps and then, by mollification, to Lipschitz maps.
+- **Null Lagrangians** follow [Da08, Thm 8.35 (ii)] and [Mo, Lemma 5.1]: divergence identities for
+  smooth maps, then mollification.
 - **Rank-one affine functions** follow the proof of [Da08, Thm 5.20, (ii) ⇒ (iii′)]: induction on
   the number of rows (after a transposition, `N ≤ n`). The function is affine in its first row
   (5.42), the coefficients are combinations of minors of the other rows (5.43), the parts with a
@@ -144,6 +143,24 @@ theorem CalculusOfVariations.qcEnvelope_eq_iInf {f : Matrix (Fin d) (Fin m) ℝ 
   converge uniformly (mean value theorem, uniform continuity of the derivative).
 - **Smoothing** follows the first step of [K, proof of Prop. 2], with cut-offs that are functions
   of `|X|²` (module docstring of `Smoothing/RankOneConvex.lean`).
+
+## Simpler proofs
+
+The proofs follow the sources in the table. Shorter arguments noticed on the way:
+
+- Rank-one convex ⇒ locally Lipschitz: a separately convex function is locally Lipschitz
+  (`Matrix.locallyLipschitz_of_convexOn_single`); no singular values, no constant. In Lean.
+- The bound `√(min d m) osc (f; B̄_{6r} (F)) / (3r)`: the rows of `B − A` (or its columns) are
+  Frobenius-orthogonal matrices of rank at most one and replace the singular value decomposition. On
+  paper (the orthogonal sums also in Lean).
+- Quasiconvex ⇒ rank-one convex: the periodic sawtooth `h (x_j) a` in `quasiconvexAtOn_iff_periodic`
+  gives the two-point inequality along `a ⊗ e_j`, without a cut-off of its own. In Lean.
+- Rank-one affine ⇒ minors: the part `G_I` of `f` that is multilinear in the rows `I`,
+  `∑_{J ⊆ I} (−1)^{|I ∖ J|} f` (the rows outside `J` set to `0`), is alternating, by the `t²`
+  coefficient along `(e_i + e_j) ⊗ b`, hence a combination of minors with the rows `I`; no induction,
+  no transposition, no Lemma 5.24. On paper.
+- Dacorogna's formula: rank-one convexity of `Qf` is needed only along the `e_i ⊗ e_j`, with
+  separate convexity for the continuity, so without the rotated cubes. In Lean.
 
 ## Planned extensions
 
@@ -201,14 +218,14 @@ lake env lean scripts/Audit.lean   # axioms; fails on any `sorry`
   2026: Lemma 5.2 (i), Proposition 5.6, Lemma 5.9 (by content, Lemma 5.6 of the first edition, 2018,
   which was not consulted), Appendix A.1.
 - [Mo] C. B. Morrey, *Quasi-convexity and the lower semicontinuity of multiple integrals*, Pacific
-  J. Math. 2 (1952), 25–53: Lemma 5.1, Theorem 5.2.
+  J. Math. 2 (1952), 25–53: Lemma 5.1.
 - [Da82] B. Dacorogna, *Quasiconvexity and relaxation of nonconvex problems in the calculus of
   variations*, J. Funct. Anal. 46 (1982), 102–118.
 - [KP] D. Kinderlehrer, P. Pedregal, *Characterizations of Young measures generated by gradients*,
   Arch. Rational Mech. Anal. 115 (1991), 329–365: Proposition 8.1, with Step 6 of the proof of
   Proposition 7.2.
 - [Da08] B. Dacorogna, *Direct methods in the calculus of variations*, 2nd ed., Springer, 2008:
-  Propositions 5.11, 5.13, Theorem 5.20 with Lemma 5.24, Theorem 5.25.
+  Propositions 5.11, 5.13, Theorem 5.20 with Lemma 5.24, Theorem 5.25 (i), Theorem 8.35.
 - [K] J. Kristensen, *On the non-locality of quasiconvexity*, Ann. Inst. H. Poincaré Anal. Non
   Linéaire 16 (1999), 1–13: proof of Proposition 2.
 - [F] H. Freudenthal, *Simplizialzerlegungen von beschränkter Flachheit*, Ann. of Math. 43 (1942),

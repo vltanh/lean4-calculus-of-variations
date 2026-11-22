@@ -17,8 +17,9 @@ divergence identities (`∂_a u ∂_b v − ∂_b u ∂_a v = ∂_a (u ∂_b v) 
 cofactor identity for `3 × 3` minors), and for Lipschitz maps by mollification
 (`Lipschitz.Mollify`) and dominated convergence (`nl_lipschitz_limit`). This is the argument of
 C. B. Morrey, *Quasi-convexity and the lower semicontinuity of multiple integrals*, Pacific J. Math.
-2 (1952), Lemma 5.1 (mollify, then Green's theorem), which covers minors of every order; here
-orders `2` and `3`.
+2 (1952), Lemma 5.1 (mollify, then Green's theorem), and of B. Dacorogna, *Direct Methods in the
+Calculus of Variations*, 2nd ed., Springer, 2008, Theorems 8.33 and 8.35 (minors as divergences, and
+density), which cover minors of every order; here orders `2` and `3`.
 -/
 
 @[expose] public section
