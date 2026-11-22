@@ -5,7 +5,6 @@ public meta import Lean.Elab.Command
 -- traversal (the module system hides them from a plain `import`). Generate the lines with
 --   find CalculusOfVariations -name '*.lean' | sort | sed 's/\.lean$//; s#/#.#g; s/^/import all /'
 import all CalculusOfVariations.Basic
-import all CalculusOfVariations.Calculus.IteratedFDeriv
 import all CalculusOfVariations.Convex.SeparatelyConvex
 import all CalculusOfVariations.Covering.Cubes
 import all CalculusOfVariations.Distribution.Convex
@@ -68,10 +67,6 @@ meta def mainResults : List Name :=
    ``CalculusOfVariations.quadraticForm_quasiconvex,
    ``CalculusOfVariations.RankOneAffine.exists_eq_sum_minor,
    ``CalculusOfVariations.RankOneAffine.exists_eq_sum_minor_of_continuous,
-   ``CalculusOfVariations.exists_eq_sum_minor_of_rank_lt,
-   ``CalculusOfVariations.iteratedFDeriv_comp_perm_of_contDiff,
-   ``CalculusOfVariations.eq_zero_of_symmetric_of_apply_diag_eq_zero,
-   ``CalculusOfVariations.eq_sum_iteratedFDeriv_of_iteratedFDeriv_eq_zero,
    ``CalculusOfVariations.nl_null2,
    ``CalculusOfVariations.nl_null3,
    ``CalculusOfVariations.nl_minor3_quasiaffine,

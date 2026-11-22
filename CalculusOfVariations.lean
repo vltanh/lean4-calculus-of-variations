@@ -6,7 +6,6 @@ Authors: The-Anh Vu-Le
 module
 
 public import CalculusOfVariations.Basic
-public import CalculusOfVariations.Calculus.IteratedFDeriv
 public import CalculusOfVariations.Convex.SeparatelyConvex
 public import CalculusOfVariations.Covering.Cubes
 public import CalculusOfVariations.Distribution.Convex
