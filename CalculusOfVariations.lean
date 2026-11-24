@@ -38,6 +38,7 @@ public import CalculusOfVariations.QuadraticForm.Plancherel
 public import CalculusOfVariations.QuadraticForm.Quasiconvex
 public import CalculusOfVariations.Quasiconvex.Cutoff
 public import CalculusOfVariations.Quasiconvex.Domain
+public import CalculusOfVariations.Quasiconvex.Hessian
 public import CalculusOfVariations.Quasiconvex.Laminate
 public import CalculusOfVariations.Quasiconvex.Periodic
 public import CalculusOfVariations.Quasiconvex.RankOneConvex

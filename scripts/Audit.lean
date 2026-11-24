@@ -40,6 +40,7 @@ import all CalculusOfVariations.QuadraticForm.Plancherel
 import all CalculusOfVariations.QuadraticForm.Quasiconvex
 import all CalculusOfVariations.Quasiconvex.Cutoff
 import all CalculusOfVariations.Quasiconvex.Domain
+import all CalculusOfVariations.Quasiconvex.Hessian
 import all CalculusOfVariations.Quasiconvex.Laminate
 import all CalculusOfVariations.Quasiconvex.Periodic
 import all CalculusOfVariations.Quasiconvex.RankOneConvex
@@ -82,6 +83,9 @@ meta def mainResults : List Name :=
    ``CalculusOfVariations.quasiconvexAtOn_of_unitCube,
    ``CalculusOfVariations.quasiconvexAtOn_iff,
    ``CalculusOfVariations.quasiconvexAtOn_iff_periodic,
+   ``CalculusOfVariations.setIntegral_unitCube_hessian_nonneg_of_hasCompactSupport,
+   ``CalculusOfVariations.integral_hessian_nonneg_of_periodic,
+   ``CalculusOfVariations.hessian_periodic_iff_hasCompactSupport,
    ``CalculusOfVariations.quadraticForm_quasiconvex,
    ``CalculusOfVariations.quadraticForm_quasiconvex_iff,
    ``CalculusOfVariations.RankOneAffine.exists_eq_sum_minor,
