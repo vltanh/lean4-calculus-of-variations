@@ -274,7 +274,8 @@ the argument compiles against the library at `e474abf`, in a file that is not pa
   quotients `t⁻¹ (f (x + t v) − f (x))` have integral `0` over the cube; they are bounded by
   `K ‖v‖` and tend to `∂_v f` almost everywhere ([`abs_slope_le_of_lipschitzWith`](CalculusOfVariations/Lipschitz/FDeriv.lean#L94),
   [`tendsto_slope_of_differentiableAt`](CalculusOfVariations/Lipschitz/FDeriv.lean#L82)), and dominated convergence concludes; no minors, no periodic
-  test maps. Entrywise, it gives `∫_{(0,1)^m} ∇φ = 0`. On paper.
+  test maps. Entrywise, it gives `∫_{(0,1)^m} ∇φ = 0`. Checked in Lean, against the library at
+  `cdb8d4a`.
 
 ## Literature
 
