@@ -7,6 +7,7 @@ module
 
 public import CalculusOfVariations.Basic
 public import CalculusOfVariations.Convex.SeparatelyConvex
+public import CalculusOfVariations.Convex.SupportFunction
 public import CalculusOfVariations.Covering.Cubes
 public import CalculusOfVariations.Distribution.Convex
 public import CalculusOfVariations.Distribution.SecondDerivative
@@ -17,15 +18,20 @@ public import CalculusOfVariations.Envelope.Formula
 public import CalculusOfVariations.Envelope.Glue
 public import CalculusOfVariations.Envelope.RankOneConvex
 public import CalculusOfVariations.Lipschitz.Cutoff
+public import CalculusOfVariations.Lipschitz.FDeriv
+public import CalculusOfVariations.Lipschitz.FundamentalDomain
 public import CalculusOfVariations.Lipschitz.Gradient
+public import CalculusOfVariations.Lipschitz.GradientConstraint
 public import CalculusOfVariations.Lipschitz.Mollify
 public import CalculusOfVariations.Lipschitz.Periodic
+public import CalculusOfVariations.Lipschitz.Periodize
 public import CalculusOfVariations.Lipschitz.PiecewiseAffine
 public import CalculusOfVariations.Lipschitz.Rescale
 public import CalculusOfVariations.Lipschitz.ZeroSet
 public import CalculusOfVariations.Minors.AllOrders
 public import CalculusOfVariations.Minors.Characterization
 public import CalculusOfVariations.Minors.NullLagrangian
+public import CalculusOfVariations.Minors.Periodic
 public import CalculusOfVariations.Minors.Quasiaffine
 public import CalculusOfVariations.Minors.RankOneAffine
 public import CalculusOfVariations.QuadraticForm.Plancherel

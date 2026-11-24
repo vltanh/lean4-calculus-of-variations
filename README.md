@@ -31,11 +31,16 @@ Lean 4 with Mathlib `v4.36.0-rc2`, for integrands `f : ℝ^{d×m} → ℝ` and L
     is nonnegative.
 - **Tools.**
   - Gradients of Lipschitz maps
+  - Derivatives of real Lipschitz functions: maxima, difference quotients
   - Rescaling
-  - Periodic extension
+  - Periodic extension; periodization of functions supported in small balls
+  - Integrals of periodic functions over the unit cube, and periodic null Lagrangians:
+    `∫_{(0,1)^m} ∇φ = 0`, `∫_{(0,1)²} det (A + ∇ψ) = det A`
   - Cut-offs
   - Mollification (also of periodic maps)
   - The vanishing of the gradient on the zero set
+  - Support functions of compact convex sets
+  - Gradient constraints `p + Dξ ∈ K` on periodic Lipschitz functions
   - Finite coverings by cubes
   - Piecewise affine maps
   - Kuhn–Freudenthal interpolation
@@ -82,6 +87,7 @@ The definitions are in [`CalculusOfVariations/Basic.lean`](CalculusOfVariations/
 | rank-one affine ⇒ affine combination of minors (continuity not assumed) | [`RankOneAffine.exists_eq_sum_minor`](CalculusOfVariations/Minors/RankOneAffine.lean#L899) | [Da08, Thm 5.20, (ii) ⇒ (iii′)] |
 | `∫_Ω minor (A + ∇φ) = \|Ω\| minor A`, minors of every order, `φ` Lipschitz, `φ = 0` off the bounded set `Ω` | [`setIntegral_minor_add_grad`](CalculusOfVariations/Minors/AllOrders.lean#L352); [`nl_jac_eq_sum_D`](CalculusOfVariations/Minors/AllOrders.lean#L167) (a Jacobian of smooth maps is a divergence), [`nl_sum_D_jac_eq_zero`](CalculusOfVariations/Minors/AllOrders.lean#L123) | [Da08, Thm 8.35, (8.44); Thm 8.33] |
 | with explicit formulas: `∫ minor (∇φ) = 0` for `2 × 2`, `3 × 3` minors, `φ` Lipschitz with compact support; `∫_Q minor (A + ∇φ) = minor A` for `3 × 3` minors | [`nl_null2`](CalculusOfVariations/Minors/NullLagrangian.lean#L240), [`nl_null3`](CalculusOfVariations/Minors/NullLagrangian.lean#L252), [`nl_minor3_quasiaffine`](CalculusOfVariations/Minors/Quasiaffine.lean#L181) | [Da08, Thm 8.35], [Mo, Lemma 5.1] |
+| for `ℤ^m`-periodic Lipschitz `f`, `φ`, `ψ`: `∫_{(0,1)^m} ∂_v f = 0`, `∫_{(0,1)^m} ∇φ = 0`, `∫_{(0,1)²} det (A + ∇ψ) = det A` | [`setIntegral_unitCube_fderiv_eq_zero`](CalculusOfVariations/Minors/Periodic.lean#L87), [`setIntegral_unitCube_grad_eq_zero`](CalculusOfVariations/Minors/Periodic.lean#L122), [`setIntegral_unitCube_det_add_grad`](CalculusOfVariations/Minors/Periodic.lean#L131) | from [Da08, Thm 8.35, Prop. 5.13] |
 | `f^{qc} (A) = inf_φ ⨍_Ω f (A + ∇φ)`, `Ω` nonempty, bounded, open, `f` continuous; `Ω` the unit ball | [`quasiconvexEnvelope_eq_domainInf`](CalculusOfVariations/Envelope/Formula.lean#L203), [`qcEnvelope_eq_iInf`](CalculusOfVariations/Envelope/Formula.lean#L161), [`qcEnvelope_eq_iInf_unitBall`](CalculusOfVariations/Envelope/Formula.lean#L182) | from [KP, Prop. 8.1]; [Da82, Thm 5], [Da08, Thm 6.9] |
 | the infimum formula, `Ω` nonempty, bounded, open: independent of `Ω` | [`domainInf_eq_of_isBounded`](CalculusOfVariations/Envelope/Formula.lean#L212) | [KP, Prop. 8.1] |
 | the infimum formula, `Ω` nonempty, bounded, open: rank-one convex | [`domainInf_le_of_rank_le_one`](CalculusOfVariations/Envelope/Formula.lean#L236) | [KP, Prop. 8.1] |
@@ -102,6 +108,12 @@ The definitions are in [`CalculusOfVariations/Basic.lean`](CalculusOfVariations/
 | componentwise mollification of Lipschitz maps: Lipschitz | [`mollifyPi_lipschitzWith`](CalculusOfVariations/Lipschitz/Mollify.lean#L300) | |
 | componentwise mollification of Lipschitz maps: supported near the support | [`mollifyPi_eq_zero`](CalculusOfVariations/Lipschitz/Mollify.lean#L271) | |
 | componentwise mollification of Lipschitz maps: `∇ → ∇φ` a.e. | [`ae_tendsto_grad_mollifyPi`](CalculusOfVariations/Lipschitz/Mollify.lean#L307) | |
+| `f` `ℤ^m`-periodic: `∫_{(0,1)^m} f (x + a) dx = ∫_{(0,1)^m} f`; a property a.e. on `(0,1)^m` that passes from `x + k` to `x` holds a.e. on `ℝ^m` | [`setIntegral_unitCube_comp_add`](CalculusOfVariations/Lipschitz/FundamentalDomain.lean#L46), [`ae_of_ae_restrict_unitCube_of_periodic`](CalculusOfVariations/Lipschitz/FundamentalDomain.lean#L91) | |
+| `f`, `g` Lipschitz: `D max (f, g)` is `Df` or `Dg` a.e.; `∫_s` of the product of their difference quotients along `v` `→ ∫_s ∂_v f ∂_v g` | [`ae_fderiv_max_eq_or`](CalculusOfVariations/Lipschitz/FDeriv.lean#L56), [`tendsto_setIntegral_slope_mul`](CalculusOfVariations/Lipschitz/FDeriv.lean#L108) | |
+| `supPeriodize g = sup_{k ∈ ℤ^m} g (· + k)`: periodic; Lipschitz with the constant of `g`; `= g (· + k)` near `x` if `g ≥ 0` vanishes off `B_r (x₀)`, `r < 1/2`, and `‖x + k − x₀‖ ≤ 1/2` | [`supPeriodize_periodic`](CalculusOfVariations/Lipschitz/Periodize.lean#L46), [`lipschitzWith_supPeriodize`](CalculusOfVariations/Lipschitz/Periodize.lean#L115), [`supPeriodize_eventuallyEq`](CalculusOfVariations/Lipschitz/Periodize.lean#L80) | |
+| support function `H_K` of `K` compact, convex, nonempty: `a ∈ K ⇔ a · y ≤ H_K (y)` for all `y`; `∇H_K ∈ K` where `H_K` is differentiable | [`dotProduct_le_supportFun`](CalculusOfVariations/Convex/SupportFunction.lean#L79), [`mem_of_forall_dotProduct_le_supportFun`](CalculusOfVariations/Convex/SupportFunction.lean#L138), [`gradient_supportFun_mem`](CalculusOfVariations/Convex/SupportFunction.lean#L156) | |
+| `ξ` Lipschitz, `ℤ^m`-periodic, `K` compact: `p + Dξ ∈ K` a.e. ⇒ `ξ (y) − ξ (x) + p · (y − x) ≤ H_K (y − x)`; the converse where `ξ` is differentiable (`K` convex, nonempty); a Lipschitz bound by `K` and `p` | [`sub_add_dotProduct_le_supportFun_of_ae_mem`](CalculusOfVariations/Lipschitz/GradientConstraint.lean#L103), [`add_fderiv_mem_of_sub_add_dotProduct_le_supportFun`](CalculusOfVariations/Lipschitz/GradientConstraint.lean#L129), [`exists_lipschitzWith_of_sub_add_dotProduct_le_supportFun`](CalculusOfVariations/Lipschitz/GradientConstraint.lean#L154) | |
+| equi-Lipschitz `ℤ^m`-periodic functions that converge a.e. on `(0,1)^m` converge everywhere | [`exists_tendsto_of_ae_restrict_unitCube_tendsto`](CalculusOfVariations/Lipschitz/GradientConstraint.lean#L177) | |
 | smoothing of a rank-one convex `p` not quasiconvex at `0` | [`Smoothing.exists_smoothing`](CalculusOfVariations/Smoothing/RankOneConvex.lean#L232) | [K, proof of Prop. 2] |
 
 `Qf = cubeInf f` is the infimum formula on the unit cube ([`cubeInf`](CalculusOfVariations/Envelope/Cube.lean#L35)).
@@ -153,6 +165,15 @@ theorem CalculusOfVariations.quasiconvexEnvelope_eq_domainInf {f : Matrix (Fin d
   there for `C²` maps, here for smooth ones (for `C²` maps and order `s ≥ 3`, the second derivatives
   in its proof are those of functions that are only `C¹`). The orders `2` and `3` are also done with
   explicit formulas, by [Da08, Thm 8.35 (ii)] and [Mo, Lemma 5.1].
+- **Periodic null Lagrangians**: a minor and its negative are null Lagrangians, hence quasiconvex on
+  the unit cube, hence quasiconvex with periodic test maps [Da08, Prop. 5.13]; the two inequalities
+  give `∫_{(0,1)^m} minor (A + ∇φ) = minor A` for periodic Lipschitz `φ`. The entries of `∇φ` are
+  the minors of order `1`.
+- **Gradient constraints** `p + Dξ ∈ K` (`K` compact): the constraint holds almost everywhere on
+  `ℝ^m` by periodicity; the mollifications of `ξ` satisfy `D (ρ ⋆ ξ) v ≤ H_K (v) − p · v`, hence the
+  slope bound by the mean value theorem, and converge to `ξ` pointwise. Conversely, the slope bound
+  gives `Dξ (x) v ≤ H_K (v) − p · v` where `ξ` is differentiable, and then `p + Dξ (x) ∈ K` by the
+  Hahn–Banach separation (for `K` convex and nonempty).
 - **Quasiaffine functions** follow [Da08, Thm 5.20]:
   - rank-one affine ⇒ affine combination of minors (the item on rank-one affine functions, below)
   - affine combination of minors ⇒ null Lagrangian, by [Da08, Thm 8.35], the second of its two
@@ -248,6 +269,12 @@ the argument compiles against the library at `e474abf`, in a file that is not pa
 - Dacorogna's formula: (ii) of [KP, Prop. 8.1] is needed only along the `e_i ⊗ e_j`
   ([`cubeInf_le_two_point`](CalculusOfVariations/Envelope/RankOneConvex.lean#L311)), with [`Matrix.locallyLipschitz_of_convexOn_single`](CalculusOfVariations/Convex/SeparatelyConvex.lean#L334) for the continuity; no
   rotated cubes. Checked in Lean.
+- `∫_{(0,1)^m} ∂_v f = 0` for periodic Lipschitz `f`, which the library deduces from the periodic
+  null Lagrangians: by translation invariance ([`setIntegral_unitCube_comp_add`](CalculusOfVariations/Lipschitz/FundamentalDomain.lean#L46)), the difference
+  quotients `t⁻¹ (f (x + t v) − f (x))` have integral `0` over the cube; they are bounded by
+  `K ‖v‖` and tend to `∂_v f` almost everywhere ([`abs_slope_le_of_lipschitzWith`](CalculusOfVariations/Lipschitz/FDeriv.lean#L94),
+  [`tendsto_slope_of_differentiableAt`](CalculusOfVariations/Lipschitz/FDeriv.lean#L82)), and dominated convergence concludes; no minors, no periodic
+  test maps. Entrywise, it gives `∫_{(0,1)^m} ∇φ = 0`. On paper.
 
 ## Literature
 
@@ -404,13 +431,13 @@ made by [`scripts/sync_challenge_defs.py`](scripts/sync_challenge_defs.py).
 | Path | Content |
 | --- | --- |
 | [`CalculusOfVariations/Basic.lean`](CalculusOfVariations/Basic.lean) | the definitions |
-| [`CalculusOfVariations/Convex/`](CalculusOfVariations/Convex) | [`SeparatelyConvex`](CalculusOfVariations/Convex/SeparatelyConvex.lean) |
+| [`CalculusOfVariations/Convex/`](CalculusOfVariations/Convex) | [`SeparatelyConvex`](CalculusOfVariations/Convex/SeparatelyConvex.lean), [`SupportFunction`](CalculusOfVariations/Convex/SupportFunction.lean) |
 | [`CalculusOfVariations/RankOneConvex/`](CalculusOfVariations/RankOneConvex) | [`SingularValues`](CalculusOfVariations/RankOneConvex/SingularValues.lean), [`LocallyLipschitz`](CalculusOfVariations/RankOneConvex/LocallyLipschitz.lean) |
-| [`CalculusOfVariations/Lipschitz/`](CalculusOfVariations/Lipschitz) | [`Gradient`](CalculusOfVariations/Lipschitz/Gradient.lean), [`Rescale`](CalculusOfVariations/Lipschitz/Rescale.lean), [`Periodic`](CalculusOfVariations/Lipschitz/Periodic.lean), [`Cutoff`](CalculusOfVariations/Lipschitz/Cutoff.lean), [`ZeroSet`](CalculusOfVariations/Lipschitz/ZeroSet.lean), [`Mollify`](CalculusOfVariations/Lipschitz/Mollify.lean), [`PiecewiseAffine`](CalculusOfVariations/Lipschitz/PiecewiseAffine.lean) |
+| [`CalculusOfVariations/Lipschitz/`](CalculusOfVariations/Lipschitz) | [`Gradient`](CalculusOfVariations/Lipschitz/Gradient.lean), [`Rescale`](CalculusOfVariations/Lipschitz/Rescale.lean), [`Periodic`](CalculusOfVariations/Lipschitz/Periodic.lean), [`Cutoff`](CalculusOfVariations/Lipschitz/Cutoff.lean), [`ZeroSet`](CalculusOfVariations/Lipschitz/ZeroSet.lean), [`FDeriv`](CalculusOfVariations/Lipschitz/FDeriv.lean) (real Lipschitz functions), [`FundamentalDomain`](CalculusOfVariations/Lipschitz/FundamentalDomain.lean) (periodic functions on the unit cube), [`Periodize`](CalculusOfVariations/Lipschitz/Periodize.lean), [`Mollify`](CalculusOfVariations/Lipschitz/Mollify.lean), [`GradientConstraint`](CalculusOfVariations/Lipschitz/GradientConstraint.lean), [`PiecewiseAffine`](CalculusOfVariations/Lipschitz/PiecewiseAffine.lean) |
 | [`CalculusOfVariations/Covering/`](CalculusOfVariations/Covering) | [`Cubes`](CalculusOfVariations/Covering/Cubes.lean) (finite Besicovitch coverings) |
 | [`CalculusOfVariations/Quasiconvex/`](CalculusOfVariations/Quasiconvex) | [`Domain`](CalculusOfVariations/Quasiconvex/Domain.lean), [`Cutoff`](CalculusOfVariations/Quasiconvex/Cutoff.lean), [`Periodic`](CalculusOfVariations/Quasiconvex/Periodic.lean), [`Laminate`](CalculusOfVariations/Quasiconvex/Laminate.lean), [`RankOneConvex`](CalculusOfVariations/Quasiconvex/RankOneConvex.lean), [`TruncatedLaminate`](CalculusOfVariations/Quasiconvex/TruncatedLaminate.lean) |
 | [`CalculusOfVariations/QuadraticForm/`](CalculusOfVariations/QuadraticForm) | [`Plancherel`](CalculusOfVariations/QuadraticForm/Plancherel.lean), [`Quasiconvex`](CalculusOfVariations/QuadraticForm/Quasiconvex.lean) |
-| [`CalculusOfVariations/Minors/`](CalculusOfVariations/Minors) | [`RankOneAffine`](CalculusOfVariations/Minors/RankOneAffine.lean), [`NullLagrangian`](CalculusOfVariations/Minors/NullLagrangian.lean) (orders `2`, `3`), [`Quasiaffine`](CalculusOfVariations/Minors/Quasiaffine.lean) (order `3`), [`AllOrders`](CalculusOfVariations/Minors/AllOrders.lean), [`Characterization`](CalculusOfVariations/Minors/Characterization.lean) |
+| [`CalculusOfVariations/Minors/`](CalculusOfVariations/Minors) | [`RankOneAffine`](CalculusOfVariations/Minors/RankOneAffine.lean), [`NullLagrangian`](CalculusOfVariations/Minors/NullLagrangian.lean) (orders `2`, `3`), [`Quasiaffine`](CalculusOfVariations/Minors/Quasiaffine.lean) (order `3`), [`AllOrders`](CalculusOfVariations/Minors/AllOrders.lean), [`Periodic`](CalculusOfVariations/Minors/Periodic.lean) (periodic maps), [`Characterization`](CalculusOfVariations/Minors/Characterization.lean) |
 | [`CalculusOfVariations/Envelope/`](CalculusOfVariations/Envelope) | [`Cube`](CalculusOfVariations/Envelope/Cube.lean) (the infimum formula on the cube), [`Domain`](CalculusOfVariations/Envelope/Domain.lean) (independence of the domain), [`RankOneConvex`](CalculusOfVariations/Envelope/RankOneConvex.lean), [`Glue`](CalculusOfVariations/Envelope/Glue.lean) (piecewise affine test maps), [`Convexity`](CalculusOfVariations/Envelope/Convexity.lean) (continuity, quasiconvexity), [`Formula`](CalculusOfVariations/Envelope/Formula.lean) |
 | [`CalculusOfVariations/Smoothing/`](CalculusOfVariations/Smoothing) | [`RankOneConvex`](CalculusOfVariations/Smoothing/RankOneConvex.lean) |
 | [`CalculusOfVariations/Distribution/`](CalculusOfVariations/Distribution) | [`SecondDerivative`](CalculusOfVariations/Distribution/SecondDerivative.lean), [`Convex`](CalculusOfVariations/Distribution/Convex.lean) |

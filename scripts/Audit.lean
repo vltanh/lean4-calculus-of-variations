@@ -9,6 +9,7 @@ public meta import Lean.Elab.Command
 -- No Challenge is imported: each holds a copy of definitions of the library.
 import all CalculusOfVariations.Basic
 import all CalculusOfVariations.Convex.SeparatelyConvex
+import all CalculusOfVariations.Convex.SupportFunction
 import all CalculusOfVariations.Covering.Cubes
 import all CalculusOfVariations.Distribution.Convex
 import all CalculusOfVariations.Distribution.SecondDerivative
@@ -19,15 +20,20 @@ import all CalculusOfVariations.Envelope.Formula
 import all CalculusOfVariations.Envelope.Glue
 import all CalculusOfVariations.Envelope.RankOneConvex
 import all CalculusOfVariations.Lipschitz.Cutoff
+import all CalculusOfVariations.Lipschitz.FDeriv
+import all CalculusOfVariations.Lipschitz.FundamentalDomain
 import all CalculusOfVariations.Lipschitz.Gradient
+import all CalculusOfVariations.Lipschitz.GradientConstraint
 import all CalculusOfVariations.Lipschitz.Mollify
 import all CalculusOfVariations.Lipschitz.Periodic
+import all CalculusOfVariations.Lipschitz.Periodize
 import all CalculusOfVariations.Lipschitz.PiecewiseAffine
 import all CalculusOfVariations.Lipschitz.Rescale
 import all CalculusOfVariations.Lipschitz.ZeroSet
 import all CalculusOfVariations.Minors.AllOrders
 import all CalculusOfVariations.Minors.Characterization
 import all CalculusOfVariations.Minors.NullLagrangian
+import all CalculusOfVariations.Minors.Periodic
 import all CalculusOfVariations.Minors.Quasiaffine
 import all CalculusOfVariations.Minors.RankOneAffine
 import all CalculusOfVariations.QuadraticForm.Plancherel
@@ -117,7 +123,21 @@ meta def mainResults : List Name :=
    ``CalculusOfVariations.quasiconvexEnvelope_eq_domainInf,
    ``CalculusOfVariations.domainInf_eq_of_isBounded,
    ``CalculusOfVariations.domainInf_le_of_rank_le_one,
-   ``CalculusOfVariations.exists_domainInf_eq_coe]
+   ``CalculusOfVariations.exists_domainInf_eq_coe,
+   ``CalculusOfVariations.setIntegral_unitCube_fderiv_eq_zero,
+   ``CalculusOfVariations.setIntegral_unitCube_grad_eq_zero,
+   ``CalculusOfVariations.setIntegral_unitCube_det_add_grad,
+   ``CalculusOfVariations.setIntegral_unitCube_comp_add,
+   ``CalculusOfVariations.ae_of_ae_restrict_unitCube_of_periodic,
+   ``CalculusOfVariations.mem_of_forall_dotProduct_le_supportFun,
+   ``CalculusOfVariations.gradient_supportFun_mem,
+   ``CalculusOfVariations.sub_add_dotProduct_le_supportFun_of_ae_mem,
+   ``CalculusOfVariations.add_fderiv_mem_of_sub_add_dotProduct_le_supportFun,
+   ``CalculusOfVariations.exists_lipschitzWith_of_sub_add_dotProduct_le_supportFun,
+   ``CalculusOfVariations.exists_tendsto_of_ae_restrict_unitCube_tendsto,
+   ``CalculusOfVariations.ae_fderiv_max_eq_or,
+   ``CalculusOfVariations.tendsto_setIntegral_slope_mul,
+   ``CalculusOfVariations.lipschitzWith_supPeriodize]
 
 /-- The theorems of the Challenges in `palomar/`, as proved in the Solutions. -/
 meta def solutionResults : List Name :=
